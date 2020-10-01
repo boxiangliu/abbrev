@@ -14,5 +14,5 @@ split_sent(){
 
 export -f split_sent
 
-parallel -j 10 --joblog $out_dir/split_sent.log split_sent {} {} ::: `ls $in_dir/*.txt` ::: $out_dir
+parallel -j 10 --joblog $out_dir/split_sent.log split_sent {} {} ::: `ls $in_dir/pubmed*.txt` ::: $out_dir
 

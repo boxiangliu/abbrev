@@ -1,0 +1,9 @@
+partition=TitanXx8
+numcpuspergpu=4 # TitanXx8 must allocate 2 CPUs per GPU
+numgpus=1 # You specify this number of GPUs, depending on the job
+numtasks=1 # Set this to the number of processes (e.g., with MPI)
+numcpuspertask=$(($numcpuspergpu * $numgpus / $numtasks))
+sbatch --nodes 1 --job-name=test --ntasks $numtasks \
+        --cpus-per-task $numcpuspertask --gres=gpu:$numgpus --signal=USR1@600 \
+        --wrap "/usr/local/slurm/bin/srun stdbuf -i0 -o0 -e0 $command_to_run" \
+        --partition=$partition --output=$outputfile
