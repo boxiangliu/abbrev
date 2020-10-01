@@ -26,7 +26,5 @@ def main(in_fn, out_fn):
                 pass
 
 
-
-
 if __name__ == "__main__":
     main()
