@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 import gzip
 import os
-
+import click
 
 def get_title(PubmedArticle):
     title = PubmedArticle[0][2][1]
