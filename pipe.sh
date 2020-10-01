@@ -3,8 +3,8 @@
 ##############
 
 # Extract abstract from PubMed XML file:
-python3 preprocess/extract_abstract.py
+bash preprocess/extract_abstract.sh
 
 
 # Split sentences:
-python3 preprocess/split_sent.py
+bash preprocess/split_sent.sh
