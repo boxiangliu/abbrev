@@ -3,8 +3,9 @@ import gzip
 import os
 import click
 
+
 def get_title(PubmedArticle):
-    title = PubmedArticle[0][2].find("ArticleTitle")
+    title = PubmedArticle[0].find("Article").find("ArticleTitle")
     if title == None:
         return None
 
@@ -13,7 +14,7 @@ def get_title(PubmedArticle):
 
 
 def get_abstract(PubmedArticle):
-    abstract = PubmedArticle[0][2].find("Abstract")
+    abstract = PubmedArticle[0].find("Article").find("Abstract")
     if abstract == None:
         return None
     else:
@@ -29,10 +30,14 @@ def get_pmid(PubmedArticle):
     return pmid.text
 
 
+
 @click.command()
 @click.option("--in_fn", type=str, help="Input file.")
 @click.option("--out_fn", type=str, help="Output file.")
 def main(in_fn, out_fn):
+    print(f"INPUT\t{in_fn}")
+    print(f"OUTPUT\t{out_fn}")
+
     with gzip.open(in_fn, "r") as in_handle:
         xml = ET.parse(in_handle)
         root = xml.getroot()
@@ -47,7 +52,7 @@ def main(in_fn, out_fn):
                 out = f"{pmid}|t|{title}\n"
                 fout.write(out)
 
-            if title != None:
+            if abstract != None:
                 out = f"{pmid}|a|{abstract}\n"
                 fout.write(out)
 
