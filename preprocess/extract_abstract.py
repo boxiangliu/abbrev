@@ -32,7 +32,7 @@ def get_pmid(PubmedArticle):
 def main(in_fn, out_fn):
     with gzip.open(in_fn, "r") as in_handle:
         xml = ET.parse(in_handle)
-
+        root = xml.getroot()
 
     with open(out_fn, "w") as fout:
         for PubmedArticle in root:
