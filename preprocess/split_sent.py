@@ -6,7 +6,7 @@ import click
 @click.command()
 @click.option("--in_fn", type=str, help="Input file.")
 @click.option("--out_fn", type=str, help="Output file.")
-def main():
+def main(in_fn, out_fn):
     nlp = stanza.Pipeline("en", processors="tokenize", tokenize_batch_size=64)
 
     with open(in_fn) as fin, open(out_fn, "w") as fout:
