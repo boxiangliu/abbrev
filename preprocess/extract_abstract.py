@@ -2,11 +2,6 @@ import xml.etree.ElementTree as ET
 import gzip
 import os
 
-in_fn = "/mnt/big/kwc/pubmed/raw/pubmed19n0972.xml.gz"
-out_dir = "../processed_data/preprocess/abstract/"
-os.makedirs(out_dir, exist_ok=True)
-out_fn = os.path.join(out_dir, os.path.basename(in_fn).replace(".xml.gz", ".txt"))
-
 
 def get_title(PubmedArticle):
     title = PubmedArticle[0][2][1]
@@ -31,7 +26,10 @@ def get_pmid(PubmedArticle):
     return pmid.text
 
 
-def main():
+@click.command()
+@click.option("--in_fn", type=str, help="Input file.")
+@click.option("--out_fn", type=str, help="Output file.")
+def main(in_fn, out_fn):
     with gzip.open(in_fn, "r") as in_handle:
         xml = ET.parse(in_handle)
 
