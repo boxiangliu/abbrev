@@ -4,7 +4,10 @@ import os
 import click
 
 def get_title(PubmedArticle):
-    title = PubmedArticle[0][2][1]
+    title = PubmedArticle[0][2].find("ArticleTitle")
+    if title == None:
+        return None
+
     assert title.tag == "ArticleTitle"
     return title.text
 
