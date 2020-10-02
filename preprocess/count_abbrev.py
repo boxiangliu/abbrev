@@ -1,5 +1,7 @@
 import glob
 from collections import Counter
+import matplotlib
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import pickle 
 import os
@@ -22,3 +24,12 @@ for fn in glob.glob(f"{in_dir}/pubmed*.txt"):
 with open(f"{out_dir}/count.pkl", "wb") as fout:
     pickle.dump(counter, fout)
 
+
+with open(f"{out_dir}/count.pkl", "rb") as fin:
+    counter = pickle.load(fin)
+
+
+plt.ion()
+plt.xscale("log")
+plt.hist(counter.values(), log=True, bins=1000)
+plt.savefig(f"{out_dir}/count_hist.pdf")
