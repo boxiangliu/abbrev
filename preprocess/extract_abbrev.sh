@@ -11,6 +11,6 @@ extract_abbrev(){
     python3 preprocess/extract_abbrev.py --in_fn $in_fn --out_fn $out_fn
 
 }
-export -f extract_abrev
+export -f extract_abbrev
 
 parallel -j 35 --joblog ../processed_data/preprocess/abstract/extract_abrev.log extract_abbrev {} {} ::: `ls ../processed_data/preprocess/sentence/pubmed*.txt` ::: $out_dir
