@@ -19,7 +19,7 @@ def main(in_fn, out_fn):
                 m_text = m.group(1)
                 start = m.start(1)
                 end = m.end(1)
-                out = f"{pmid}|{typ}|{line_no}|{start},{end}|{m_text}\n"
+                out = f"{pmid}|{typ}|{line_no}|{start},{end}|{m_text}|{text}\n"
                 fout.write(out)
 
 
