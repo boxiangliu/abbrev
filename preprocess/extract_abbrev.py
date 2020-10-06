@@ -29,8 +29,13 @@ def main(in_fn, out_fn):
                     abb_type = 3
                 elif re.match("^[a-z]$", m_text): # only lowercase letter
                     abb_type = 4
-                elif re.search("[pP]<0", m_text): # p-value 
+                elif re.search("[pP][<>=]0", m_text): # p-value 
                     abb_type = 5
+                elif re.search("[nN]=", m_text): # sample size
+                    abb_type = 6
+                elif re.search("=", m_text): # definition
+                    abb_type = 7
+
                 out = f"{pmid}|{typ}|{line_no}|{start},{end}|{abb_type}|{m_text}|{text}\n"
                 fout.write(out)
 
