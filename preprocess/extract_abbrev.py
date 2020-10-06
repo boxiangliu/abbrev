@@ -15,7 +15,7 @@ def main(in_fn, out_fn):
             line_no = split_line[2]
             text = split_line[3]
 
-            for m in re.finditer(" \((.*?)\)[,\.\?:\'\"]", text):
+            for m in re.finditer(" \((.*?)\)[ ,\.\?:\'\"]", text):
                 m_text = m.group(1)
                 start = m.start(1)
                 end = m.end(1)
