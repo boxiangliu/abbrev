@@ -21,7 +21,7 @@ def main(in_fn, out_fn):
                 end = m.end(1)
 
                 abb_type = 0 
-                if " " in m_text: # space
+                if re.search("\s", m_text): # space
                     abb_type = 1
                 elif not re.search("[a-zA-Z]", m_text): # no letter
                     abb_type = 2
