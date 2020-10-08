@@ -2,6 +2,16 @@ import xml.etree.ElementTree as ET
 import gzip
 import os
 import click
+import html
+from bs4 import BeautifulSoup
+
+def html2text(text, rm_cr=True):
+    text = html.unescape(html.unescape(text))
+    soup = BeautifulSoup(text, features="html.parser")
+    text = soup.get_text()
+    if rm_cr:
+        text = text.replace("\r", "")
+    return text
 
 
 def get_title(PubmedArticle):
@@ -10,7 +20,7 @@ def get_title(PubmedArticle):
         return None
 
     assert title.tag == "ArticleTitle"
-    return title.text
+    return html2text(title.text)
 
 
 def get_abstract(PubmedArticle):
@@ -21,7 +31,7 @@ def get_abstract(PubmedArticle):
         abstract_text = abstract[0]
 
     assert abstract_text.tag == "AbstractText"
-    return abstract_text.text
+    return html2text(abstract_text.text)
 
 
 def get_pmid(PubmedArticle):
