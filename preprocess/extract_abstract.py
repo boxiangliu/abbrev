@@ -29,10 +29,13 @@ def get_title(PubmedArticle):
 
 def get_abstract(PubmedArticle):
     abstract = PubmedArticle[0].find("Article").find("Abstract")
-    if abstract == None or abstract.text == None:
+    if abstract == None:
         return None
     else:
         abstract_text = abstract[0]
+
+        if abstract_text == None or abstract_text.text == None:
+            return None
 
     assert abstract_text.tag == "AbstractText"
     return html2text(abstract_text.text)
