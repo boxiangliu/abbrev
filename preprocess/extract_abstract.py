@@ -22,6 +22,8 @@ def get_title(PubmedArticle):
         return None
 
     assert title.tag == "ArticleTitle"
+    if title.text == None:
+        print(title)
     return html2text(title.text)
 
 
