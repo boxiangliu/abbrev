@@ -23,6 +23,7 @@ def get_title(PubmedArticle):
 
     assert title.tag == "ArticleTitle"
     if title.text == None:
+        import ipdb; ipdb.set_trace()
         print(title)
     return html2text(title.text)
 
