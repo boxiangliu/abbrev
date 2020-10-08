@@ -5,15 +5,18 @@ import click
 import html
 from bs4 import BeautifulSoup
 
-def html2text(text, rm_cr=True):
-    assert type(text) == str
-    text = html.unescape(html.unescape(text))
-    soup = BeautifulSoup(text, features="html.parser")
-    text = soup.get_text()
-    if rm_cr:
-        text = text.replace("\r", "")
-    return text
 
+def html2text(text, rm_cr=True):
+    try:
+        assert type(text) == str
+        text = html.unescape(html.unescape(text))
+        soup = BeautifulSoup(text, features="html.parser")
+        text = soup.get_text()
+        if rm_cr:
+            text = text.replace("\r", "")
+        return text
+    except:
+        print(text)
 
 def get_title(PubmedArticle):
     title = PubmedArticle[0].find("Article").find("ArticleTitle")
@@ -39,7 +42,6 @@ def get_pmid(PubmedArticle):
     pmid = PubmedArticle[0][0]
     assert pmid.tag == "PMID"
     return pmid.text
-
 
 
 @click.command()
