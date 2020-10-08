@@ -18,6 +18,7 @@ def html2text(text, rm_cr=True):
     except:
         print(text)
 
+
 def get_title(PubmedArticle):
     title = PubmedArticle[0].find("Article").find("ArticleTitle")
     if title == None or title.text == None:
