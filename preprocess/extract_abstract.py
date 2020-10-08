@@ -6,15 +6,14 @@ import html
 from bs4 import BeautifulSoup
 
 def html2text(text, rm_cr=True):
-    try:
-        text = html.unescape(html.unescape(text))
-        soup = BeautifulSoup(text, features="html.parser")
-        text = soup.get_text()
-        if rm_cr:
-            text = text.replace("\r", "")
-        return text
-    except:
-        print(text)
+    assert type(text) == str
+    text = html.unescape(html.unescape(text))
+    soup = BeautifulSoup(text, features="html.parser")
+    text = soup.get_text()
+    if rm_cr:
+        text = text.replace("\r", "")
+    return text
+
 
 def get_title(PubmedArticle):
     title = PubmedArticle[0].find("Article").find("ArticleTitle")
