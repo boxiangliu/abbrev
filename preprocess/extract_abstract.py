@@ -18,19 +18,16 @@ def html2text(text, rm_cr=True):
 
 def get_title(PubmedArticle):
     title = PubmedArticle[0].find("Article").find("ArticleTitle")
-    if title == None:
+    if title == None or title.text == None:
         return None
 
     assert title.tag == "ArticleTitle"
-    if title.text == None:
-        import ipdb; ipdb.set_trace()
-        print(title)
     return html2text(title.text)
 
 
 def get_abstract(PubmedArticle):
     abstract = PubmedArticle[0].find("Article").find("Abstract")
-    if abstract == None:
+    if abstract == None or abstract.text == None:
         return None
     else:
         abstract_text = abstract[0]
