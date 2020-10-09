@@ -1,7 +1,7 @@
 wd=/mnt/scratch/boxiang/projects/Ab3P/
 cd $wd
 
-in_dir=/mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/abbrev/
+in_dir=/mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/sentence/
 out_dir=/mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/ab3p/run_ab3p/
 mkdir -p $out_dir
 
@@ -13,7 +13,7 @@ ab3p(){
     tmp_fn=$out_dir/$base.in
     out_fn=$out_dir/$base.out
 
-    awk 'BEGIN {FS = "|"}; {print ">"$1"|"$2"|"$3"|"$4"|"$5"\n"$7}' $in_fn > $tmp_fn
+    awk 'BEGIN {FS = "|"}; {print ">"$1"|"$2"|"$3"\n"$4}' $in_fn > $tmp_fn
     ./identify_abbr $tmp_fn &> $out_fn
 }
 export -f ab3p
