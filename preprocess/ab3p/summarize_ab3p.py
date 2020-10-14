@@ -14,21 +14,37 @@ for fn in glob.glob(f"{in_dir}/pubmed*.out"):
     with open(fn, encoding="ISO-8859-1") as fin:
         for line in fin:
             try:
-                if re.match(">[0-9]+\|[at]\|[0-9]+"):
-                    split_line = line.strip().replace(">","").split("|")
+                if re.match(">[0-9]+\|[at]\|[0-9]+", line):
+                    split_line = line.strip().replace(">", "").split("|")
                     pmid = int(split_line[0])
                     typ = split_line[1]
-                    sent = int(split_line[2])
+                    sent_no = int(split_line[2])
 
-                if line.startswith("  "):
+                elif line.startswith("  "):
                     split_line = line.strip().split("|")
                     container["sf"].append(split_line[0])
                     container["lf"].append(split_line[1])
                     container["score"].append(float(split_line[2]))
                     container["pmid"].append(pmid)
                     container["type"].append(typ)
+                    container["sent_no"].append(sent_no)
                     container["sent"].append(sent)
+
+                else:
+                    sent = line.strip()
+
             except:
+                print("error")
                 print(line)
 
 df = pd.DataFrame(container)
+df.to_csv(f"{out_dir}/ab3p_res.csv", sep="\t", index=False)
+# df = pd.read_csv(f"{out_dir}/ab3p_res.csv", sep="\t")
+
+df2 = df.groupby(["sf", "lf"]).agg(freq=pd.NamedAgg(
+    "score", "count")).sort_values("freq", ascending=False).reset_index()
+df2.to_csv(f"{out_dir}/ab3p_freq.csv", sep="\t", index=False)
+# df2 = pd.read_csv(f"{out_dir}/ab3p_freq.csv", sep="\t")
+
+
+df2[df2["freq"] <= 10].groupby("freq").sample(n=2, random_state=2).sort_values("freq", ascending=False)
