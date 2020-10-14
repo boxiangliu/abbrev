@@ -46,6 +46,14 @@ def answer_question(question, answer_text):
     start_scores, end_scores = model(torch.tensor([input_ids]), # The tokens representing our input text.
                                     token_type_ids=torch.tensor([segment_ids])) # The segment IDs to differentiate question from answer_text
 
+    start_prob = torch.exp(start_scores)
+    start_prob = start_prob / torch.sum(start_prob)
+    max_start_prob = torch.max(start_prob)
+
+    end_prob = torch.exp(end_scores)
+    end_prob = end_prob / torch.sum(end_prob)
+    max_end_prob = torch.max(end_prob)
+
     # ======== Reconstruct Answer ========
     # Find the tokens with the highest `start` and `end` scores.
     answer_start = torch.argmax(start_scores)
@@ -70,7 +78,7 @@ def answer_question(question, answer_text):
 
     # print('Answer: "' + answer + '"')
 
-    return answer
+    return answer, max_start_prob, max_end_prob
 
 
 df = pd.read_csv("../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_res.csv", sep="\t", nrows=1e4)
@@ -82,11 +90,13 @@ for i in range(df.shape[0]):
     sf = df.iloc[i]["sf"]
     lf = df.iloc[i]["lf"]
     question = "What does %s stand for?" % sf
-    answer = answer_question(question, answer_text)
+    answer, start_prob, end_prob = answer_question(question, answer_text)
     container["text"].append(answer_text)
     container["ab3p"].append(sf)
     container["bert"].append(lf)
     container["answer"].append(answer)
+    container["start_prob"].append(start_prob)
+    container["end_prob"].append(end_prob)
 
 
 df2 = pd.DataFrame(container)
