@@ -4,8 +4,8 @@ import torch
 from utils import extract_examples
 import os
 
-model = "/mnt/scratch/boxiang/projects/abbrev/processed_data/model/finetune_on_ab3p/checkpoint-14500/"
-tokenizer = "bert-large-cased-whole-word-masking-finetuned-squad"
+# model = "/mnt/scratch/boxiang/projects/abbrev/processed_data/model/finetune_on_ab3p/checkpoint-14500/"
+# tokenizer = "bert-large-cased-whole-word-masking-finetuned-squad"
 
 def extract_examples(ab3p):
     contexts = []
