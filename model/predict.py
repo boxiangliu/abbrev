@@ -42,7 +42,7 @@ def main(model, tokenizer, data_fn, out_fn, topk):
             fout.write(f"  ab3p|{sf}|{lf}|{score}\n")
             for j in range(topk):
                 prediction = predictions[i * topk + j]
-                pred_text = prediction["text"]
+                pred_text = prediction["answer"]
                 pred_score = prediction["score"]
                 fout.write(f"  bqaf{j+1}|{sf}|{pred_text}|{pred_score}\n")
 
