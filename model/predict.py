@@ -3,7 +3,7 @@ import click
 import torch
 import sys
 sys.path.append(".")
-from utils import extract_examples
+from utils import extract_examples, check_dir_exists
 import os
 import pandas as pd
 
@@ -31,8 +31,7 @@ def main(model, tokenizer, data_fn, out_fn, topk):
     predictions = predictor(question=questions, context=contexts, topk=topk)
     assert len(predictions) == topk * len(sfs)
 
-    if not os.path.exists(os.path.dirname(out_fn)): 
-        os.makedirs(os.path.abspath(os.path.dirname(out_fn)))
+    check_dir_exists(out_fn)
 
     with open(out_fn, "w") as fout:
         for i, sf in enumerate(sfs):
