@@ -1,6 +1,8 @@
 from transformers import pipeline
 import click
 import torch
+import sys
+sys.path.append(".")
 from utils import extract_examples
 import os
 
