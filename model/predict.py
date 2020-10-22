@@ -10,21 +10,6 @@ import pandas as pd
 # model = "/mnt/scratch/boxiang/projects/abbrev/processed_data/model/finetune_on_ab3p/checkpoint-14500/"
 # tokenizer = "bert-large-cased-whole-word-masking-finetuned-squad"
 
-def extract_examples(ab3p):
-    contexts = []
-    questions = []
-    answers = []
-
-    for i, row in ab3p.iterrows():
-        lf = format_answer(row["lf"])
-        sentence = row["sent"]
-        if lf in sentence:
-            contexts.append(sentence)
-            questions.append("What does %s stand for?" % row["sf"])
-            answers.append({"text": lf})
-    return contexts, questions, answers
-
-
 @click.command()
 @click.option("--model", type=str, help="Path to custom model or name of Huggingface built-in model.")
 @click.option("--tokenizer", type=str, help="Name of Huggingface built-in tokenizer.")
