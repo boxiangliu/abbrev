@@ -54,34 +54,22 @@ def add_token_positions(encodings, answers):
 
 
 
-nrows = 1e5
-ab3p_fn = "../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_res.csv"
-ab3p = pd.read_csv(ab3p_fn, sep="\t", nrows=nrows)
+train_fn = "../processed_data/preprocess/model/train_val/train.tsv"
+val_fn = "../processed_data/preprocess/model/train_val/val.tsv"
+train_data = pd.read_csv(train_fn, sep="\t")
+val_data = pd.read_csv(val_fn, sep="\t")
+
+
+train_contexts, train_questions, train_answers, _ = extract_examples(train_data)
+val_contexts, val_questions, val_answers, _ = extract_examples(val_data)
+
+add_answer_idx(train_answers, train_contexts)
+add_answer_idx(val_answers, val_contexts)
 
 model = BertForQuestionAnswering.from_pretrained(
     'bert-large-cased-whole-word-masking-finetuned-squad')
 tokenizer = BertTokenizerFast.from_pretrained(
     "bert-large-cased-whole-word-masking-finetuned-squad")
-
-
-contexts, questions, answers, _ = extract_examples(ab3p)
-
-train_pct=0.8
-train_div = round(len(contexts) * train_pct)
-train_idx = range(train_div)
-val_idx = range(train_div, len(contexts))
-assert len(train_idx) + len(val_idx) == len(contexts)
-
-train_contexts = contexts[:train_div]
-train_questions = questions[:train_div]
-train_answers = answers[:train_div]
-
-val_contexts = contexts[train_div:]
-val_questions = questions[train_div:]
-val_answers = answers[train_div:]
-
-add_answer_idx(train_answers, train_contexts)
-add_answer_idx(val_answers, val_contexts)
 
 train_encodings = tokenizer(
     train_questions, train_contexts, truncation=True, padding=True)
