@@ -5,6 +5,7 @@ import sys
 sys.path.append(".")
 from utils import extract_examples
 import os
+import pandas as pd
 
 # model = "/mnt/scratch/boxiang/projects/abbrev/processed_data/model/finetune_on_ab3p/checkpoint-14500/"
 # tokenizer = "bert-large-cased-whole-word-masking-finetuned-squad"
@@ -38,7 +39,9 @@ def main(model, tokenizer, data_fn, out_fn, topk):
         tokenizer=tokenizer,
         device=device)
 
-    contexts, questions, answers, sfs = extract_examples(ab3p)
+
+    data = pd.read_csv(data_fn, sep="\t")
+    contexts, questions, answers, sfs = extract_examples(data)
 
     predictions = predictor(question=questions, context=contexts, topk=topk)
     assert len(predictions) == topk * len(sfs)
