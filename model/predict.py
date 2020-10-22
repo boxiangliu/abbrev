@@ -30,7 +30,7 @@ def extract_examples(ab3p):
 @click.option("--data_fn", type=str, help="Path to data tsv file.")
 @click.option("--out_fn", type=str, help="Path to output file.")
 @click.option("--topk", type=int, help="Output top K predictions.", default=5)
-def main(model, tokenizer, data_fn, topk):
+def main(model, tokenizer, data_fn, out_fn, topk):
     device = 0 if torch.cuda.is_available() else -1
 
     predictor = pipeline("question-answering", 
