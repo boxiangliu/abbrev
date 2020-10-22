@@ -32,7 +32,7 @@ def main(model, tokenizer, data_fn, out_fn, topk):
     assert len(predictions) == topk * len(sfs)
 
     if not os.path.exists(os.path.dirname(out_fn)): 
-        os.makedirs(os.path.dirname(out_fn))
+        os.makedirs(os.path.abspath(os.path.dirname(out_fn)))
 
     with open(out_fn, "w") as fout:
         for i, sf in enumerate(sfs):
