@@ -6,6 +6,8 @@ from torch.utils.data import DataLoader
 from transformers import AdamW
 import os
 from transformers import Trainer, TrainingArguments
+from utils import extract_examples
+
 
 out_dir = "../processed_data/model/finetune_on_ab3p/"
 os.makedirs(out_dir, exist_ok=True)
@@ -22,25 +24,6 @@ class Ab3PDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.encodings.input_ids)
 
-
-def format_answer(text):
-    return text.replace("( ", "(").replace(" )", ")").\
-        replace("[ ", "[").replace(" ]", "]")
-
-
-def extract_examples(ab3p):
-    contexts = []
-    questions = []
-    answers = []
-
-    for i, row in ab3p.iterrows():
-        lf = format_answer(row["lf"])
-        sentence = row["sent"]
-        if lf in sentence:
-            contexts.append(sentence)
-            questions.append("What does %s stand for?" % row["sf"])
-            answers.append({"text": lf})
-    return contexts, questions, answers
 
 
 def add_answer_idx(answers, contexts):
@@ -81,7 +64,7 @@ tokenizer = BertTokenizerFast.from_pretrained(
     "bert-large-cased-whole-word-masking-finetuned-squad")
 
 
-contexts, questions, answers = extract_examples(ab3p)
+contexts, questions, answers, _ = extract_examples(ab3p)
 
 train_pct=0.8
 train_div = round(len(contexts) * train_pct)
