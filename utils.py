@@ -12,7 +12,12 @@ def extract_examples(ab3p):
     answers = []
     sf = []
     for i, row in ab3p.iterrows():
-        lf = format_answer(row["lf"])
+        try:
+            lf = format_answer(row["lf"])
+        except:
+            import ipdb; ipdb.set_trace()
+            print(lf)
+
         sentence = row["sent"]
         if lf in sentence:
             contexts.append(sentence)
