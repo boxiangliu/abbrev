@@ -16,7 +16,7 @@ import click
 @click.option("--train_pct", type=float, help="Proportion used for training.", default=0.6)
 @click.option("--val_pct", type=float, help="Proportion used for evaluation.", default=0.2)
 @click.option("--test_pct", type=float, help="Proportion used for testing.", default=0.2)
-def main(nrows, ab3p_fn, out_dir):
+def main(nrows, ab3p_fn, out_dir, train_pct, val_pct, test_pct):
     os.makedirs(out_dir, exist_ok=True)
     ab3p = pd.read_csv(ab3p_fn, sep="\t", nrows=nrows)
 
