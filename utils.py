@@ -14,16 +14,14 @@ def extract_examples(ab3p):
     for i, row in ab3p.iterrows():
         try:
             lf = format_answer(row["lf"])
+            sentence = row["sent"]
+            if lf in sentence:
+                contexts.append(sentence)
+                questions.append("What does %s stand for?" % row["sf"])
+                sf.append(row["sf"])
+                answers.append({"text": lf, "score": row["score"]})
         except:
-            import ipdb; ipdb.set_trace()
-            print(lf)
-
-        sentence = row["sent"]
-        if lf in sentence:
-            contexts.append(sentence)
-            questions.append("What does %s stand for?" % row["sf"])
-            sf.append(row["sf"])
-            answers.append({"text": lf, "score": row["score"]})
+            print(f"Sentence {i} is skipped.")
     return contexts, questions, answers, sf
 
 
