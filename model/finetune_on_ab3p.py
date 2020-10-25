@@ -102,14 +102,14 @@ training_args = TrainingArguments(
     do_eval=True,
     evaluation_strategy="steps",
     output_dir=out_dir,
-    num_train_epochs=3,
-    per_device_train_batch_size=2,
+    num_train_epochs=1,
+    per_device_train_batch_size=8,
     per_device_eval_batch_size=128,
     warmup_steps=500,
     weight_decay=0.01,
     logging_dir=out_dir,
     logging_steps=100,
-    eval_steps=100,
+    eval_steps=10,
     save_steps=500,
     seed=42)
 
@@ -119,6 +119,8 @@ trainer = Trainer(
     train_dataset=train_dataset,
     eval_dataset=val_dataset)
 
+trainer.train()
+model.save_pretrained(f"{out_dir}/checkpoint-final/")
+
 val_res = trainer.evaluate()
 test_res = trainer.predict(test_dataset)
-trainer.train()
