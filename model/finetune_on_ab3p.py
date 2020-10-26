@@ -56,9 +56,10 @@ def add_label_ids(encodings):
                               zip(encodings["start_positions"], encodings["end_positions"])]
 
 
-train_fn = "../processed_data/preprocess/model/train_val/train.tsv"
-val_fn = "../processed_data/preprocess/model/train_val/val.tsv"
-test_fn = "../processed_data/preprocess/model/train_val/test.tsv"
+data_dir = "../processed_data/preprocess/model/data_1M"
+train_fn = f"{data_dir}/train.tsv"
+val_fn = f"{data_dir}/val.tsv"
+test_fn = f"{data_dir}/test.tsv"
 train_data = pd.read_csv(train_fn, sep="\t")
 val_data = pd.read_csv(val_fn, sep="\t")
 test_data = pd.read_csv(test_fn, sep="\t")
@@ -98,18 +99,14 @@ test_dataset = Ab3PDataset(test_encodings)
 
 
 training_args = TrainingArguments(
-    do_train=True,
-    do_eval=True,
-    evaluation_strategy="steps",
     output_dir=out_dir,
     num_train_epochs=1,
     per_device_train_batch_size=8,
-    per_device_eval_batch_size=128,
+    per_device_eval_batch_size=64,
     warmup_steps=500,
     weight_decay=0.01,
     logging_dir=out_dir,
     logging_steps=100,
-    eval_steps=10,
     save_steps=500,
     seed=42)
 
