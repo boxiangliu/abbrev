@@ -23,6 +23,15 @@ bash preprocess/ab3p/run_ab3p.sh
 python3 preprocess/ab3p/summarize_ab3p.py
 
 
+# Reformat MED1250 to FASTA format:
+python3 preprocess/med1250/text2fasta.py 
+
+
+# Extract answerable sentences. 
+# An answerable sentence is one with a short form and long form pair.
+python3 preprocess/med1250/fltr_answerable.py
+
+
 #########
 # Model #
 #########

@@ -25,7 +25,7 @@ def extract_examples(ab3p):
     return contexts, questions, answers, sf
 
 
-def check_dir_exists(fn):
+def create_dir_by_fn(fn):
     out_dir = os.path.abspath(os.path.dirname(fn))
     if not os.path.exists(out_dir): 
         os.makedirs(out_dir)
