@@ -110,6 +110,7 @@ training_args = TrainingArguments(
     save_steps=500,
     seed=42)
 
+
 trainer = Trainer(
     model=model,
     args=training_args,
@@ -119,5 +120,3 @@ trainer = Trainer(
 trainer.train()
 model.save_pretrained(f"{out_dir}/checkpoint-final/")
 
-val_res = trainer.evaluate()
-test_res = trainer.predict(test_dataset)

@@ -30,3 +30,7 @@ python3 preprocess/ab3p/summarize_ab3p.py
 # Create training data:
 python3 model/make_data.py --nrows 1e6 --ab3p_fn ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_res.csv --out_dir ../processed_data/preprocess/model/data_1M/
 python3 model/make_data.py --nrows 1000 --ab3p_fn ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_res.csv --out_dir ../processed_data/preprocess/model/data_1K/
+
+
+# Predictions:
+bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/preprocess/model/predict/data_1M/ ../processed_data/model/finetune_on_ab3p/checkpoint-final/
