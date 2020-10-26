@@ -1,4 +1,6 @@
 from tqdm import tqdm
+import sys
+sys.path.append(".")
 from utils import create_dir_by_fn
 
 med1250_fn = "../processed_data/preprocess/med1250/text2fasta/MED1250_labeled"
