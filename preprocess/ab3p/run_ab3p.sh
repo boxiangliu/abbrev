@@ -8,7 +8,10 @@ in_dir=${in_dir:-""}
 out_dir=${out_dir:-""}
 in_fn=${in_fn:-""}
 out_fn=${out_fn:-""}
-
+echo $in_dir
+echo $out_dir
+echo $in_fn
+echo $out_fn
 
 ab3p(){
     in_fn=$1
