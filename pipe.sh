@@ -54,7 +54,7 @@ bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../
 # Evaluate #
 ############
 # Run Ab3P on MED1250 data:
-bash run_ab3p.sh --in_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled --out_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/evaluate/MED1250/MED1250_ab3p
+bash preprocess/ab3p/run_ab3p.sh --in_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled --out_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/evaluate/MED1250/MED1250_ab3p
 
 ############
 # Analysis #
