@@ -2,8 +2,6 @@ import os
 import re
 import stanza
 from tqdm import tqdm
-med1250_fn = "../data/MED1250/MED1250_labeled"
-out_dir = "../processed_data/preprocess/med1250/text2fasta/"
 
 
 ########
