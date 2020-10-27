@@ -27,12 +27,11 @@ python3 preprocess/ab3p/summarize_ab3p.py
 python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_labeled" --out_fn "../processed_data/preprocess/med1250/text2fasta/MED1250_labeled"
 
 
-
 # Extract answerable sentences. 
 # An answerable sentence is one with a short form and long form pair.
 python3 preprocess/med1250/fltr_answerable.py
 grep -v "^  " ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled > ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled
-/mnt/scratch/boxiang/projects/Ab3P/identify_abbr ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled
+
 
 #########
 # Model #
@@ -51,8 +50,16 @@ bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../
 bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/preprocess/model/predict/squad_ft_data_1M/ bert-large-cased-whole-word-masking-finetuned-squad
 
 
+############
+# Evaluate #
+############
+# Run Ab3P on MED1250 data:
+bash run_ab3p.sh --in_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled --out_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/evaluate/MED1250/MED1250_ab3p
 
 ############
 # Analysis #
 ############
+# TBD:
 python model/analysis/ab3p5bert.py 
+
+
