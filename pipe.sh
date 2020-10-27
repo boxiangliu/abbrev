@@ -24,7 +24,9 @@ python3 preprocess/ab3p/summarize_ab3p.py
 
 
 # Reformat MED1250 to FASTA format:
-python3 preprocess/med1250/text2fasta.py 
+python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_labeled" --out_dir "../processed_data/preprocess/med1250/text2fasta/" --write_labels
+python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_labeled" --out_dir "../processed_data/preprocess/med1250/text2fasta/" --no_labels
+
 
 
 # Extract answerable sentences. 

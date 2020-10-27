@@ -9,7 +9,7 @@ out_fn = "../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled"
 create_dir_by_fn(out_fn)
 
 with open(med1250_fn) as fin, open(out_fn, "w") as fout:
-    for line in med1250_fn:
+    for line in tqdm(fin):
         if line.startswith(">"):
             header = line
         elif line.startswith("  "):
