@@ -23,16 +23,10 @@ import click
 @click.command()
 @click.option("--med1250_fn", type=str, help="Path to the MED1250 file.")
 @click.option("--out_dir", type=str, help="Path to the output directory.")
-@click.option("--write_labels/--no_labels", default=True, help="write_labels: output short form and long form pairs.")
-def main(med1250_fn, out_dir, write_labels):
+def main(med1250_fn, out_dir):
 
     os.makedirs(out_dir, exist_ok=True)
     nlp = stanza.Pipeline("en", processors="tokenize", tokenize_batch_size=64)
-
-    if write_labels:
-        suffix = "labeled"
-    else:
-        suffix = "unlabeled"
 
     with open(med1250_fn, encoding="Windows-1252") as fin, \
             open(f"{out_dir}/MED1250_{suffix}", "w") as fout:
@@ -58,9 +52,8 @@ def main(med1250_fn, out_dir, write_labels):
                         fasta_header = f">{pmid}|{typ}|{i}\n"
                         fout.write(fasta_header)
                         fout.write(sentence + "\n")
-                        if write_labels:
-                            if (sf in sentence) and (lf in sentence):
-                                fout.write(f"  {sf}|{lf}|1\n")
+                        if (sf in sentence) and (lf in sentence):
+                            fout.write(f"  {sf}|{lf}|1\n")
                 sf = "NOT_A_SHORT_FORM"
                 lf = "NOT_A_LONG_FORM"
 
