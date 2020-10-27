@@ -3,6 +3,9 @@ import re
 import stanza
 from tqdm import tqdm
 import click
+import sys
+sys.path.append(".")
+from utils import create_dir_by_fn
 
 ########
 # Help #
@@ -22,14 +25,14 @@ import click
 
 @click.command()
 @click.option("--med1250_fn", type=str, help="Path to the MED1250 file.")
-@click.option("--out_dir", type=str, help="Path to the output directory.")
+@click.option("--out_fn", type=str, help="Path to the output file.")
 def main(med1250_fn, out_dir):
 
-    os.makedirs(out_dir, exist_ok=True)
+    create_dir_by_fn(out_fn)
     nlp = stanza.Pipeline("en", processors="tokenize", tokenize_batch_size=64)
 
     with open(med1250_fn, encoding="Windows-1252") as fin, \
-            open(f"{out_dir}/MED1250_{suffix}", "w") as fout:
+            open(out_fn, "w") as fout:
 
         sf = "NOT_A_SHORT_FORM"
         lf = "NOT_A_LONG_FORM"
