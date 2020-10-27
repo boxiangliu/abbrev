@@ -35,7 +35,7 @@ def main(in_fn, out_fn):
                     abb_type = 2
                 elif re.match("^(IX|IV|V?I{0,3})$", m_text.upper()): # Roman numeral
                     abb_type = 3
-                elif re.match("^[a-z]$", m_text): # only lowercase letter
+                elif re.match("^[a-z]+$", m_text): # only lowercase letter
                     abb_type = 4
                 elif re.search("[pP][<>=≤≥⩽⩾]", m_text): # p-value 
                     abb_type = 5

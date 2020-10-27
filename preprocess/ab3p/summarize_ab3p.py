@@ -48,3 +48,5 @@ df2.to_csv(f"{out_dir}/ab3p_freq.csv", sep="\t", index=False)
 
 
 df2[df2["freq"] <= 10].groupby("freq").sample(n=2, random_state=2).sort_values("freq", ascending=False)
+
+

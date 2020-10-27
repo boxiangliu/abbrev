@@ -60,6 +60,9 @@ def main(med1250_fn, out_fn):
                 sf = "NOT_A_SHORT_FORM"
                 lf = "NOT_A_LONG_FORM"
 
+            elif line.startswith("//"): # Comment lines
+                pass 
+
             else:  # Title or abstract
                 doc = nlp(line.strip())
                 if next_line_is_title:
