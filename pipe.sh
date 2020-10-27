@@ -30,6 +30,8 @@ python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_l
 # Extract answerable sentences. 
 # An answerable sentence is one with a short form and long form pair.
 python3 preprocess/med1250/fltr_answerable.py
+
+# Get the unlabeled dataset:
 grep -v "^  " ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled > ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled
 
 
