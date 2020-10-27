@@ -19,11 +19,6 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-echo $in_dir
-echo $out_dir
-echo $in_fn
-echo $out_fn
-
 ab3p(){
     in_fn=$1
     out_dir=$2
@@ -42,7 +37,7 @@ if [[ ! -z $in_dir ]] && [[ ! -z $out_dir ]]; then
     echo -e "OUTPUT DIR\t${out_dir}"
     mkdir -p $out_dir
 
-    # parallel -j 35 ab3p {} {} ::: `ls $in_dir/pubmed*.txt` ::: $out_dir
+    parallel -j 35 ab3p {} {} ::: `ls $in_dir/pubmed*.txt` ::: $out_dir
 fi
 
 
@@ -50,5 +45,5 @@ if [[ ! -z $in_fn ]] && [[ ! -z $out_fn ]]; then
     echo -e "INPUT FILE\t${in_fn}"
     echo -e "OUTPUT FILE\t${out_fn}"
 
-    # ./identify_abbr $in_fn &> $out_fn
+    ./identify_abbr $in_fn &> $out_fn
 fi
