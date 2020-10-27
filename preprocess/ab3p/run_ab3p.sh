@@ -3,7 +3,6 @@ cd $wd
 
 # in_dir=/mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/sentence/
 # out_dir=/mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/ab3p/run_ab3p/
-mkdir -p $out_dir
 
 in_dir=${in_dir:-""}
 out_dir=${out_dir:-""}
@@ -27,6 +26,7 @@ export -f ab3p
 if [[ ! -z $in_dir ]] && [[ ! -z $out_dir ]]; then
     echo -e "INPUT DIR\t${in_dir}"
     echo -e "OUTPUT DIR\t${out_dir}"
+    mkdir -p $out_dir
 
     # parallel -j 35 ab3p {} {} ::: `ls $in_dir/pubmed*.txt` ::: $out_dir
 fi
