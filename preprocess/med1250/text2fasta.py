@@ -26,7 +26,7 @@ from utils import create_dir_by_fn
 @click.command()
 @click.option("--med1250_fn", type=str, help="Path to the MED1250 file.")
 @click.option("--out_fn", type=str, help="Path to the output file.")
-def main(med1250_fn, out_dir):
+def main(med1250_fn, out_fn):
 
     create_dir_by_fn(out_fn)
     nlp = stanza.Pipeline("en", processors="tokenize", tokenize_batch_size=64)
