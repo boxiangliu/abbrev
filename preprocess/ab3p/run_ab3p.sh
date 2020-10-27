@@ -1,9 +1,3 @@
-wd=/mnt/scratch/boxiang/projects/Ab3P/
-cd $wd
-
-# in_dir=/mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/sentence/
-# out_dir=/mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/ab3p/run_ab3p/
-
 in_dir=${in_dir:-""}
 out_dir=${out_dir:-""}
 in_fn=${in_fn:-""}
@@ -18,6 +12,10 @@ while [ $# -gt 0 ]; do
 
     shift
 done
+
+wd=/mnt/scratch/boxiang/projects/Ab3P/
+cd $wd
+
 
 ab3p(){
     in_fn=$1

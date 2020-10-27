@@ -19,7 +19,7 @@ python3 preprocess/count_abbrev.py
 
 
 # Use Ab3P to extract abbreviations:
-bash preprocess/ab3p/run_ab3p.sh
+bash preprocess/ab3p/run_ab3p.sh --in_dir /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/sentence/ --out_dir /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/ab3p/run_ab3p/
 python3 preprocess/ab3p/summarize_ab3p.py
 
 
