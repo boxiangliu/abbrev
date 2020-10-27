@@ -8,6 +8,17 @@ in_dir=${in_dir:-""}
 out_dir=${out_dir:-""}
 in_fn=${in_fn:-""}
 out_fn=${out_fn:-""}
+
+while [ $# -gt 0 ]; do
+
+    if [[ $1 == *"--"* ]]; then
+        v="${1/--/}"
+        declare $v="$2"
+    fi
+
+    shift
+done
+
 echo $in_dir
 echo $out_dir
 echo $in_fn
