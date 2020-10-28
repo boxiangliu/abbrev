@@ -63,7 +63,6 @@ def fasta2table(f, container):
                 sent = line.strip()
 
         except:
-            import ipdb; ipdb.set_trace()
             print("error")
             print(line)
 
