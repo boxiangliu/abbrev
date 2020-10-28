@@ -9,7 +9,7 @@ from utils import fasta2table
 label_fn = "../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled"
 ab3p_fn = "../processed_data/evaluate/MED1250/MED1250_ab3p"
 bert_ab3p_ft_fn = "../processed_data/evaluate/MED1250/MED1250_bert_ab3p_ft"
-bert_squad_ft_fn = "    "
+bert_squad_ft_fn = "../processed_data/evaluate/MED1250/MED1250_bert_squad_ft"
 
 methods = ["label", "ab3p", "ab3p_ft", "squad_ft"]
 fns = [label_fn, ab3p_fn, bert_ab3p_ft_fn, bert_squad_ft_fn]
