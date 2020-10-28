@@ -26,7 +26,7 @@ def main(model, tokenizer, data_fn, out_fn, topk):
 
 
     data = pd.read_csv(data_fn, sep="\t")
-    contexts, questions, answers, sfs = extract_examples(data)
+    contexts, questions, answers, sfs, pmids, types, sent_nos = extract_examples(data)
 
     predictions = predictor(question=questions, context=contexts, topk=topk)
     assert len(predictions) == topk * len(sfs)
@@ -38,6 +38,10 @@ def main(model, tokenizer, data_fn, out_fn, topk):
             context = contexts[i]
             lf = answers[i]["text"]
             score = answers[i]["score"]
+            pmid = pmids[i]
+            typ = types[i]
+            sent_no = sent_nos[i]
+            fout.write(f">{pmid}|{typ}|{sent_no}\n")
             fout.write(f"{context}\n")
             fout.write(f"  {sf}|{lf}|{score}|ab3p\n")
             for j in range(topk):

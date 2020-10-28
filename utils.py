@@ -12,6 +12,9 @@ def extract_examples(ab3p):
     questions = []
     answers = []
     sf = []
+    pmid = []
+    typ = []
+    sent_no = [] 
     for i, row in ab3p.iterrows():
         try:
             lf = format_answer(row["lf"])
@@ -21,9 +24,12 @@ def extract_examples(ab3p):
                 questions.append("What does %s stand for?" % row["sf"])
                 sf.append(row["sf"])
                 answers.append({"text": lf, "score": row["score"]})
+                pmid.append(row["pmid"])
+                typ.append(row["type"])
+                sent_no.append(row["sent_no"])
         except:
             print(f"Sentence {i} is skipped.")
-    return contexts, questions, answers, sf
+    return contexts, questions, answers, sf, pmid, typ, sent_no
 
 
 def create_dir_by_fn(fn):
@@ -57,6 +63,7 @@ def fasta2table(f, container):
                 sent = line.strip()
 
         except:
+            import ipdb; ipdb.set_trace()
             print("error")
             print(line)
 
