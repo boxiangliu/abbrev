@@ -5,40 +5,6 @@ import re
 label_fn = "../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled"
 ab3p_fn = "../processed_data/evaluate/MED1250/MED1250_ab3p"
 
-def fasta2table(f, container):
-    for line in f:
-        try:
-            if re.match(">[0-9]+\|[at]\|[0-9]+", line):
-                split_line = line.strip().replace(">", "").split("|")
-                pmid = int(split_line[0])
-                typ = split_line[1]
-                sent_no = int(split_line[2])
-
-            elif line.startswith("  "):
-                split_line = line.strip().split("|")
-                container["sf"].append(split_line[0])
-                container["lf"].append(split_line[1])
-                container["score"].append(float(split_line[2]))
-                if len(split_line) == 4:
-                    container["comment"].append(split_line[3])
-                container["pmid"].append(pmid)
-                container["type"].append(typ)
-                container["sent_no"].append(sent_no)
-                container["sent"].append(sent)
-
-            else:
-                sent = line.strip()
-
-        except:
-            print("error")
-            print(line)
-
-    df = pd.DataFrame(container)
-    df = df[~df.duplicated()]
-    return df
-
-
-
 with open(label_fn) as f:
     label = fasta2table(f, defaultdict(list))
 

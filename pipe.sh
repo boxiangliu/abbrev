@@ -34,6 +34,8 @@ python3 preprocess/med1250/fltr_answerable.py
 # Get the unlabeled dataset:
 grep -v "^  " ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled > ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled
 
+# Convert labeled dataset to tsv format:
+python preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled --out_fn ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled.tsv
 
 #########
 # Model #
