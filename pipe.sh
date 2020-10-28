@@ -58,6 +58,8 @@ bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../
 # Run Ab3P on MED1250 data:
 bash preprocess/ab3p/run_ab3p.sh --in_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled --out_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/evaluate/MED1250/MED1250_ab3p
 
+# Run Ab3P-fine-tuned BERT model on MED1250 data:
+
 ############
 # Analysis #
 ############
