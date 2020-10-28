@@ -9,7 +9,7 @@ from utils import fasta2table
 label_fn = "../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled"
 ab3p_fn = "../processed_data/evaluate/MED1250/MED1250_ab3p"
 bert_ab3p_ft_fn = "../processed_data/evaluate/MED1250/MED1250_bert_ab3p_ft"
-bert_squad_ft_fn = "../processed_data/evaluate/MED1250/MED1250_bert_squad_ft"
+bert_squad_ft_fn = "    "
 
 methods = ["label", "ab3p", "ab3p_ft", "squad_ft"]
 fns = [label_fn, ab3p_fn, bert_ab3p_ft_fn, bert_squad_ft_fn]
@@ -40,12 +40,12 @@ for method in methods[1:]:
     recall = intxn.shape[0] / label.shape[0]
     print(f"{method} recall: {recall:.3f}")
 
-pd.merge(label, intxns["ab3p_ft"], indicator=True, how="outer").loc[lambda x: x["_merge"] == "left_only"]
-pd.merge(label, intxns["squad_ft"], indicator=True, how="outer").loc[lambda x: x["_merge"] == "left_only"]
-pd.merge(label, intxns["ab3p"], indicator=True, how="outer").loc[lambda x: x["_merge"] == "left_only"]
+# pd.merge(label, intxns["ab3p_ft"], indicator=True, how="outer").loc[lambda x: x["_merge"] == "left_only"]
+# pd.merge(label, intxns["squad_ft"], indicator=True, how="outer").loc[lambda x: x["_merge"] == "left_only"]
+# pd.merge(label, intxns["ab3p"], indicator=True, how="outer").loc[lambda x: x["_merge"] == "left_only"]
 
 # Which abbreviations aren't captured by Ab3P?
-merged[merged["score_ab3p"].isna()].groupby("comment").nunique()
-merged[merged["score_ab3p"].notna()].groupby("comment").nunique()
+# merged[merged["score_ab3p"].isna()].groupby("comment").nunique()
+# merged[merged["score_ab3p"].notna()].groupby("comment").nunique()
 # Most of the entries that ab3p found has no comments.
 # A lot of missed entries are due to "nch" and "ord"
