@@ -65,11 +65,11 @@ def main(med1250_fn, out_fn):
 
             elif line.startswith("//"): # Comment lines
                 # If the line starts with //, discard the comment 
-                # If the line starts with //!, keep the string after
+                # If the line starts with //!, keep the string afterwards. Except for //!syn
                 # If the line starts with //*, this indicate synonyms, discard the line
                 # It is possible to have two comments for a single lf-sf pair
 
-                if line.startswith("//!"):
+                if line.startswith("//!") and not line.startswith("//!syn"):
                     if sflfs[-1][2] == "none":
                         sflfs[-1][2] = line.strip().replace("//!","")
                     else:
