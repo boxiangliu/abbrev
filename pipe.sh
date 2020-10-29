@@ -25,7 +25,6 @@ python3 preprocess/ab3p/summarize_ab3p.py
 
 # Reformat MED1250 to FASTA format:
 python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_labeled" --out_fn "../processed_data/preprocess/med1250/text2fasta/MED1250_labeled"
-python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_labeled" --out_fn "../processed_data/preprocess/med1250/text2fasta/MED1250_labeled2"
 
 # Extract answerable sentences. 
 # An answerable sentence is one with a short form and long form pair.

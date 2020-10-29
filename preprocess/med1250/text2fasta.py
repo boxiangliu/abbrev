@@ -47,7 +47,7 @@ def main(med1250_fn, out_fn):
             elif line.startswith("  "):  # long form and short form pairs
                 split_line = line.lstrip().split("|")
                 # list: [short form, long form, comment]
-                sflfs.append([split_line[0], split_line[1], "none"])
+                sflfs.append([split_line[0], split_line[1], "none"]) 
 
             elif line == "":  # Article change
                 for typ, sentences in [("t", title_sentences), ("a", abstract_sentences)]:
@@ -57,25 +57,25 @@ def main(med1250_fn, out_fn):
                         fout.write(fasta_header)
                         fout.write(sentence + "\n")
                         for sf, lf, comment in sflfs:
-                            if ((f"({sf})" in sentence) or (f"[{sf}]" in sentence)) \
-                                    and (lf in sentence):
+                            if (sf in sentence) and (lf in sentence):
                                 fout.write(f"  {sf}|{lf}|1|{comment}\n")
                 sf = "NOT_A_SHORT_FORM"
                 lf = "NOT_A_LONG_FORM"
 
-            elif line.startswith("//"):  # Comment lines
-                # If the line starts with //, discard the comment
+
+            elif line.startswith("//"): # Comment lines
+                # If the line starts with //, discard the comment 
                 # If the line starts with //!, keep the string afterwards. Except for //!syn
                 # If the line starts with //*, this indicate synonyms, discard the line
                 # It is possible to have two comments for a single lf-sf pair
 
                 if line.startswith("//!") and not line.startswith("//!syn"):
                     if sflfs[-1][2] == "none":
-                        sflfs[-1][2] = line.strip().replace("//!", "")
+                        sflfs[-1][2] = line.strip().replace("//!","")
                     else:
-                        sflfs[-1][2] += "," + line.strip().replace("//!", "")
+                        sflfs[-1][2] += "," + line.strip().replace("//!","")
                 else:
-                    pass
+                    pass 
 
             else:  # Title or abstract
                 doc = nlp(line.strip())
