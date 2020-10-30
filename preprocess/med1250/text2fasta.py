@@ -58,6 +58,13 @@ def main(med1250_fn, out_fn):
                         fout.write(sentence + "\n")
                         for sf, lf, comment in sflfs:
                             if (sf in sentence) and (lf in sentence):
+
+                                # Two special cases:
+                                if sf == "FS" and "(FS)" not in sentence:
+                                    continue
+                                if sf == "SE" and "(SE)" not in sentence:
+                                    continue
+
                                 fout.write(f"  {sf}|{lf}|1|{comment}\n")
                 sf = "NOT_A_SHORT_FORM"
                 lf = "NOT_A_LONG_FORM"
