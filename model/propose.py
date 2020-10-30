@@ -18,7 +18,7 @@ def main():
             matches = re.findall(
                 " ([\(\[](?>[^\(\)\[\]]+|(?1))*[\)\]])", line.strip())
             for match in matches:
-                match = match[2:-1]
+                match = match[1:-1]
 
                 # extract abbreviation before "," or ";"
                 match = re.split("[,;] ", match)[0]
