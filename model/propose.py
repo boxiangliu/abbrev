@@ -16,7 +16,7 @@ def main():
             sys.stdout.write(line)
             # The regex matches nested parenthesis and brackets
             matches = re.findall(
-                " [\(\[](?>[^\(\)\[\]]+|(?R))*[\)\]]", line.strip())
+                " ([\(\[](?>[^\(\)\[\]]+|(?1))*[\)\]])", line.strip())
             for match in matches:
                 match = match[2:-1]
 
