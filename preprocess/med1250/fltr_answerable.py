@@ -12,10 +12,13 @@ with open(med1250_fn) as fin, open(out_fn, "w") as fout:
     for line in tqdm(fin):
         if line.startswith(">"):
             header = line
+            new_line = True
         elif line.startswith("  "):
             answer = line
-            fout.write(header)
-            fout.write(sentence)
+            if new_line:
+                fout.write(header)
+                fout.write(sentence)
+                new_line = False
             fout.write(answer)
         else:
             sentence = line
