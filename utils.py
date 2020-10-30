@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import re
+from collections import defaultdict
 
 def format_answer(text):
     return text.replace("( ", "(").replace(" )", ")").\
@@ -38,7 +39,7 @@ def create_dir_by_fn(fn):
         os.makedirs(out_dir)
 
 
-def fasta2table(f, container):
+def fasta2table(f, container=defaultdict(list)):
     for line in f:
         try:
             if re.match(">[0-9]+\|[at]\|[0-9]+", line):
