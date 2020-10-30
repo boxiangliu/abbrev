@@ -53,6 +53,9 @@ bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../
 bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/preprocess/model/predict/squad_ft_data_1M/ bert-large-cased-whole-word-masking-finetuned-squad
 
 
+# Propose short forms: 
+cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | python model/propose.py > ../processed_data/model/propose/MED1250_proposal
+
 ############
 # Evaluate #
 ############
