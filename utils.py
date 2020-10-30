@@ -41,7 +41,10 @@ def create_dir_by_fn(fn):
         os.makedirs(out_dir)
 
 
-def fasta2table(f, container=defaultdict(list)):
+def fasta2table(f, container=None):
+    if container == None:
+        container = defaultdict(list)
+
     if hasattr(f, "read"):  # input is a file handle
         pass
     elif isinstance(f, str):
