@@ -4,6 +4,22 @@ import sys
 import regex as re
 
 
+def find(text):
+    # The regex matches nested parenthesis and brackets
+    matches = re.findall(
+        " ([\(\[](?>[^\(\)\[\]]+|(?1))*[\)\]])", text)
+    for match in matches:
+        # Remove enclosing parenthesis
+        match = match[1:-1]
+
+        # recurse to find abbreviation within a match:
+        find(match)
+
+        # extract abbreviation before "," or ";"
+        match = re.split("[,;] ", match)[0]
+        sys.stdout.write(f"  {match}|none|-1|todo\n")
+
+
 def main():
     for line in sys.stdin:
         if line.startswith(">"):  # header line
@@ -14,15 +30,9 @@ def main():
 
         else:  # context line
             sys.stdout.write(line)
-            # The regex matches nested parenthesis and brackets
-            matches = re.findall(
-                " ([\(\[](?>[^\(\)\[\]]+|(?1))*[\)\]])", line.strip())
-            for match in matches:
-                match = match[1:-1]
 
-                # extract abbreviation before "," or ";"
-                match = re.split("[,;] ", match)[0]
-                sys.stdout.write(f"  {match}|none|-1|todo\n")
+            line = line.strip()
+            find(line)
 
 
 if __name__ == "__main__":

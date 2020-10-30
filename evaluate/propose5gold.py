@@ -14,7 +14,12 @@ union = pd.merge(proposal.drop(columns=["lf", "comment"]), gold,
 
 
 # What is missing in the proposals?
-union[union.score_p.isna()]
+missing = union[union.score_p.isna()]
+for i in range(missing.shape[0]):
+    print(missing.iloc[i].sf)
+    print(missing.iloc[i].lf)
+    print(missing.iloc[i].sent)
+    print()
 
 
 proposal
