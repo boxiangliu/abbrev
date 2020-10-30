@@ -2,6 +2,8 @@ import os
 import pandas as pd
 import re
 from collections import defaultdict
+import atexit
+
 
 def format_answer(text):
     return text.replace("( ", "(").replace(" )", ")").\
@@ -15,7 +17,7 @@ def extract_examples(ab3p):
     sf = []
     pmid = []
     typ = []
-    sent_no = [] 
+    sent_no = []
     for i, row in ab3p.iterrows():
         try:
             lf = format_answer(row["lf"])
@@ -35,11 +37,19 @@ def extract_examples(ab3p):
 
 def create_dir_by_fn(fn):
     out_dir = os.path.abspath(os.path.dirname(fn))
-    if not os.path.exists(out_dir): 
+    if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
 
 def fasta2table(f, container=defaultdict(list)):
+    if hasattr(f, "read"):  # input is a file handle
+        pass
+    elif isinstance(f, str):
+        f = open(f, "r")
+        atexit.register(lambda x: x.close(), f)
+    else:
+        raise ValueError("Input format should be a file handle or a string.")
+
     for line in f:
         try:
             if re.match(">[0-9]+\|[at]\|[0-9]+", line):
@@ -70,4 +80,3 @@ def fasta2table(f, container=defaultdict(list)):
     df = pd.DataFrame(container)
     df = df[~df.duplicated()]
     return df
-
