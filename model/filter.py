@@ -6,7 +6,7 @@ for line in sys.stdin:
         sf = line.strip().split("|")[0]
 
         fltr = False
-        m1 = re.match("[-+]?([0-9]*\.[0-9]+|[0-9]+)[ %]", sf)
+        m1 = re.search("[-+]?([0-9]*\.[0-9]+|[0-9]+)[ %]", sf)
         if m1 is not None:
             fltr = True
 
