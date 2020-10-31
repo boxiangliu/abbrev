@@ -35,4 +35,7 @@ for line in sys.stdin:
             fltr = True
 
         if fltr == False:
-            sys.stdout.write(sf + "\n")
+            sys.stdout.write(line)
+
+    else:
+        sys.stdout.write(line)
