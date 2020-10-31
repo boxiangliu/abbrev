@@ -7,8 +7,6 @@ from utils import extract_examples, create_dir_by_fn
 import os
 import pandas as pd
 
-# model = "/mnt/scratch/boxiang/projects/abbrev/processed_data/model/finetune_on_ab3p/checkpoint-14500/"
-# tokenizer = "bert-large-cased-whole-word-masking-finetuned-squad"
 
 @click.command()
 @click.option("--model", type=str, help="Path to custom model or name of Huggingface built-in model.")
@@ -19,14 +17,14 @@ import pandas as pd
 def main(model, tokenizer, data_fn, out_fn, topk):
     device = 0 if torch.cuda.is_available() else -1
 
-    predictor = pipeline("question-answering", 
-        model=model, 
-        tokenizer=tokenizer,
-        device=device)
-
+    predictor = pipeline("question-answering",
+                         model=model,
+                         tokenizer=tokenizer,
+                         device=device)
 
     data = pd.read_csv(data_fn, sep="\t")
-    contexts, questions, answers, sfs, pmids, types, sent_nos = extract_examples(data)
+    contexts, questions, answers, sfs, pmids, types, sent_nos = extract_examples(
+        data, mode="eval")
 
     predictions = predictor(question=questions, context=contexts, topk=topk)
     assert len(predictions) == topk * len(sfs)

@@ -10,7 +10,8 @@ def format_answer(text):
         replace("[ ", "[").replace(" ]", "]")
 
 
-def extract_examples(ab3p):
+def extract_examples(df, mode="train"):
+    assert mode in ["train", "eval"], "mode must be train or eval."
     contexts = []
     questions = []
     answers = []
@@ -18,11 +19,11 @@ def extract_examples(ab3p):
     pmid = []
     typ = []
     sent_no = []
-    for i, row in ab3p.iterrows():
+    for i, row in df.iterrows():
         try:
             lf = format_answer(row["lf"])
             sentence = row["sent"]
-            if lf in sentence:
+            if (lf in sentence) or mode == "eval":
                 contexts.append(sentence)
                 questions.append("What does %s stand for?" % row["sf"])
                 sf.append(row["sf"])

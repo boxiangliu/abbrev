@@ -48,7 +48,7 @@ python3 model/make_data.py --nrows 1000 --ab3p_fn ../processed_data/preprocess/a
 python3 model/finetune_on_ab3p.py
 
 
-# Predictions:
+# Predictions on gold-standard short form:
 bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/preprocess/model/predict/ab3p_ft_data_1M/ ../processed_data/model/finetune_on_ab3p/checkpoint-final/
 bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/preprocess/model/predict/squad_ft_data_1M/ bert-large-cased-whole-word-masking-finetuned-squad
 
@@ -56,6 +56,9 @@ bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../
 # Propose short forms: 
 cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | python model/propose.py > ../processed_data/model/propose/MED1250_proposal
 cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | python model/propose.py | python model/filter.py > ../processed_data/model/propose/MED1250_filtered
+python preprocess/med1250/fasta2table.py --in_fn ../processed_data/model/propose/MED1250_filtered --out_fn ../processed_data/model/propose/MED1250_filtered.tsv
+
+
 
 ############
 # Evaluate #
@@ -63,15 +66,22 @@ cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | pytho
 # Run Ab3P on MED1250 data:
 bash preprocess/ab3p/run_ab3p.sh --in_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/med1250/fltr_answerable/MED1250_unlabeled --out_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/evaluate/MED1250/MED1250_ab3p
 
-# Run Ab3P-fine-tuned BERT model on MED1250 data:
+# Run Ab3P-fine-tuned BERT model on MED1250 data using gold-standard SF:
 python model/predict.py --model ../processed_data/model/finetune_on_ab3p/checkpoint-final/ --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert_ab3p_ft
 
-# Run SQuAD-fine-tuned BERT model on MED1250 data: 
+# Run SQuAD-fine-tuned BERT model on MED1250 data using gold-standard SF: 
 python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-squad --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert_squad_ft
 
 
 # Evaluate short form proposal:
 python evaluate/proposal5gold.py
+
+
+# Run Ab3P-fine-tuned BERT model on MED1250 data using proposed SF:
+python model/predict.py --model ../processed_data/model/finetune_on_ab3p/checkpoint-final/ --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/model/propose/MED1250_filtered.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert-ab3p-ft_proposed
+
+# Run SQuAD-fine-tuned BERT model on MED1250 data using proposed SF: 
+python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-squad --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/model/propose/MED1250_filtered.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert-squad-ft_proposed
 
 
 ############
