@@ -55,6 +55,7 @@ bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../
 
 # Propose short forms: 
 cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | python model/propose.py > ../processed_data/model/propose/MED1250_proposal
+cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | python model/propose.py | python model/filter.py > ../processed_data/model/propose/MED1250_filtered
 
 ############
 # Evaluate #
@@ -67,6 +68,10 @@ python model/predict.py --model ../processed_data/model/finetune_on_ab3p/checkpo
 
 # Run SQuAD-fine-tuned BERT model on MED1250 data: 
 python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-squad --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert_squad_ft
+
+
+# Evaluate short form proposal:
+python evaluate/proposal5gold.py
 
 
 ############
