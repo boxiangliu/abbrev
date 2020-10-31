@@ -13,6 +13,6 @@ for line in sys.stdin:
             pass
             # sys.stdout.write(sf + "\n")
 
-        m3 = re.match("^(IX|IV|V?I{0,3})$", m_text.upper())
+        m3 = re.match("^(IX|IV|V?I{0,3})$", sf.upper())
         if m3 is not None:
             sys.stdout.write(sf + "\n")
