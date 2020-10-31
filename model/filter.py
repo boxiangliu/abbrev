@@ -26,7 +26,7 @@ for line in sys.stdin:
         if len(m5) > 0:
             fltr = True
 
-        m6 = re.search("[<>=≤≥⩽⩾±]", sf):
+        m6 = re.search("[<>=≤≥⩽⩾±]", sf)
         if m6 is not None:
             sys.stdout.write(sf + "\n")
 
