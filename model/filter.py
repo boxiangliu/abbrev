@@ -30,5 +30,9 @@ for line in sys.stdin:
         if m6 is not None:
             fltr = True
 
+        m7 = re.search("[a-g]$", sf)
+        if m7 is not None:
+            fltr = True
+
         if fltr == False:
             sys.stdout.write(sf + "\n")
