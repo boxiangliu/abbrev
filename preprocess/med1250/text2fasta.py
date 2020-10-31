@@ -59,10 +59,12 @@ def main(med1250_fn, out_fn):
                         for sf, lf, comment in sflfs:
                             if (sf in sentence) and (lf in sentence):
 
-                                # Two special cases:
+                                # Special cases:
                                 if sf == "FS" and "(FS)" not in sentence:
                                     continue
                                 if sf == "SE" and "(SE)" not in sentence:
+                                    continue
+                                if sf == "p" and "(p)" not in sentence:
                                     continue
 
                                 fout.write(f"  {sf}|{lf}|1|{comment}\n")

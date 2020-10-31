@@ -31,10 +31,10 @@ python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_l
 cat ../processed_data/preprocess/med1250/text2fasta/MED1250_labeled | python3 preprocess/med1250/fltr_answerable.py > ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled
 
 # Get the unlabeled dataset:
-grep -v "^  " ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled > ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled
+grep -v "^  " ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled > ../processed_data/preprocess/med1250/fltr_answerable/MED1250_unlabeled
 
 # Convert labeled dataset to tsv format:
-python preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled --out_fn ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled.tsv
+python preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled --out_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv
 
 #########
 # Model #
@@ -60,13 +60,13 @@ cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | pytho
 # Evaluate #
 ############
 # Run Ab3P on MED1250 data:
-bash preprocess/ab3p/run_ab3p.sh --in_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/med1250/fltr_answeralbe/MED1250_unlabeled --out_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/evaluate/MED1250/MED1250_ab3p
+bash preprocess/ab3p/run_ab3p.sh --in_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/med1250/fltr_answerable/MED1250_unlabeled --out_fn /mnt/scratch/boxiang/projects/abbrev/processed_data/evaluate/MED1250/MED1250_ab3p
 
 # Run Ab3P-fine-tuned BERT model on MED1250 data:
-python model/predict.py --model ../processed_data/model/finetune_on_ab3p/checkpoint-final/ --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert_ab3p_ft
+python model/predict.py --model ../processed_data/model/finetune_on_ab3p/checkpoint-final/ --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert_ab3p_ft
 
 # Run SQuAD-fine-tuned BERT model on MED1250 data: 
-python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-squad --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/preprocess/med1250/fltr_answeralbe/MED1250_labeled.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert_squad_ft
+python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-squad --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert_squad_ft
 
 
 ############
