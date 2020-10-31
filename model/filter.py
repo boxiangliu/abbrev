@@ -1,5 +1,6 @@
 import sys
-import re
+import regex as re
+
 for line in sys.stdin:
     if line.startswith("  "):
         sf = line.strip().split("|")[0]
@@ -21,4 +22,9 @@ for line in sys.stdin:
 
         m4 = re.search("[A-Za-z]", sf)
         if m4 is None:
+            pass
+            # sys.stdout.write(sf + "\n")
+
+        m5 = re.findall(" ([\(\[](?>[^\(\)\[\]]+|(?1))*[\)\]])", sf)
+        if len(m5) > 0:
             sys.stdout.write(sf + "\n")
