@@ -7,6 +7,6 @@ for line in sys.stdin:
         if m1 is not None:
             sys.stdout.write(sf + "\n")
 
-        m2 = re.match("[0-9]+$")
+        m2 = re.match("[0-9]+$", sf)
         if m2 is not None:
             sys.stdout.write(sf + "\n")
