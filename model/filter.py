@@ -5,4 +5,4 @@ for line in sys.stdin:
         sf = line.strip().split("|")[0]
         match = re.match("[-+]?([0-9]*\.[0-9]+|[0-9]+)[ %]?", sf)
         if match is not None:
-            sys.stdout.write(sf + "/n")
+            sys.stdout.write(sf + "\n")
