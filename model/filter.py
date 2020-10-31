@@ -11,12 +11,12 @@ for line in sys.stdin:
             print(1)
             fltr = True
 
-        m2 = re.match("[0-9]+$", sf)
+        m2 = re.search("^[0-9]+$", sf)
         if m2 is not None:
             print(2)
             fltr = True
 
-        m3 = re.match("^(IX|IV|V?I{0,3})$", sf.upper())
+        m3 = re.search("^(IX|IV|V?I{0,3})$", sf.upper())
         if m3 is not None:
             print(3)
             fltr = True
@@ -36,7 +36,7 @@ for line in sys.stdin:
             print(6)
             fltr = True
 
-        m7 = re.match("[a-g]$", sf)
+        m7 = re.search("^[a-g]$", sf)
         if m7 is not None:
             print(7)
             fltr = True
