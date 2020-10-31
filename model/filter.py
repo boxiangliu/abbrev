@@ -28,8 +28,7 @@ for line in sys.stdin:
 
         m6 = re.search("[<>=≤≥⩽⩾±]", sf)
         if m6 is not None:
-            sys.stdout.write(sf + "\n")
+            fltr = True
 
         if fltr == False:
-            pass
-            # sys.stdout.write(sf + "\n")
+            sys.stdout.write(sf + "\n")
