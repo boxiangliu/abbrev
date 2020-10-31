@@ -19,6 +19,6 @@ for line in sys.stdin:
             pass
             # sys.stdout.write(sf + "\n")
 
-        m4 = re.match("[A-Za-z]", sf)
+        m4 = re.search("[A-Za-z]", sf)
         if m4 is None:
             sys.stdout.write(sf + "\n")
