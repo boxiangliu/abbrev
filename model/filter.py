@@ -34,5 +34,5 @@ for line in sys.stdin:
         if m7 is not None:
             fltr = True
 
-        if fltr == False:
+        if fltr == True:
             sys.stdout.write(sf + "\n")
