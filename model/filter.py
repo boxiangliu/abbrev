@@ -36,7 +36,7 @@ for line in sys.stdin:
             print(6)
             fltr = True
 
-        m7 = re.search("[a-g]$", sf)
+        m7 = re.match("[a-g]$", sf)
         if m7 is not None:
             print(7)
             fltr = True
