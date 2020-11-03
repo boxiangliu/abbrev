@@ -65,7 +65,7 @@ python preprocess/med1250/fasta2table.py --in_fn ../processed_data/model/propose
 # Ken performed reranking: /mnt/big/kwc/pubmed/Boxiang/rerank
 
 # Remove punctuations from the left-edge of the reranked results: 
-cat /mnt/big/kwc/pubmed/Boxiang/rerank/MED1250_bert-ab3p-ft_filtered.rerank | python3 model/rm_punc.py > ../processed_data/model/rm_punc/
+cat /mnt/big/kwc/pubmed/Boxiang/rerank/MED1250_bert-ab3p-ft_filtered.rerank | python3 model/rm_punc.py > ../processed_data/model/rm_punc/MED1250_bert-ab3p-ft_filtered_rerank_rm-punc
 
 
 ############

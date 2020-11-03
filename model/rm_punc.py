@@ -1,6 +1,7 @@
 #!/user/bin/env python3
 import re
 import string
+import sys
 for line in sys.stdin:
     if line.startswith("best:"):
         split_line = line.split("\t")
