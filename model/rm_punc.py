@@ -8,8 +8,8 @@ for line in sys.stdin:
         answer = split_line[3]
         split_answer = answer.split("|")
         lf = split_answer[1]
-        if re.match(f"[{string.punctuaction}]", lf):
-            lf = re.sub(f"^[{string.punctuaction}]+", "", lf)
+        if re.match(f"[{string.punctuation}]", lf):
+            lf = re.sub(f"^[{string.punctuation}]+", "", lf)
             split_answer[1] = lf
             answer = "|".join(split_answer)
             split_line[3] = answer
