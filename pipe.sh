@@ -106,7 +106,8 @@ cut -f1 ../processed_data/model/propose/MED1250_proposal.tsv | /mnt/big/kwc/pubm
 
 
 # Get frequency:
-cut -f1 
+cut -f1 ../processed_data/model/propose/MED1250_proposal.tsv | python model/freq.py > ../processed_data/model/propose/MED1250_proposal_freq
+
 ############
 # Analysis #
 ############

@@ -32,6 +32,10 @@ squad_ft_proposal_rerank_rmPunc_fn = f"{rm_punc_dir}/MED1250_bert-squad-ft_propo
 # Reject scores: 
 reject_score_fn = "../processed_data/model/propose/MED1250_proposal_reject-score"
 
+# Short form frequency:
+freq_fn = "../processed_data/model/propose/MED1250_proposal_freq"
+
+
 # Out dir:
 out_dir = "../processed_data/evaluate/med1250/"
 os.makedirs(out_dir, exist_ok=True)
@@ -81,11 +85,6 @@ def pr(scores, labels):
             recalls.append(recall)
             scores.append(score)
             
-            if recall < 0.41 and recall > 0.36: 
-                print("\t".join(["score", str(score), \
-                    "precision", str(precision), \
-                    "recall", str(recall), \
-                    "correct / total", str(n_correct_predictions) + " / " + str(n_total_predictions)]))
     return precisions, recalls, scores
 
 
@@ -98,6 +97,8 @@ def plot_metrics(metrics):
 
 
 reject_score = pd.read_csv(reject_score_fn, sep="\t").drop_duplicates()
+freq = pd.read_csv(freq_fn, sep="\t").drop_duplicates()
+
 
 methods = ["label", "ab3p", "ab3p_ft_proposal", "squad_ft_proposal",
            "ab3p_ft_proposal_rerank", "squad_ft_proposal_rerank", 
@@ -129,9 +130,14 @@ for method, fn in zip(methods, fns):
     dfs[method] = df
 
     if "proposal" in method:
-        df = pd.merge(df, reject_score[["sf", "reject_score"]], how="inner", on="sf")
-        df = df.loc[lambda x: x["reject_score"] > -2]
-    dfs[f"{method}_reject"] = df
+        df_reject = pd.merge(df, reject_score[["sf", "reject_score"]], how="inner", on="sf")
+        df_reject = df_reject.loc[lambda x: x["reject_score"] > -2]
+        dfs[f"{method}_reject"] = df_reject
+
+        df_freq = pd.merge(df, freq, how="inner", on="sf")
+        df_freq = df_freq.loc[lambda x: x["freq"] > 0]
+        dfs[f"{method}_freq"] = df_freq
+
 
 
 ########
@@ -152,7 +158,8 @@ for method in ["ab3p", # "ab3p_ft_proposal", "squad_ft_proposal",
                # "ab3p_ft_proposal_rerank_rmPunc", 
                "squad_ft_proposal_rerank_rmPunc",
                # "ab3p_ft_proposal_rerank_rmPunc_reject", 
-               "squad_ft_proposal_rerank_rmPunc_reject"]:
+               "squad_ft_proposal_rerank_rmPunc_reject",
+               "squad_ft_proposal_rerank_rmPunc_freq"]:
     if ("rerank" in method) or (method == "ab3p"):
         df = dfs[method]
         intxn = pd.merge(label, df, how="outer", on=[
