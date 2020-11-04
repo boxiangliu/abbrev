@@ -66,7 +66,7 @@ def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
                         n_selected += 1
                         pred_text = prediction["answer"]
                         pred_score = prediction["score"]
-                        fout.write(f"  {sf}|{pred_text}|{pred_score}|bqaf{n_selected+1}|orig{j+1}\n")
+                        fout.write(f"  {sf}|{pred_text}|{pred_score}|bqaf{n_selected}|orig{j+1}\n")
 
                     j += 1
             else:
