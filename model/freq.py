@@ -5,7 +5,7 @@ freq = dict()
 with open(freq_fn) as f:
     for line in f:
         split_line = line.strip().split("\t")
-        freq[line[0]] = int(line[1])
+        freq[split_line[0]] = int(split_line[1])
 
 for line in sys.stdin:
     out_line = []
