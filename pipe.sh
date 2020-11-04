@@ -13,9 +13,6 @@ bash preprocess/split_sent.sh
 # Extract abbreviations: 
 bash preprocess/extract_abbrev.sh
 
-# Propose possible abbreviations:
-bash preprocess/propose.sh ../processed_data/preprocess/sentence/ ../processed_data/preprocess/propose/
-
 # Count the occurrances of each abbreviation:
 python3 preprocess/count_abbrev.py
 
@@ -23,6 +20,11 @@ python3 preprocess/count_abbrev.py
 # Use Ab3P to extract abbreviations:
 bash preprocess/ab3p/run_ab3p.sh --in_dir /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/sentence/ --out_dir /mnt/scratch/boxiang/projects/abbrev/processed_data/preprocess/ab3p/run_ab3p/
 python3 preprocess/ab3p/summarize_ab3p.py
+
+
+# Propose possible abbreviations:
+bash preprocess/propose.sh ../processed_data/preprocess/sentence/ ../processed_data/preprocess/propose/
+bash preprocess/fasta2table.sh ../processed_data/preprocess/propose/ ../processed_data/preprocess/propose/
 
 
 # Reformat MED1250 to FASTA format:
