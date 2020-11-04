@@ -60,9 +60,9 @@ def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
                 while n_selected < topk:
                     prediction = predictions[i * beam_size + j]
 
-                    if prediction not in selected_predictions:
+                    if prediction["answer"] not in selected_predictions:
 
-                        selected_predictions.add(prediction)
+                        selected_predictions.add(prediction["answer"])
                         n_selected += 1
                         pred_text = prediction["answer"]
                         pred_score = prediction["score"]
