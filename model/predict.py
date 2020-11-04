@@ -14,7 +14,7 @@ import pandas as pd
 @click.option("--data_fn", type=str, help="Path to data tsv file.")
 @click.option("--out_fn", type=str, help="Path to output file.")
 @click.option("--topk", type=int, help="Output top K predictions.", default=5)
-@click.opiton("--nonredundant", is_flag=True, help="Only output non-redundant predictions.")
+@click.option("--nonredundant", is_flag=True, help="Only output non-redundant predictions.")
 def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
     device = 0 if torch.cuda.is_available() else -1
 
@@ -51,7 +51,7 @@ def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
             sent_no = sent_nos[i]
             fout.write(f">{pmid}|{typ}|{sent_no}\n")
             fout.write(f"{context}\n")
-            fout.write(f"  {sf}|{lf}|{score}|ab3p\n")
+            fout.write(f"  {sf}|{lf}|{score}|input\n")
 
             if nonredundant:
                 selected_predictions = set()
