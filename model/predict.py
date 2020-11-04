@@ -14,7 +14,8 @@ import pandas as pd
 @click.option("--data_fn", type=str, help="Path to data tsv file.")
 @click.option("--out_fn", type=str, help="Path to output file.")
 @click.option("--topk", type=int, help="Output top K predictions.", default=5)
-def main(model, tokenizer, data_fn, out_fn, topk):
+@click.opiton("--nonredundant", is_flag=True, help="Only output non-redundant predictions.")
+def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
     device = 0 if torch.cuda.is_available() else -1
 
     predictor = pipeline("question-answering",
@@ -26,8 +27,17 @@ def main(model, tokenizer, data_fn, out_fn, topk):
     contexts, questions, answers, sfs, pmids, types, sent_nos = extract_examples(
         data, mode="eval")
 
-    predictions = predictor(question=questions, context=contexts, topk=topk)
-    assert len(predictions) == topk * len(sfs)
+    if nonredundant:
+        # Get more and select the non-redundant topK.
+        beam_size = topk * 10
+        predictions = predictor(
+            question=questions, context=contexts, topk=beam_size)
+        assert len(predictions) == beam_size * len(sfs)
+
+    else:
+        predictions = predictor(
+            question=questions, context=contexts, topk=topk)
+        assert len(predictions) == topk * len(sfs)
 
     create_dir_by_fn(out_fn)
 
@@ -42,11 +52,29 @@ def main(model, tokenizer, data_fn, out_fn, topk):
             fout.write(f">{pmid}|{typ}|{sent_no}\n")
             fout.write(f"{context}\n")
             fout.write(f"  {sf}|{lf}|{score}|ab3p\n")
-            for j in range(topk):
-                prediction = predictions[i * topk + j]
-                pred_text = prediction["answer"]
-                pred_score = prediction["score"]
-                fout.write(f"  {sf}|{pred_text}|{pred_score}|bqaf{j+1}\n")
+
+            if nonredundant:
+                selected_predictions = set()
+                n_selected = 0
+                j = 0
+                while n_selected < topk:
+                    prediction = predictions[i * beam_size + j]
+
+                    if prediction not in selected_predictions:
+
+                        selected_predictions.add(prediction)
+                        n_selected += 1
+                        pred_text = prediction["answer"]
+                        pred_score = prediction["score"]
+                        fout.write(f"  {sf}|{pred_text}|{pred_score}|bqaf{n_selected+1}|orig{j+1}\n")
+
+                    j += 1
+            else:
+                for j in range(topk):
+                    prediction = predictions[i * topk + j]
+                    pred_text = prediction["answer"]
+                    pred_score = prediction["score"]
+                    fout.write(f"  {sf}|{pred_text}|{pred_score}|bqaf{j+1}\n")
 
 
 if __name__ == "__main__":
