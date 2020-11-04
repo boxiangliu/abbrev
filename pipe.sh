@@ -13,6 +13,8 @@ bash preprocess/split_sent.sh
 # Extract abbreviations: 
 bash preprocess/extract_abbrev.sh
 
+# Propose possible abbreviations:
+bash preprocess/propose.sh ../processed_data/preprocess/sentence/ ../processed_data/preprocess/propose/
 
 # Count the occurrances of each abbreviation:
 python3 preprocess/count_abbrev.py
