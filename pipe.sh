@@ -22,20 +22,18 @@ bash preprocess/ab3p/run_ab3p.sh --in_dir /mnt/scratch/boxiang/projects/abbrev/p
 python3 preprocess/ab3p/summarize_ab3p.py
 
 
-# Propose possible abbreviations:
-bash preprocess/propose.sh ../processed_data/preprocess/sentence/ ../processed_data/preprocess/propose/
-bash preprocess/fasta2table.sh ../processed_data/preprocess/propose/ ../processed_data/preprocess/propose/
-
-
 # Reformat MED1250 to FASTA format:
 python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_labeled" --out_fn "../processed_data/preprocess/med1250/text2fasta/MED1250_labeled"
+
 
 # Extract answerable sentences. 
 # An answerable sentence is one with a short form and long form pair.
 cat ../processed_data/preprocess/med1250/text2fasta/MED1250_labeled | python3 preprocess/med1250/fltr_answerable.py > ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled
 
+
 # Get the unlabeled dataset:
 grep -v "^  " ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled > ../processed_data/preprocess/med1250/fltr_answerable/MED1250_unlabeled
+
 
 # Convert labeled dataset to tsv format:
 python preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled --out_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv
@@ -52,7 +50,7 @@ python3 model/make_data.py --nrows 1000 --ab3p_fn ../processed_data/preprocess/a
 python3 model/finetune_on_ab3p.py
 
 
-# Predictions on gold-standard short form:
+# Predictions on ab3p-identified short form:
 bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/preprocess/model/predict/ab3p_ft_data_1M/ ../processed_data/model/finetune_on_ab3p/checkpoint-final/
 bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/preprocess/model/predict/squad_ft_data_1M/ bert-large-cased-whole-word-masking-finetuned-squad
 
@@ -63,6 +61,17 @@ python preprocess/med1250/fasta2table.py --in_fn ../processed_data/model/propose
 
 cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | python model/propose.py | python model/filter.py > ../processed_data/model/propose/MED1250_filtered
 python preprocess/med1250/fasta2table.py --in_fn ../processed_data/model/propose/MED1250_filtered --out_fn ../processed_data/model/propose/MED1250_filtered.tsv
+
+
+# Propose possible short forms:
+bash preprocess/propose.sh ../processed_data/preprocess/sentence/ ../processed_data/preprocess/propose/
+bash preprocess/fasta2table.sh ../processed_data/preprocess/propose/ ../processed_data/preprocess/propose/
+head -n 1 ../processed_data/preprocess/propose/pubmed19n0001.tsv > ../processed_data/preprocess/propose_cat/propose.tsv
+cat ../processed_data/preprocess/propose/pubmed*.tsv | grep -v -P "sf\tlf\tscore" >> ../processed_data/preprocess/propose_cat/propose.tsv
+
+# Predict on proposed short forms:
+bash model/predict_run.sh ../processed_data/preprocess/propose_cat/propose.tsv ../processed_data/preprocess/model/predict/propose_cat/ bert-large-cased-whole-word-masking-finetuned-squad 5000
+
 
 
 ############
