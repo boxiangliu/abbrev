@@ -7,10 +7,15 @@ with open(freq_fn) as f:
         split_line = line.strip().split("\t")
         freq[split_line[0]] = split_line[1]
 
-for line in sys.stdin:
+sys.stdout.write("sf\tfreq\n")
+
+for i, line in enumerate(sys.stdin):
+    if i == 1 and line.startswith("sf"):
+        continue
+
     out_line = []
     sf = line.strip()
     out_line.append(sf)
-    out_line.append(freq[sf])
+    out_line.append(freq[sf] if sf in freq else "0")
     out_line = "\t".join(out_line)
     sys.stdout.write(out_line + "\n")
