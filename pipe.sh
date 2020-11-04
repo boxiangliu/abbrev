@@ -61,13 +61,6 @@ cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | pytho
 python preprocess/med1250/fasta2table.py --in_fn ../processed_data/model/propose/MED1250_filtered --out_fn ../processed_data/model/propose/MED1250_filtered.tsv
 
 
-# Rerank: 
-# Ken performed reranking: /mnt/big/kwc/pubmed/Boxiang/rerank
-
-# Remove punctuations from the left-edge of the reranked results: 
-cat /mnt/big/kwc/pubmed/Boxiang/rerank/MED1250_bert-ab3p-ft_filtered.rerank | python3 model/rm_punc.py > ../processed_data/model/rm_punc/MED1250_bert-ab3p-ft_filtered_rerank_rm-punc
-
-
 ############
 # Evaluate #
 ############
@@ -98,6 +91,22 @@ python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-sq
 python evaluate/med1250.py
 
 
+# Rerank: 
+# Ken performed reranking: /mnt/big/kwc/pubmed/Boxiang/rerank
+
+# Remove punctuations from the left-edge of the reranked results: 
+for f in `ls /mnt/big/kwc/pubmed/Boxiang/rerank/*rerank`; do
+    base=`basename $f .rerank`
+    cat $f | python3 model/rm_punc.py > ../processed_data/model/rm_punc/${base}_rm-punc
+done
+
+
+# Rejection modeling: 
+cut -f1 ../processed_data/model/propose/MED1250_proposal.tsv | /mnt/big/kwc/pubmed/Boxiang/score_proposals.sh | sed "s/score/reject_score/" > ../processed_data/model/propose/MED1250_proposal_reject-score
+
+
+# Get frequency:
+cut -f1 
 ############
 # Analysis #
 ############

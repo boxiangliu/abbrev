@@ -9,27 +9,33 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+import numpy as np
+
 
 label_fn = "../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled"
 ab3p_fn = "../processed_data/evaluate/MED1250/MED1250_ab3p"
-bert_ab3p_ft_fn = "../processed_data/evaluate/MED1250/MED1250_bert-ab3p-ft"
-bert_squad_ft_fn = "../processed_data/evaluate/MED1250/MED1250_bert-squad-ft"
-bert_ab3p_ft_proposal_fn = "../processed_data/evaluate/MED1250/MED1250_bert-ab3p-ft_proposal"
-bert_squad_ft_proposal_fn = "../processed_data/evaluate/MED1250/MED1250_bert-squad-ft_proposal"
+ab3p_ft_proposal_fn = "../processed_data/evaluate/MED1250/MED1250_bert-ab3p-ft_proposal"
+squad_ft_proposal_fn = "../processed_data/evaluate/MED1250/MED1250_bert-squad-ft_proposal"
 
 # Reranked:
 ken_dir = "/mnt/big/kwc/pubmed/Boxiang/rerank/"
-bert_ab3p_ft_rerank_fn = f"{ken_dir}/MED1250_bert-ab3p-ft.rerank"
-bert_squad_ft_rerank_fn = f"{ken_dir}/MED1250_bert-squad-ft.rerank"
-bert_ab3p_ft_proposal_rerank_fn = f"{ken_dir}/MED1250_bert-ab3p-ft_proposal.rerank"
-bert_squad_ft_proposal_rerank_fn = f"{ken_dir}/MED1250_bert-squad-ft_proposal.rerank"
-bert_ab3p_ft_filtered_rerank_fn = f"{ken_dir}/MED1250_bert-ab3p-ft_filtered.rerank"
-bert_squad_ft_filtered_rerank_fn = f"{ken_dir}/MED1250_bert-squad-ft_filtered.rerank"
+ab3p_ft_proposal_rerank_fn = f"{ken_dir}/MED1250_bert-ab3p-ft_proposal.rerank"
+squad_ft_proposal_rerank_fn = f"{ken_dir}/MED1250_bert-squad-ft_proposal.rerank"
 
+
+# Removed punctuation from the left edge:
+rm_punc_dir = "../processed_data/model/rm_punc/"
+ab3p_ft_proposal_rerank_rmPunc_fn = f"{rm_punc_dir}/MED1250_bert-ab3p-ft_proposal_rm-punc"
+squad_ft_proposal_rerank_rmPunc_fn = f"{rm_punc_dir}/MED1250_bert-squad-ft_proposal_rm-punc"
+
+
+# Reject scores: 
+reject_score_fn = "../processed_data/model/propose/MED1250_proposal_reject-score"
+
+# Out dir:
 out_dir = "../processed_data/evaluate/med1250/"
 os.makedirs(out_dir, exist_ok=True)
 
-import numpy as np
 
 def logit2prob(logit):
     odds = np.exp(logit)
@@ -69,19 +75,36 @@ def pr(scores, labels):
         if score >= 0:
             n_total_predictions += 1
             n_correct_predictions += 1 if label == 1 else 0
-            precisions.append(n_correct_predictions / n_total_predictions)
-            recalls.append(n_correct_predictions / n_truths)
+            precision = n_correct_predictions / n_total_predictions
+            precisions.append(precision)
+            recall = n_correct_predictions / n_truths
+            recalls.append(recall)
             scores.append(score)
-
+            
+            if recall < 0.41 and recall > 0.36: 
+                print("\t".join(["score", str(score), \
+                    "precision", str(precision), \
+                    "recall", str(recall), \
+                    "correct / total", str(n_correct_predictions) + " / " + str(n_total_predictions)]))
     return precisions, recalls, scores
 
 
+def plot_metrics(metrics):
+    plt.close()
+    plt.ion()
+    sns.lineplot(data=metrics, x="recall", y="precision", hue="method")
+    plt.show()
 
-methods = ["label", "ab3p", "ab3p_ft", "squad_ft", "ab3p_ft_proposal", "squad_ft_proposal",
-           "ab3p_ft_rerank", "squad_ft_rerank", "ab3p_ft_proposal_rerank", "squad_ft_proposal_rerank"]
-fns = [label_fn, ab3p_fn, bert_ab3p_ft_fn, bert_squad_ft_fn,
-       bert_ab3p_ft_proposal_fn, bert_squad_ft_proposal_fn, bert_ab3p_ft_rerank_fn,
-       bert_squad_ft_rerank_fn, bert_ab3p_ft_proposal_rerank_fn, bert_squad_ft_proposal_rerank_fn]
+
+
+reject_score = pd.read_csv(reject_score_fn, sep="\t").drop_duplicates()
+
+methods = ["label", "ab3p", "ab3p_ft_proposal", "squad_ft_proposal",
+           "ab3p_ft_proposal_rerank", "squad_ft_proposal_rerank", 
+           "ab3p_ft_proposal_rerank_rmPunc", "squad_ft_proposal_rerank_rmPunc"]
+fns = [label_fn, ab3p_fn, ab3p_ft_proposal_fn, squad_ft_proposal_fn, 
+        ab3p_ft_proposal_rerank_fn, squad_ft_proposal_rerank_fn, 
+        ab3p_ft_proposal_rerank_rmPunc_fn, squad_ft_proposal_rerank_rmPunc_fn]
 assert len(methods) == len(fns)
 
 
@@ -105,6 +128,11 @@ for method, fn in zip(methods, fns):
 
     dfs[method] = df
 
+    if "proposal" in method:
+        df = pd.merge(df, reject_score[["sf", "reject_score"]], how="inner", on="sf")
+        df = df.loc[lambda x: x["reject_score"] > -2]
+    dfs[f"{method}_reject"] = df
+
 
 ########
 # Help #
@@ -115,8 +143,16 @@ for method, fn in zip(methods, fns):
 label = dfs["label"]
 intxns = dict()
 metrics = defaultdict(list)
-for method in ["ab3p", "ab3p_ft_proposal", "squad_ft_proposal",
-               "ab3p_ft_proposal_rerank", "squad_ft_proposal_rerank"]:
+for method in ["ab3p", # "ab3p_ft_proposal", "squad_ft_proposal",
+               # "ab3p_ft_proposal_reject", "squad_ft_proposal_reject",
+               # "ab3p_ft_proposal_rerank", 
+               # "squad_ft_proposal_rerank",
+               # "ab3p_ft_proposal_rerank_reject", 
+               # "squad_ft_proposal_rerank_reject",
+               # "ab3p_ft_proposal_rerank_rmPunc", 
+               "squad_ft_proposal_rerank_rmPunc",
+               # "ab3p_ft_proposal_rerank_rmPunc_reject", 
+               "squad_ft_proposal_rerank_rmPunc_reject"]:
     if ("rerank" in method) or (method == "ab3p"):
         df = dfs[method]
         intxn = pd.merge(label, df, how="outer", on=[
@@ -152,15 +188,16 @@ for method in ["ab3p", "ab3p_ft_proposal", "squad_ft_proposal",
             metrics["precision"].append(precision)
 
 metrics = pd.DataFrame(metrics)
-
-plt.close()
-plt.ion()
-sns.lineplot(data=metrics, x="recall", y="precision", hue="method")
-plt.show()
+plot_metrics(metrics)
 plt.savefig(f"{out_dir}/pr_curve.pdf")
 
 
-intxns["squad_ft_proposal_rerank"].loc[lambda x: x["score_label"] == 0][["sf", "lf", "score_pred", "sent"]].to_csv(f"{out_dir}/squad_ft_proposal_rerank_overgenerated", sep="\t", index=False)
-intxns["squad_ft_proposal_rerank"].loc[lambda x: x["score_pred"] == -999][["sf", "lf", "score_pred", "sent"]].to_csv(f"{out_dir}/squad_ft_proposal_rerank_missing", sep="\t", index=False)
-intxns["squad_ft_proposal_rerank"].loc[lambda x: (x["score_pred"] != -999) & (x["score_label"] != 0)][["sf", "lf", "score_pred", "sent"]].to_csv(f"{out_dir}/squad_ft_proposal_rerank_correct", sep="\t", index=False)
-intxns["squad_ft_proposal_rerank"].to_csv(f"{out_dir}/squad_ft_proposal_rerank", sep="\t", index=False)
+
+intxns["squad_ft_proposal_rerank_rmPunc"].loc[lambda x: x["score_pred"] == -999][["sf", "lf", "score_pred", "sent"]].to_csv(f"{out_dir}/squad_ft_proposal_rerank_rmPunc_missing", sep="\t", index=False)
+intxns["squad_ft_proposal_rerank_rmPunc"].loc[lambda x: (x["score_pred"] != -999) & (x["score_label"] != 0)][["sf", "lf", "score_pred", "sent"]].to_csv(f"{out_dir}/squad_ft_proposal_rerank_rmPunc_correct", sep="\t", index=False)
+intxns["squad_ft_proposal_rerank_rmPunc"].to_csv(f"{out_dir}/squad_ft_proposal_rmPunc_rerank", sep="\t", index=False)
+
+
+# Distinguish over-generation (SF does not exist in gold) and 
+# mismatch (SF exists in gold but LF does not match gold). 
+intxns["squad_ft_proposal_rerank_rmPunc"].groupby(["pmid", "type", "sent_no", "sent", "sf"]).agg(score_label=("score_label", "max")).reset_index().loc[lambda x: x["score_label"] == 0][["sf", "sent"]].to_csv(f"{out_dir}/squad_ft_proposal_rerank_rmPunc_overgenerated", sep="\t", index=False)
