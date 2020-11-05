@@ -38,6 +38,9 @@ grep -v "^  " ../processed_data/preprocess/med1250/fltr_answerable/MED1250_label
 # Convert labeled dataset to tsv format:
 python preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled --out_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv
 
+
+# Get training PMIDs:
+cut -f5 ../processed_data/preprocess/propose/pubmed19n000?.tsv | uniq | python preprocess/trng_PMIDs.py --med1250_PMID ../data/MED1250/MED1250_PMID --BioText_PMID ../data/BioText/BioText_PMID > test
 #########
 # Model #
 #########
@@ -79,7 +82,7 @@ for fn in `ls ../processed_data/preprocess/propose/pubmed*.tsv`; do
 done
 
 # Count (SF, LF, rank) frequencies:
-cat ../processed_data/preprocess/model/predict/propose/pubmed19n0003.fasta | python model/3D_freq.py --topk 5 > test
+cat ../processed_data/preprocess/model/predict/propose/pubmed19n0*.fasta | python model/3D_freq.py --topk 5 > ../processed_data/model/3D_freq/3D_freq.tsv
 
 
 ############
