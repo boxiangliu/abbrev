@@ -40,7 +40,7 @@ python preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/me
 
 
 # Get training PMIDs:
-cut -f5 ../processed_data/preprocess/propose/pubmed19n000?.tsv | uniq | python preprocess/trng_PMIDs.py --med1250_PMID ../data/MED1250/MED1250_PMID --BioText_PMID ../data/BioText/BioText_PMID > test
+cut -f5 ../processed_data/preprocess/propose/pubmed19n000?.tsv | uniq | python preprocess/trng_PMIDs.py --med1250_pmid ../data/MED1250/MED1250_PMID --biotext_pmid ../data/BioText/BioText_PMID > test
 #########
 # Model #
 #########
