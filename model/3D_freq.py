@@ -5,7 +5,7 @@ from tqdm import tqdm
 freq = Counter()
 for line in tqdm(sys.stdin):
 
-    if line.starstwith("  "):
+    if line.startswith("  "):
         split_line = line.strip().split("|")
         comment = split_line[3]
         if comment == "input":

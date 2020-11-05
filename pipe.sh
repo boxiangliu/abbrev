@@ -78,6 +78,10 @@ for fn in `ls ../processed_data/preprocess/propose/pubmed*.tsv`; do
         --nonredundant --topk 20 --data_fn $fn --out_fn ../processed_data/preprocess/model/predict/propose/${base}.fasta"
 done
 
+# Count (SF, LF, rank) frequencies:
+cat ../processed_data/preprocess/model/predict/propose/pubmed19n0003.fasta | python model/3D_freq.py > test
+
+
 ############
 # Evaluate #
 ############
