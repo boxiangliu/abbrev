@@ -7,6 +7,7 @@ import click
 @click.option("--topk", type=int, default=5, help="Only output top K results.")
 def main(topk):
     freq = Counter()
+    sys.stderr.write("Calculating 3D frequency...\n")
     for line in tqdm(sys.stdin):
 
         if line.startswith("  "):
@@ -21,7 +22,8 @@ def main(topk):
 
             freq[(sf, lf, rank)] += 1
 
-    for k, freq in freq.items():
+    sys.stderr.write("Writing to output...\n")
+    for k, freq in tqdm(freq.items()):
         sf = k[0]
         lf = k[1]
         rank = k[2]
