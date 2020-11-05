@@ -6,7 +6,7 @@ sys.path.append(".")
 from utils import extract_examples, create_dir_by_fn
 import os
 import pandas as pd
-
+from collections import OrderedDict
 
 @click.command()
 @click.option("--model", type=str, help="Path to custom model or name of Huggingface built-in model.")
@@ -27,20 +27,15 @@ def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
     contexts, questions, answers, sfs, pmids, types, sent_nos = extract_examples(
         data, mode="eval")
 
-    if nonredundant:
-        # Get more and select the non-redundant topK.
-        beam_size = topk * 10
-        predictions = predictor(
-            question=questions, context=contexts, topk=beam_size)
-        assert len(predictions) == beam_size * len(sfs)
+    sys.stderr.write("Getting predictions...")
 
-    else:
-        predictions = predictor(
-            question=questions, context=contexts, topk=topk)
-        assert len(predictions) == topk * len(sfs)
+    predictions = predictor(
+        question=questions, context=contexts, topk=topk)
+    assert len(predictions) == topk * len(sfs)
 
     create_dir_by_fn(out_fn)
 
+    sys.stderr.write("Writing to file...")
     with open(out_fn, "w") as fout:
         for i, sf in enumerate(sfs):
             context = contexts[i]
@@ -54,27 +49,30 @@ def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
             fout.write(f"  {sf}|{lf}|{score}|input\n")
 
             if nonredundant:
-                selected_predictions = set()
+                selected_predictions = OrderedDict()
                 n_selected = 0
-                j = 0
-                while n_selected < topk:
-                    prediction = predictions[i * beam_size + j]
+                for j in range(topk):
+                    prediction = predictions[i * topk + j]
+                    pred_text = prediction["answer"]
+                    pred_score = prediction["score"]
 
-                    if prediction["answer"] not in selected_predictions:
-
-                        selected_predictions.add(prediction["answer"])
+                    if pred_text not in selected_predictions:
                         n_selected += 1
-                        pred_text = prediction["answer"]
-                        pred_score = prediction["score"]
-                        fout.write(f"  {sf}|{pred_text}|{pred_score}|bqaf{n_selected}|orig{j+1}\n")
+                        selected_predictions[pred_text] = [sf, pred_text, pred_score, f"bqaf{n_selected}", pred_score, f"orig{j+1}"]
+                    else:
+                        selected_predictions[pred_text][4] += pred_score
 
-                    j += 1
+                for l in selected_predictions.values():
+                    out_line = "|".join([str(x) for x in l])
+                    fout.write("  " + out_line + "\n")
+
             else:
                 for j in range(topk):
                     prediction = predictions[i * topk + j]
                     pred_text = prediction["answer"]
                     pred_score = prediction["score"]
                     fout.write(f"  {sf}|{pred_text}|{pred_score}|bqaf{j+1}\n")
+
 
 
 if __name__ == "__main__":
