@@ -40,7 +40,9 @@ python preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/me
 
 
 # Get training PMIDs:
-cut -f5 ../processed_data/preprocess/propose/pubmed19n000?.tsv | uniq | python preprocess/trng_PMIDs.py --med1250_pmid ../data/MED1250/MED1250_PMID --biotext_pmid ../data/BioText/BioText_PMID > test
+cut -f5 ../processed_data/preprocess/propose/pubmed19n0*.tsv | uniq | python preprocess/trng_PMIDs.py --med1250_pmid ../data/MED1250/MED1250_PMID --biotext_pmid ../data/BioText/BioText_PMID > ../processed_data/preprocess/trng_PMIDs/trng_PMID
+
+
 #########
 # Model #
 #########
@@ -54,8 +56,8 @@ python3 model/finetune_on_ab3p.py
 
 
 # Predictions on ab3p-identified short form:
-bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/preprocess/model/predict/ab3p_ft_data_1M/ ../processed_data/model/finetune_on_ab3p/checkpoint-final/
-bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/preprocess/model/predict/squad_ft_data_1M/ bert-large-cased-whole-word-masking-finetuned-squad
+bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/model/predict/ab3p_ft_data_1M/ ../processed_data/model/finetune_on_ab3p/checkpoint-final/
+bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/model/predict/squad_ft_data_1M/ bert-large-cased-whole-word-masking-finetuned-squad
 
 
 # Propose short forms: 
@@ -69,20 +71,19 @@ python preprocess/med1250/fasta2table.py --in_fn ../processed_data/model/propose
 # Propose possible short forms:
 bash preprocess/propose.sh ../processed_data/preprocess/sentence/ ../processed_data/preprocess/propose/
 bash preprocess/fasta2table.sh ../processed_data/preprocess/propose/ ../processed_data/preprocess/propose/
-head -n 1 ../processed_data/preprocess/propose/pubmed19n0001.tsv > ../processed_data/preprocess/propose_cat/propose.tsv
-cat ../processed_data/preprocess/propose/pubmed*.tsv | grep -v -P "sf\tlf\tscore" >> ../processed_data/preprocess/propose_cat/propose.tsv
+
 
 # Predict on proposed short forms:
 for fn in `ls ../processed_data/preprocess/propose/pubmed*.tsv`; do
     base=`basename $fn .tsv`; echo $base
     sbatch -p  1080Ti,1080Ti_mlong,1080Ti_slong,2080Ti,2080Ti_mlong,M40x8,M40x8_mlong,M40x8_slong,P100,TitanXx8,TitanXx8_mlong,TitanXx8_slong,V100_DGX,V100x8 \
-        --gres=gpu:1 --job-name=$base --output=../processed_data/preprocess/model/predict/propose/${base}.log \
+        --gres=gpu:1 --job-name=$base --output=../processed_data/model/predict/propose/${base}.log \
         --wrap "python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-squad --tokenizer bert-large-cased-whole-word-masking-finetuned-squad \
-        --nonredundant --topk 20 --data_fn $fn --out_fn ../processed_data/preprocess/model/predict/propose/${base}.fasta"
+        --nonredundant --topk 20 --data_fn $fn --out_fn ../processed_data/model/predict/propose/${base}.fasta"
 done
 
 # Count (SF, LF, rank) frequencies:
-cat ../processed_data/preprocess/model/predict/propose/pubmed19n0*.fasta | python model/3D_freq.py --topk 5 > ../processed_data/model/3D_freq/3D_freq.tsv
+cat ../processed_data/model/predict/propose/pubmed19n0*.fasta | python model/3D_freq.py --topk 5 | sort -k1,1 -k2,2 -k3,3 > ../processed_data/model/3D_freq/3D_freq_sort.tsv
 
 
 ############
