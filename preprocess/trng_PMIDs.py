@@ -9,11 +9,11 @@ from tqdm import tqdm
 def main(med1250_pubmedID, BioText_pubmedID):
     eval_pubmedID = set()
 
-    with open(med1250_pubmedID) as f:
+    with open(med1250_PMID) as f:
         for line in f:
             eval_pubmedID.add(line.strip())
 
-    with open(BioText_pubmedID) as f:
+    with open(BioText_PMID) as f:
         for line in f:
             eval_pubmedID.add(line.strip())
 
