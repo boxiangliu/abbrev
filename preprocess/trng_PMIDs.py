@@ -13,7 +13,7 @@ def main(med1250_pmid, biotext_pmid):
         for line in f:
             eval_pmid.add(line.strip())
 
-    with open(BioText_pmid) as f:
+    with open(biotext_pmid) as f:
         for line in f:
             eval_pmid.add(line.strip())
 
