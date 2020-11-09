@@ -1,5 +1,6 @@
 import sys
 import regex as re
+import click
 
 def filter(sf):
     fltr = False
