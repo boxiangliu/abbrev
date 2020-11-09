@@ -54,6 +54,7 @@ def main(ftype, column):
 
 
         elif ftype == "table":
+            print(line)
             sf = line.strip().split("\t")[column]
 
             fltr = filter(sf)
