@@ -32,6 +32,9 @@ def filter(sf):
     if m7 is not None:
         fltr = True
 
+    if " " in sf:
+        fltr = True
+
     return fltr
 
 
