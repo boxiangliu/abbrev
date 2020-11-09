@@ -60,9 +60,12 @@ bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../
 bash model/predict_run.sh ../processed_data/preprocess/model/data_1M/val.tsv ../processed_data/model/predict/squad_ft_data_1M/ bert-large-cased-whole-word-masking-finetuned-squad
 
 
-# Propose short forms: 
+# Propose short forms:
 cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | python model/propose.py > ../processed_data/model/propose/MED1250_proposal
 python preprocess/med1250/fasta2table.py --in_fn ../processed_data/model/propose/MED1250_proposal --out_fn ../processed_data/model/propose/MED1250_proposal.tsv
+cat ../processed_data/preprocess/med1250/text2fasta/MED1250_labeled | python model/propose.py > ../processed_data/model/propose/MED1250_all_proposal
+python preprocess/med1250/fasta2table.py --in_fn ../processed_data/model/propose/MED1250_all_proposal --out_fn ../processed_data/model/propose/MED1250_all_proposal.tsv
+
 
 cat ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled | python model/propose.py | python model/filter.py > ../processed_data/model/propose/MED1250_filtered
 python preprocess/med1250/fasta2table.py --in_fn ../processed_data/model/propose/MED1250_filtered --out_fn ../processed_data/model/propose/MED1250_filtered.tsv
@@ -112,6 +115,17 @@ python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-sq
 python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-squad --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --data_fn ../processed_data/model/propose/MED1250_proposal.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert-squad-ft_proposal
 
 
+# Run SQuAD-fine-tuned BERT model on MED1250 data using proposed SF,
+# but only keep non-redundant LF-SF pairs.
+# Also using all proposed (without fltr_answerable).
+python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-squad --tokenizer bert-large-cased-whole-word-masking-finetuned-squad --nonredundant --topk 20 --data_fn ../processed_data/model/propose/MED1250_all_proposal.tsv --out_fn ../processed_data/evaluate/MED1250/MED1250_bert-squad-ft_all_proposal_nonredundant
+
+
+# Ken performed reranking: 
+# Results are in /mnt/big/kwc/pubmed/Boxiang/forR/med1250/part3/MED1250_bert-squad-ft_all_proposal_nonredundant.best
+cat /mnt/big/kwc/pubmed/Boxiang/forR/med1250/part3/MED1250_bert-squad-ft_all_proposal_nonredundant.best | python model/filter.py --ftype table --column 3 > test
+
+
 # Compare various models on the MED1250 dataset:
 python evaluate/med1250.py
 
@@ -132,6 +146,8 @@ cut -f1 ../processed_data/model/propose/MED1250_proposal.tsv | /mnt/big/kwc/pubm
 
 # Get frequency:
 cut -f1 ../processed_data/model/propose/MED1250_proposal.tsv | python model/freq.py > ../processed_data/model/propose/MED1250_proposal_freq
+
+
 
 ############
 # Analysis #
