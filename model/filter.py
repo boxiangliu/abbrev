@@ -62,3 +62,7 @@ def main(ftype, column):
             if fltr == False:
                 sys.stdout.write(line)
 
+
+
+if __name__ == "__main__":
+    main()
