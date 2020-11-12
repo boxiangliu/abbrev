@@ -64,7 +64,7 @@ for line in sys.stdin:
     if line.startswith("text:"):
         # Take care of last chunk
         pairs = propose_sf_lf(text, exclude)
-        for pair in pairs:
+        for sf, lf in pairs:
             sys.stdout.write(f"{sf}\t{lf}\n")
 
         # Start the next chunk

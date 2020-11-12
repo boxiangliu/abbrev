@@ -51,8 +51,8 @@ cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 pre
 cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2neg.py | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/train/neg
 
 # Create evaluation examples for character RNN:
-bash preprocess/bioc/bioc2pos.sh ../data/BioC/ ../processed_data/preprocess/character_rnn/data/eval/
-bash preprocess/bioc/bioc2neg.py 
+bash preprocess/bioc/bioc2eval.sh ../data/BioC/ ../processed_data/preprocess/character_rnn/data/eval/
+
 
 #########
 # Model #
