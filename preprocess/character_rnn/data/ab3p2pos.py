@@ -26,3 +26,6 @@ def main(exclude):
             sys.stdout.write(out_line + "\n")
 
     sys.stderr.write(f"Excluded {n} pairs.")
+
+if __name__ == '__main__':
+    main()
