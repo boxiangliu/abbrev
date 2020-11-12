@@ -36,17 +36,22 @@ grep -v "^  " ../processed_data/preprocess/med1250/fltr_answerable/MED1250_label
 
 
 # Convert labeled dataset to tsv format:
-python preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled --out_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv
+python3 preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled --out_fn ../processed_data/preprocess/med1250/fltr_answerable/MED1250_labeled.tsv
 
 
 # Get training PMIDs:
-cut -f5 ../processed_data/preprocess/propose/pubmed19n0*.tsv | uniq | python preprocess/trng_PMIDs.py --med1250_pmid ../data/MED1250/MED1250_PMID --biotext_pmid ../data/BioText/BioText_PMID > ../processed_data/preprocess/trng_PMIDs/trng_PMID
+cut -f5 ../processed_data/preprocess/propose/pubmed19n0*.tsv | uniq | python3 preprocess/trng_PMIDs.py --med1250_pmid ../data/MED1250/MED1250_PMID --biotext_pmid ../data/BioText/BioText_PMID > ../processed_data/preprocess/trng_PMIDs/trng_PMID
 
+
+# Converting Bio-C formatted XML to txt format:
+python3 preprocess/bioc/bioc.sh
 
 # Create training examples for character RNN:
-cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2pos.py | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/pos
-cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2neg.py | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/neg
+cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2pos.py | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/train/pos
+cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2neg.py | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/train/neg
 
+# Create evaluation examples for character RNN:
+bash preprocess/bioc/bioc2pos.sh ../data/BioC/ ../processed_data/preprocess/character_rnn/data/eval/
 #########
 # Model #
 #########
