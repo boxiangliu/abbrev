@@ -25,6 +25,9 @@ squad_ft_proposal_rerank_fn = f"{ken_dir}/MED1250_bert-squad-ft_proposal.rerank"
 # Best
 # A new method from Ken
 squad_ft_proposal_best_fn = "/mnt/big/kwc/pubmed/Boxiang/forR/med1250/part3/MED1250_bert-squad-ft_all_proposal_nonredundant.best"
+squad_ft_proposal_best_reject_fn = "../processed_data/evaluate/MED1250/MED1250_bert-squad-ft_all_proposal_nonredundant.best.filtered"
+squad_ft_proposal_best_fit_fn = "/mnt/big/kwc/pubmed/Boxiang/forR/med1250/part3/MED1250_bert-squad-ft_all_proposal_nonredundant.best.0.fit2"
+
 
 # Removed punctuation from the left edge:
 rm_punc_dir = "../processed_data/model/rm_punc/"
@@ -106,11 +109,11 @@ freq = pd.read_csv(freq_fn, sep="\t").drop_duplicates()
 methods = ["label", "ab3p", "ab3p_ft_proposal", "squad_ft_proposal",
            "ab3p_ft_proposal_rerank", "squad_ft_proposal_rerank",
            "ab3p_ft_proposal_rerank_rmPunc", "squad_ft_proposal_rerank_rmPunc",
-           "squad_ft_proposal_best"]
+           "squad_ft_proposal_best", "squad_ft_proposal_best_reject", "squad_ft_proposal_best_fit"]
 fns = [label_fn, ab3p_fn, ab3p_ft_proposal_fn, squad_ft_proposal_fn,
        ab3p_ft_proposal_rerank_fn, squad_ft_proposal_rerank_fn,
        ab3p_ft_proposal_rerank_rmPunc_fn, squad_ft_proposal_rerank_rmPunc_fn,
-       squad_ft_proposal_best_fn]
+       squad_ft_proposal_best_fn, squad_ft_proposal_best_reject_fn, squad_ft_proposal_best_fit_fn]
 assert len(methods) == len(fns)
 
 
@@ -126,7 +129,11 @@ for method, fn in zip(methods, fns):
         df = df.assign(pmid=df["PMID"].apply(lambda x: int(x.split("|")[0])), 
             type=df["PMID"].apply(lambda x: x.split("|")[1]),
             sent_no=df["PMID"].apply(lambda x: int(x.split("|")[2]))).drop(columns="PMID")
-        df.rename(columns={"newScore": "score", "SF": "sf", "LF": "lf", "newRank": "comment"}, inplace=True)
+        if "fit" in method:
+            df.rename(columns={"fit": "score", "SF": "sf", "LF": "lf", "newRank": "comment"}, inplace=True)
+            df = df[["pmid", "type", "sent_no", "score", "sf", "lf", "comment"]]
+        else: 
+            df.rename(columns={"newScore": "score", "SF": "sf", "LF": "lf", "newRank": "comment"}, inplace=True)
 
     elif "ft" in method:
         df = fasta2table(fn)
@@ -171,7 +178,9 @@ for method in ["ab3p",  # "ab3p_ft_proposal", "squad_ft_proposal",
                # "ab3p_ft_proposal_rerank_rmPunc_reject",
                # "squad_ft_proposal_rerank_rmPunc_reject",
                # "squad_ft_proposal_rerank_rmPunc_freq",
-               "squad_ft_proposal_best"]:
+               "squad_ft_proposal_best",
+               "squad_ft_proposal_best_reject",
+               "squad_ft_proposal_best_fit"]:
     if ("rerank" in method) or (method == "ab3p") or ("best" in method):
         df = dfs[method]
         if "best" in method:
@@ -230,7 +239,7 @@ temp3.loc[temp3["comment_pred"].isna()]
 intxns["squad_ft_proposal_rerank_rmPunc"].loc[lambda x: x["score_pred"] == -999][["sf", "lf", "score_pred", "sent"]].to_csv(f"{out_dir}/squad_ft_proposal_rerank_rmPunc_missing", sep="\t", index=False)
 intxns["squad_ft_proposal_rerank_rmPunc"].loc[lambda x: (x["score_pred"] != -999) & (x["score_label"] != 0)][["sf", "lf", "score_pred", "sent"]].to_csv(f"{out_dir}/squad_ft_proposal_rerank_rmPunc_correct", sep="\t", index=False)
 intxns["squad_ft_proposal_rerank_rmPunc"].to_csv(f"{out_dir}/squad_ft_proposal_rmPunc_rerank", sep="\t", index=False)
-
+intxns["squad_ft_proposal_best_fit"].to_csv(f"{out_dir}/squad_ft_proposal_best_fit", sep="\t", index=False)
 
 # Distinguish over-generation (SF does not exist in gold) and
 # mismatch (SF exists in gold but LF does not match gold).

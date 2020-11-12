@@ -11,7 +11,7 @@ os.makedirs(out_dir, exist_ok=True)
 container = defaultdict(list)
 for fn in glob.glob(f"{in_dir}/pubmed*.out"):
     print(f"INPUT\t{fn}")
-    with open(fn, encoding="ISO-8859-1") as fin:
+    with open(fn, encoding="utf-8") as fin:
         for line in fin:
             try:
                 if re.match(">[0-9]+\|[at]\|[0-9]+", line):
@@ -39,14 +39,9 @@ for fn in glob.glob(f"{in_dir}/pubmed*.out"):
 
 df = pd.DataFrame(container)
 df.to_csv(f"{out_dir}/ab3p_res.csv", sep="\t", index=False)
-# df = pd.read_csv(f"{out_dir}/ab3p_res.csv", sep="\t")
 
-df2 = df.groupby(["sf", "lf"]).agg(freq=pd.NamedAgg(
-    "score", "count")).sort_values("freq", ascending=False).reset_index()
+
+df2 = df.groupby(["sf", "lf", "score"]).agg(freq=("score", "count"), pmids=("pmid", "nunique")).sort_values("freq", ascending=False).reset_index()
 df2.to_csv(f"{out_dir}/ab3p_freq.csv", sep="\t", index=False)
-# df2 = pd.read_csv(f"{out_dir}/ab3p_freq.csv", sep="\t")
-
-
-df2[df2["freq"] <= 10].groupby("freq").sample(n=2, random_state=2).sort_values("freq", ascending=False)
 
 

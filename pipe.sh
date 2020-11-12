@@ -43,6 +43,8 @@ python preprocess/med1250/fasta2table.py --in_fn ../processed_data/preprocess/me
 cut -f5 ../processed_data/preprocess/propose/pubmed19n0*.tsv | uniq | python preprocess/trng_PMIDs.py --med1250_pmid ../data/MED1250/MED1250_PMID --biotext_pmid ../data/BioText/BioText_PMID > ../processed_data/preprocess/trng_PMIDs/trng_PMID
 
 
+# Create training examples for character RNN:
+cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/ab3p2pos.py > ../processed_data/preprocess/ab3p2pos/
 #########
 # Model #
 #########
@@ -123,7 +125,7 @@ python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-sq
 
 # Ken performed reranking: 
 # Results are in /mnt/big/kwc/pubmed/Boxiang/forR/med1250/part3/MED1250_bert-squad-ft_all_proposal_nonredundant.best
-cat /mnt/big/kwc/pubmed/Boxiang/forR/med1250/part3/MED1250_bert-squad-ft_all_proposal_nonredundant.best | python model/filter.py --ftype table --column 3 > test
+cat /mnt/big/kwc/pubmed/Boxiang/forR/med1250/part3/MED1250_bert-squad-ft_all_proposal_nonredundant.best | python model/filter.py --ftype table --column 3 > ../processed_data/evaluate/MED1250/MED1250_bert-squad-ft_all_proposal_nonredundant.best.filtered
 
 
 # Compare various models on the MED1250 dataset:
