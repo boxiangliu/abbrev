@@ -8,4 +8,5 @@ for f in `find $in_dir -name "*_bioc_gold.txt"`; do
     echo "FILE    $f"
     base=`basename $f _bioc_gold.txt`
     cat $f | python3 preprocess/bioc/bioc2pos.py > $out_dir/${base}_pos
+    cat $f | python3 preprocess/bioc/bioc2neg.py > $out_dir/${base}_neg
 done
