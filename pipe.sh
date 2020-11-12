@@ -52,6 +52,8 @@ cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 pre
 
 # Create evaluation examples for character RNN:
 bash preprocess/bioc/bioc2pos.sh ../data/BioC/ ../processed_data/preprocess/character_rnn/data/eval/
+
+
 #########
 # Model #
 #########
