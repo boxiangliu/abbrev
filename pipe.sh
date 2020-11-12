@@ -45,7 +45,7 @@ cut -f5 ../processed_data/preprocess/propose/pubmed19n0*.tsv | uniq | python pre
 
 # Create training examples for character RNN:
 cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2pos.py > ../processed_data/preprocess/character_rnn/data/pos
-
+cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2neg.py | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/neg
 
 #########
 # Model #

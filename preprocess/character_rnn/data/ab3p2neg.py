@@ -11,8 +11,9 @@ for line in sys.stdin:
 
 
 random.seed(42)
-shuf_idx1 = random.sample(range(sf), len(sf))
-shuf_idx2 = random.sample(range(lf), len(lf))
+len_ = len(sf)
+shuf_idx1 = random.sample(range(len_), len_)
+shuf_idx2 = random.sample(range(len_), len_)
 for i, j in zip(shuf_idx1, shuf_idx2):
     if i != j:
         sys.stdout.write(f"{sf[i]}\t{lf[j]}\n")
