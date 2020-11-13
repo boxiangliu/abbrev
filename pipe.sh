@@ -100,6 +100,10 @@ done
 cat ../processed_data/model/predict/propose/pubmed19n0*.fasta | python model/3D_freq.py --topk 5 | sort -k1,1 -k2,2 -k3,3 > ../processed_data/model/3D_freq/3D_freq_sort.tsv
 
 
+# Train character RNN:
+python3 model/character_rnn/train.py 
+
+
 ############
 # Evaluate #
 ############
