@@ -44,10 +44,10 @@ cut -f5 ../processed_data/preprocess/propose/pubmed19n0*.tsv | uniq | python3 pr
 
 
 # Converting Bio-C formatted XML to txt format:
-python3 preprocess/bioc/bioc.sh
+python3 preprocess/bioc/xml_to_txt.sh
 
 # Create training examples for character RNN:
-cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2pos.py --exclude | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/train/pos
+cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2pos.py --exclude ../processed_data/preprocess/character_rnn/data/eval/Ab3P_pos,../processed_data/preprocess/character_rnn/data/eval/medstract_pos,../processed_data/preprocess/character_rnn/data/eval/bioadi_pos,../processed_data/preprocess/character_rnn/data/eval/SH_pos | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/train/pos
 cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2neg.py | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/train/neg
 
 # Create evaluation examples for character RNN:
