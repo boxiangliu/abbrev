@@ -35,7 +35,7 @@ def randomTrainingExample():
     return category, line, category_tensor, line_tensor
 
 
-def train(category_tensor, line_tensor, rnn):
+def train(category_tensor, line_tensor, rnn, optimizer, criterion):
     hidden = rnn.initHidden()
     optimizer.zero_grad()
 
@@ -72,7 +72,7 @@ def main():
 
     for epoch in range(1, n_epochs + 1):
         category, line, category_tensor, line_tensor = randomTrainingExample()
-        output, loss = train(category_tensor, line_tensor, rnn)
+        output, loss = train(category_tensor, line_tensor, rnn, optimizer, criterion)
         current_loss += loss
 
         # Print epoch number, loss, name and guess
