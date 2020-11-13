@@ -3,10 +3,21 @@ import glob
 import string
 from unidecode import unidecode
 import os
+from torch.utils.data import Dataset, DataLoader
 
 all_letters = string.printable
 n_letters = len(all_letters)
 
+
+class SFLFPairs(Dataset):
+    """Short form and long form pairs"""
+    def __init__(self, tsv_fn, transforms=None):
+        """
+        Args:
+            tsv_fn (string): Path to tsv file with labels
+            transform (callable, optional): Optional 
+                transform to be applied on a sample.
+        """
 
 # Read a file and split into lines
 def readLines(filename):

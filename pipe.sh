@@ -49,6 +49,7 @@ python3 preprocess/bioc/xml_to_txt.sh
 # Create training examples for character RNN:
 cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2pos.py --exclude ../processed_data/preprocess/character_rnn/data/eval/Ab3P_pos,../processed_data/preprocess/character_rnn/data/eval/medstract_pos,../processed_data/preprocess/character_rnn/data/eval/bioadi_pos,../processed_data/preprocess/character_rnn/data/eval/SH_pos | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/train/pos
 cat ../processed_data/preprocess/ab3p/summarize_ab3p/ab3p_freq.csv | python3 preprocess/character_rnn/data/ab3p2neg.py | sort -t$'\t' -k1,1 -k2,2 | uniq > ../processed_data/preprocess/character_rnn/data/train/neg
+python3 preprocess/character_rnn/data/concat.py --pos ../processed_data/preprocess/character_rnn/data/train/pos --neg ../processed_data/preprocess/character_rnn/data/train/neg > ../processed_data/preprocess/character_rnn/data/train/concat
 
 # Create evaluation examples for character RNN:
 bash preprocess/bioc/bioc2eval.sh ../data/BioC/ ../processed_data/preprocess/character_rnn/data/eval/
@@ -101,7 +102,7 @@ cat ../processed_data/model/predict/propose/pubmed19n0*.fasta | python model/3D_
 
 
 # Train character RNN:
-python3 model/character_rnn/train.py 
+python3 model/character_rnn/train.py
 
 
 ############
