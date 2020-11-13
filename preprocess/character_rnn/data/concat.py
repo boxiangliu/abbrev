@@ -13,3 +13,6 @@ def main(pos, neg):
                 for line in f:
                     line = line.strip()
                     sys.stdout.write(f"{line}\t{label}\n")
+
+if __name__ == '__main__':
+    main()
