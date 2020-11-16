@@ -1,14 +1,10 @@
 import torch
-import sys
-sys.path.append("./model/character_rnn/")
 from data import *
 from model import *
 import random
 import time
 import math
 import pickle
-import torch.nn as nn
-
 
 n_hidden = 128
 n_epochs = 100000
@@ -37,7 +33,7 @@ def randomTrainingExample():
     return category, line, category_tensor, line_tensor
 
 
-def train(category_tensor, line_tensor, rnn, optimizer, criterion):
+def train(category_tensor, line_tensor):
     hidden = rnn.initHidden()
     optimizer.zero_grad()
 
@@ -62,11 +58,7 @@ def timeSince(since):
 
 
 def main():
-    if torch.cuda.device_count() > 1:
-        sys.stderr.write(f"Running on {torch.cuda.device_count()} GPUs.")
-
     rnn = RNN(n_letters, n_hidden, n_categories)
-
     optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate)
     criterion = nn.NLLLoss()
 
@@ -78,7 +70,7 @@ def main():
 
     for epoch in range(1, n_epochs + 1):
         category, line, category_tensor, line_tensor = randomTrainingExample()
-        output, loss = train(category_tensor, line_tensor, rnn, optimizer, criterion)
+        output, loss = train(category_tensor, line_tensor)
         current_loss += loss
 
         # Print epoch number, loss, name and guess
