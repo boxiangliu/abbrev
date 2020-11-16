@@ -1,6 +1,8 @@
 import torch
+import sys
+sys.path.append("/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
 from data import *
-from model import *
+from model import RNN
 import random
 import time
 import math

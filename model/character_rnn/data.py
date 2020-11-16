@@ -92,19 +92,3 @@ dataset = SFLFPairs("test")
 dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=1, collate_fn = pad_seq)
 i, (labels, padded_seqs, seq_lens) = next(enumerate(dataloader))
 
-# # Read a file and split into lines
-# def readLines(filename):
-#     lines = open(filename).read().strip().split('\n')
-#     return [unidecode(line) for line in lines]
-
-
-# # Build the category_lines dictionary, a list of lines per category
-# category_lines = {}
-# all_categories = []
-# for filename in glob.glob('../processed_data/preprocess/character_rnn/data/train/*'):
-#     category = 1 if "pos" in os.path.basename(filename) else 0
-#     all_categories.append(category)
-#     lines = readLines(filename)
-#     category_lines[category] = lines
-
-# n_categories = len(all_categories)
