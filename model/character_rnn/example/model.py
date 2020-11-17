@@ -29,6 +29,8 @@ class RNN(nn.Module):
     """Recurrent neural network"""
 
     def __init__(self, n_letters, n_hidden, n_categories, n_layers=1, bidirectional=False):
+        super(RNN, self).__init__()
+
         self.n_directions = 1 if bidirectional == False else 2
         self.rnn = nn.RNN(input_size=n_letters, hidden_size=n_hidden,
                           num_layers=n_layers, bidirectional=bidirectional)

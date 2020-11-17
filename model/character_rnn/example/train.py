@@ -19,7 +19,7 @@ learning_rate = 0.005
 n_batch = 4
 n_layers = 1
 bidirectional = False
-n_directions = 1 if bidirectional == False else 2
+
 
 # def categoryFromOutput(output):
 #     top_n, top_i = output.data.topk(1)  # Tensor out of Variable with .data
