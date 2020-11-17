@@ -40,7 +40,7 @@ class RNN(nn.Module):
     def forward(self, input):
         output, hidden = self.rnn(input)
         n_batch = hidden.size()[1]
-        prob = self.fc(hidden.transpose(0,1).reshape(n_bath, self.n_directions * self.n_layers))
+        prob = self.fc(hidden.transpose(0,1).reshape(n_batch, self.n_directions * self.n_layers))
         prob = self.softmax(prob)
 
         return prob

@@ -11,7 +11,7 @@ import math
 import pickle
 
 n_hidden = 128
-n_epochs = 100000
+n_epochs = 5
 print_every = 5000
 plot_every = 1000
 # If you set this too high, it might explode. If too low, it might not learn
@@ -68,28 +68,28 @@ def main():
     optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate)
     criterion = nn.NLLLoss()
 
-    i, (labels, padded_seqs, _, _) = next(enumerate(names_dl))
-
     # Keep track of losses for plotting
     current_loss = 0
     all_losses = []
-    hidden = torch.zeros(n_layers * n_directions, n_batch, n_hidden, requires_grad=True)
     start = time.time()
-
+    n_steps = 0
     for epoch in range(1, n_epochs + 1):
         for labels, padded_seqs, _, _ in names_dl:
+            n_steps += 1
             output, loss = train(labels, padded_seqs)
             current_loss += loss
 
         # Print epoch number, loss, name and guess
-        if epoch % print_every == 0:
+        if n_steps % print_every == 0:
+            random_example = names_ds[n_steps % len(names_ds)]
+            torch.argmax(rnn(lineToTensor(random_example[0]).unsqueeze(1)))
             guess, guess_i = categoryFromOutput(output)
             correct = '✓' if guess == category else '✗ (%s)' % category
             print('%d %d%% (%s) %.4f %s / %s %s' % (epoch, epoch /
                                                     n_epochs * 100, timeSince(start), loss, line, guess, correct))
 
         # Add current loss avg to list of losses
-        if epoch % plot_every == 0:
+        if n_steps % plot_every == 0:
             all_losses.append(current_loss / plot_every)
             current_loss = 0
 
