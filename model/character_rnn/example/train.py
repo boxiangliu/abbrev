@@ -76,7 +76,7 @@ def main():
     for epoch in range(1, n_epochs + 1):
         for labels, padded_seqs, _, _ in names_dl:
             n_steps += 1
-            output, loss = train(labels, padded_seqs)
+            output, loss = train(labels, padded_seqs, rnn)
             current_loss += loss
 
         # Print epoch number, loss, name and guess
