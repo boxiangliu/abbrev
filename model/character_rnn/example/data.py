@@ -54,11 +54,10 @@ def pad_seq(samples):
     sorted_list = sorted(zip(seqs, labels, seq_lens), key=lambda x: -x[2])
     seqs, labels, seq_lens = zip(*sorted_list)
 
-    # padded_seqs = torch.zeros(len(labels), max_len, 1, n_letters)
-    padded_seqs = torch.zeros(max_len, len(labels), n_letters)
+    padded_seqs = torch.zeros(len(labels), max_len, n_letters)
 
     for (i, pair) in enumerate(seqs):
-        padded_seqs[:len(pair), i, :] = lineToTensor(pair)
+        padded_seqs[i, :len(pair), :] = lineToTensor(pair)
 
     return torch.tensor(labels), padded_seqs, seq_lens, seqs
 

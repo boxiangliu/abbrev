@@ -4,7 +4,6 @@ from torch.autograd import Variable
 import sys
 sys.path.append("/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
 from data import *
-from model import RNN
 import random
 import time
 import math
@@ -16,11 +15,10 @@ print_every = 5000
 plot_every = 1000
 # If you set this too high, it might explode. If too low, it might not learn
 learning_rate = 0.005
-names_ds = NamesData(fpattern='../../practical-pytorch/data/names/*.txt')
-names_dl = DataLoader(names_ds, batch_size=2, shuffle=True, num_workers=1, collate_fn=pad_seq)
-i, (labels, padded_seqs, seq_lens, seqs) = next(enumerate(names_dl))
-output, hidden = rnn(padded_seqs[:,0,:,:], hidden)
-output, 
+n_batch = 4
+n_layers = 1
+bidirectional = False
+n_directions = 1 if bidirectional == False else 2
 
 def categoryFromOutput(output):
     top_n, top_i = output.data.topk(1)  # Tensor out of Variable with .data
@@ -43,7 +41,6 @@ def randomTrainingExample():
 
 
 def train(category_tensor, line_tensor):
-    hidden = rnn.initHidden()
     optimizer.zero_grad()
 
     for i in range(line_tensor.size()[0]):
@@ -67,19 +64,24 @@ def timeSince(since):
 
 
 def main():
-    rnn = RNN(n_letters, n_hidden, names_ds.n_categories)
-    rnn2 = nn.RNN(n_letters, n_hidden)
+    names_ds = NamesData(fpattern='../../practical-pytorch/data/names/*.txt')
+    names_dl = DataLoader(names_ds, batch_size=n_batch, shuffle=True, num_workers=1, collate_fn=pad_seq)
+    rnn = nn.RNN(input_size=n_letters, hidden_size=n_hidden, num_layers=n_layers, bidirectional=bidirectional, batch_first=True)
+    ff = nn.Linear(n_hidden, names_ds.n_categories)
     optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate)
     criterion = nn.NLLLoss()
+
 
     # Keep track of losses for plotting
     current_loss = 0
     all_losses = []
-
+    hidden = torch.zeros(n_batch, n_layers * n_directions, n_hidden, requires_grad=True)
     start = time.time()
 
     for epoch in range(1, n_epochs + 1):
-        category, line, category_tensor, line_tensor = randomTrainingExample()
+        for labels, padded_seqs, _, _ in names_dl:
+            output, hidden = rnn(padded_seqs, hidden)
+
         output, loss = train(category_tensor, line_tensor)
         current_loss += loss
 
