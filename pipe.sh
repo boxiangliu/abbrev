@@ -164,6 +164,11 @@ cut -f1 ../processed_data/model/propose/MED1250_proposal.tsv | /mnt/big/kwc/pubm
 cut -f1 ../processed_data/model/propose/MED1250_proposal.tsv | python model/freq.py > ../processed_data/model/propose/MED1250_proposal_freq
 
 
+############
+# Test RNN #
+############
+# Create toy example:
+python3 model/character_rnn/example/toy_data.py > model/character_rnn/example/toy_data.tsv
 
 ############
 # Analysis #

@@ -18,25 +18,6 @@ plot_every = 1000
 learning_rate = 0.005
 
 
-def categoryFromOutput(output):
-    top_n, top_i = output.data.topk(1)  # Tensor out of Variable with .data
-    category_i = top_i[0][0]
-    return all_categories[category_i], category_i
-
-
-def randomChoice(l):
-    return l[random.randint(0, len(l) - 1)]
-
-
-def randomTrainingExample():
-    category = randomChoice(all_categories)
-    line = randomChoice(category_lines[category])
-    category_tensor = Variable(torch.LongTensor(
-        [all_categories.index(category)]))
-    line_tensor = Variable(lineToTensor(line))
-    return category, line, category_tensor, line_tensor
-
-
 def train(category_tensor, line_tensor, rnn, optimizer, criterion):
     hidden = rnn.initHidden()
     optimizer.zero_grad()
