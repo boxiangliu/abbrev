@@ -4,6 +4,7 @@ from torch.autograd import Variable
 import sys
 sys.path.append("/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
 from data import *
+from model import RNN
 import random
 import time
 import math
@@ -20,38 +21,33 @@ n_layers = 1
 bidirectional = False
 n_directions = 1 if bidirectional == False else 2
 
-def categoryFromOutput(output):
-    top_n, top_i = output.data.topk(1)  # Tensor out of Variable with .data
-    category_i = top_i[0][0]
-    return all_categories[category_i], category_i
+# def categoryFromOutput(output):
+#     top_n, top_i = output.data.topk(1)  # Tensor out of Variable with .data
+#     category_i = top_i[0][0]
+#     return all_categories[category_i], category_i
 
 
-def randomChoice(l):
-    return l[random.randint(0, len(l) - 1)]
+# def randomChoice(l):
+#     return l[random.randint(0, len(l) - 1)]
 
 
-def randomTrainingExample():
-    category = randomChoice(all_categories)
-    line = randomChoice(category_lines[category])
-    category_tensor = Variable(torch.LongTensor(
-        [all_categories.index(category)]))
-    line_tensor = Variable(lineToTensor(line))
-    return category, line, category_tensor, line_tensor
+# def randomTrainingExample():
+#     category = randomChoice(all_categories)
+#     line = randomChoice(category_lines[category])
+#     category_tensor = Variable(torch.LongTensor(
+#         [all_categories.index(category)]))
+#     line_tensor = Variable(lineToTensor(line))
+#     return category, line, category_tensor, line_tensor
 
 
 
-def train(category_tensor, line_tensor):
+def train(labels, padded_seqs, rnn):
     optimizer.zero_grad()
-
-    for i in range(line_tensor.size()[0]):
-        output, hidden = rnn(line_tensor[i], hidden)
-
-    loss = criterion(output, category_tensor)
+    prob = rnn(padded_seqs)
+    loss = criterion(prob, labels)
     loss.backward()
-
     optimizer.step()
 
-    # return output, loss.data[0]
     return output, loss.data  # Boxiang
 
 
@@ -66,24 +62,24 @@ def timeSince(since):
 def main():
     names_ds = NamesData(fpattern='../../practical-pytorch/data/names/*.txt')
     names_dl = DataLoader(names_ds, batch_size=n_batch, shuffle=True, num_workers=1, collate_fn=pad_seq)
-    rnn = nn.RNN(input_size=n_letters, hidden_size=n_hidden, num_layers=n_layers, bidirectional=bidirectional, batch_first=True)
-    ff = nn.Linear(n_hidden, names_ds.n_categories)
+    rnn = RNN(n_letters, n_hidden, names_ds.n_categories)
+
+
     optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate)
     criterion = nn.NLLLoss()
 
+    i, (labels, padded_seqs, _, _) = next(enumerate(names_dl))
 
     # Keep track of losses for plotting
     current_loss = 0
     all_losses = []
-    hidden = torch.zeros(n_batch, n_layers * n_directions, n_hidden, requires_grad=True)
+    hidden = torch.zeros(n_layers * n_directions, n_batch, n_hidden, requires_grad=True)
     start = time.time()
 
     for epoch in range(1, n_epochs + 1):
         for labels, padded_seqs, _, _ in names_dl:
-            output, hidden = rnn(padded_seqs, hidden)
-
-        output, loss = train(category_tensor, line_tensor)
-        current_loss += loss
+            output, loss = train(labels, padded_seqs)
+            current_loss += loss
 
         # Print epoch number, loss, name and guess
         if epoch % print_every == 0:
