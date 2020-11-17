@@ -34,7 +34,7 @@ class RNN(nn.Module):
         self.n_directions = 1 if bidirectional == False else 2
         self.rnn = nn.RNN(input_size=n_letters, hidden_size=n_hidden,
                           num_layers=n_layers, bidirectional=bidirectional)
-        self.fc = nn.Linear(input_size=n_hidden, output_size=n_categories)
+        self.fc = nn.Linear(in_features=n_hidden, out_features=n_categories)
         self.softmax = nn.LogSoftmax(dim=0)
 
     def forward(self, input):
