@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+from torch.autograd import Variable
 import sys
 sys.path.append("/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
 from data import *
@@ -14,7 +16,11 @@ print_every = 5000
 plot_every = 1000
 # If you set this too high, it might explode. If too low, it might not learn
 learning_rate = 0.005
-
+names_ds = NamesData(fpattern='../../practical-pytorch/data/names/*.txt')
+names_dl = DataLoader(names_ds, batch_size=2, shuffle=True, num_workers=1, collate_fn=pad_seq)
+i, (labels, padded_seqs, seq_lens, seqs) = next(enumerate(names_dl))
+output, hidden = rnn(padded_seqs[:,0,:,:], hidden)
+output, 
 
 def categoryFromOutput(output):
     top_n, top_i = output.data.topk(1)  # Tensor out of Variable with .data
@@ -33,6 +39,7 @@ def randomTrainingExample():
         [all_categories.index(category)]))
     line_tensor = Variable(lineToTensor(line))
     return category, line, category_tensor, line_tensor
+
 
 
 def train(category_tensor, line_tensor):
@@ -60,7 +67,8 @@ def timeSince(since):
 
 
 def main():
-    rnn = RNN(n_letters, n_hidden, n_categories)
+    rnn = RNN(n_letters, n_hidden, names_ds.n_categories)
+    rnn2 = nn.RNN(n_letters, n_hidden)
     optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate)
     criterion = nn.NLLLoss()
 
