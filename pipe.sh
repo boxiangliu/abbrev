@@ -168,7 +168,7 @@ cut -f1 ../processed_data/model/propose/MED1250_proposal.tsv | python model/freq
 # Test RNN #
 ############
 # Create toy example:
-python3 model/character_rnn/example/toy_data.py > model/character_rnn/example/toy_data.tsv
+python3 model/character_rnn/example/toy_data.py > ../processed_data/model/character_rnn/example/toy_data/toy_data.tsv
 
 ############
 # Analysis #
