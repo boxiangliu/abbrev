@@ -31,6 +31,9 @@ class RNN(nn.Module):
     def __init__(self, n_letters, n_hidden, n_categories, n_layers=1, bidirectional=False):
         super(RNN, self).__init__()
         self.n_layers = n_layers
+        self.n_hidden = n_hidden
+        self.n_letters = n_letters
+        self.n_categories = n_categories
         self.bidirectional = bidirectional
         self.n_directions = 1 if bidirectional == False else 2
         self.rnn = nn.RNN(input_size=n_letters, hidden_size=n_hidden,
@@ -41,7 +44,7 @@ class RNN(nn.Module):
     def forward(self, input):
         output, hidden = self.rnn(input)
         n_batch = hidden.size()[1]
-        prob = self.fc(hidden.transpose(0,1).reshape(n_batch, self.n_directions * self.n_layers))
+        prob = self.fc(hidden.transpose(0,1).reshape(n_batch, self.n_directions * self.n_layers * self.n_hidden))
         prob = self.softmax(prob)
 
         return prob
