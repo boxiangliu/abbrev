@@ -11,7 +11,7 @@ import math
 import pickle
 
 n_hidden = 128
-n_epochs = 5
+n_epochs = 50
 print_every = 5000
 plot_every = 1000
 # If you set this too high, it might explode. If too low, it might not learn
@@ -48,7 +48,7 @@ def train(labels, padded_seqs, rnn):
     loss.backward()
     optimizer.step()
 
-    return output, loss.data  # Boxiang
+    return prob, loss.data  # Boxiang
 
 
 def timeSince(since):
@@ -63,8 +63,6 @@ def main():
     names_ds = NamesData(fpattern='../../practical-pytorch/data/names/*.txt')
     names_dl = DataLoader(names_ds, batch_size=n_batch, shuffle=True, num_workers=1, collate_fn=pad_seq)
     rnn = RNN(n_letters, n_hidden, names_ds.n_categories)
-
-
     optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate)
     criterion = nn.NLLLoss()
 
@@ -79,19 +77,19 @@ def main():
             output, loss = train(labels, padded_seqs, rnn)
             current_loss += loss
 
-        # Print epoch number, loss, name and guess
-        if n_steps % print_every == 0:
-            random_example = names_ds[n_steps % len(names_ds)]
-            torch.argmax(rnn(lineToTensor(random_example[0]).unsqueeze(1)))
-            guess, guess_i = categoryFromOutput(output)
-            correct = '✓' if guess == category else '✗ (%s)' % category
-            print('%d %d%% (%s) %.4f %s / %s %s' % (epoch, epoch /
-                                                    n_epochs * 100, timeSince(start), loss, line, guess, correct))
+            # Print epoch number, loss, name and guess
+            if n_steps % print_every == 0:
+                random_example = names_ds[n_steps % len(names_ds)]
+                line = random_example[0]
+                guess = torch.argmax(rnn(lineToTensor(line).unsqueeze(1))).item()
+                label = random_example[1]
+                correct = '✓' if guess == label else '✗ (%s)' % label
+                print('%d (%s) %.4f %s / %s %s' % (n_steps, timeSince(start), loss, line, guess, correct))
 
-        # Add current loss avg to list of losses
-        if n_steps % plot_every == 0:
-            all_losses.append(current_loss / plot_every)
-            current_loss = 0
+            # Add current loss avg to list of losses
+            if n_steps % plot_every == 0:
+                all_losses.append(current_loss / plot_every)
+                current_loss = 0
 
     torch.save(rnn, 'char-rnn-classification.pt')
     with open("./all_losses.pkl", "wb") as fout:
