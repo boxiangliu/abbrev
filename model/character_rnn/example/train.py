@@ -4,7 +4,7 @@ from torch.autograd import Variable
 import sys
 sys.path.append(
     "/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
-from data import ToyData
+from data import ToyData, WrappedDataLoader
 from torch.utils.data import DataLoader
 from model import RNN
 import random
@@ -100,8 +100,8 @@ def main():
         pickle.dump(all_losses, fout)
 
 
-def get_model(input_size, hidden_size, output_size):
-    model = RNN(input_size, hidden_size, output_size)
+def get_model(input_size, hidden_size, output_size, device):
+    model = RNN(input_size, hidden_size, output_size).to(device)
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
     return model, optimizer
@@ -127,10 +127,11 @@ def train_batch(model, loss_func, seqs, labels, seq_lens, opt=None):
     return loss.item(), batch_size
 
 
-def fit(n_epochs, model, loss_func, opt, train_loader, save_every=1000):
+def fit(n_epochs, model, loss_func, opt, train_loader, device, save_every=1000):
     n_steps = 0
     all_losses = []
     current_loss = 0
+    start = time.time()
 
     for epoch in range(n_epochs):
         model.train()
@@ -148,13 +149,22 @@ def fit(n_epochs, model, loss_func, opt, train_loader, save_every=1000):
 
     return all_losses
 
+device = torch.device(
+    "cuda") if torch.cuda.is_available() else torch.device("cpu")
 toy_data, toy_loader = get_data(batch_size)
 input_size = output_size = toy_data.n_letters
-model, opt = get_model(input_size, hidden_size, output_size)
+model, opt = get_model(input_size, hidden_size, output_size, device)
 loss_func = nn.NLLLoss()
-fit(n_epochs, model, loss_func, opt, toy_loader)
+fit(n_epochs, model, loss_func, opt, toy_loader, device)
 
-i, tmp = next(enumerate(toy_loader))
-tmp
+n = 0
+for seqs, labels, seq_lens in toy_loader:
+    print(torch.argmax(model(seqs, seq_lens), dim=1))
+    print(labels)
+    n += 1
+    if n > 3:
+        break
+
+
 if __name__ == "__main__":
     main()
