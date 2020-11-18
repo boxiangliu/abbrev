@@ -120,6 +120,14 @@ def get_data(batch_size):
 
 def train_batch(model, loss_func, seqs, labels, seq_lens, opt=None):
     output = model(seqs, seq_lens)
+    print("Output:")
+    print(output)
+    print(output.size())
+    
+    print("Label:")
+    print(labels)
+    print(labels.size())
+
     loss = loss_func(output, labels)
     batch_size = seqs.size()[1]
 
