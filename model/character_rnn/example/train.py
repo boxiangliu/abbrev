@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import sys
-sys.path.append("/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
+sys.path.append(
+    "/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
 from data import *
 from model import RNN
 import random
@@ -40,7 +41,6 @@ bidirectional = False
 #     return category, line, category_tensor, line_tensor
 
 
-
 def train(labels, padded_seqs, rnn):
     optimizer.zero_grad()
     prob = rnn(padded_seqs)
@@ -61,7 +61,8 @@ def timeSince(since):
 
 def main():
     names_ds = NamesData(fpattern='../../practical-pytorch/data/names/*.txt')
-    names_dl = DataLoader(names_ds, batch_size=n_batch, shuffle=True, num_workers=1, collate_fn=pad_seq)
+    names_dl = DataLoader(names_ds, batch_size=n_batch,
+                          shuffle=True, num_workers=1, collate_fn=pad_seq)
     rnn = RNN(n_letters, n_hidden, names_ds.n_categories)
     optimizer = torch.optim.SGD(rnn.parameters(), lr=learning_rate)
     criterion = nn.NLLLoss()
@@ -81,10 +82,12 @@ def main():
             if n_steps % print_every == 0:
                 random_example = names_ds[n_steps % len(names_ds)]
                 line = random_example[0]
-                guess = torch.argmax(rnn(lineToTensor(line).unsqueeze(1))).item()
+                guess = torch.argmax(
+                    rnn(lineToTensor(line).unsqueeze(1))).item()
                 label = random_example[1]
                 correct = '✓' if guess == label else '✗ (%s)' % label
-                print('%d (%s) %.4f %s / %s %s' % (n_steps, timeSince(start), loss, line, guess, correct))
+                print('%d (%s) %.4f %s / %s %s' %
+                      (n_steps, timeSince(start), loss, line, guess, correct))
 
             # Add current loss avg to list of losses
             if n_steps % plot_every == 0:
@@ -94,6 +97,56 @@ def main():
     torch.save(rnn, 'char-rnn-classification.pt')
     with open("./all_losses.pkl", "wb") as fout:
         pickle.dump(all_losses, fout)
+
+
+def get_model(input_size, hidden_size, output_size):
+    model = RNN(input_size, hidden_size, output_size)
+    optimizer = torch.optim.SGD(
+        model.parameters(), lr=learning_rate, momentum=0.9)
+    return model, optimizer
+
+
+def get_data(batch_size):
+    data = ToyData(
+        "../processed_data/model/character_rnn/example/toy_data/toy_data.tsv")
+    assert len(data) == 10000
+    return DataLoader(data, batch_size=batch_size, collate_fn=data.pad_seq)
+
+
+def train_batch(model, loss_func, seqs, labels, seq_lens, opt=None):
+    output = model(seqs, seq_lens)
+    loss = loss_func(output, labels)
+    batch_size = seqs.size()[1]
+
+    if opt is not None:
+        loss.backward()
+        opt.step()
+        opt.zero_grad()
+
+    return loss.item(), batch_size
+
+
+def fit(n_epochs, model, loss_func, opt, train_loader, save_every=1000):
+    n_steps = 0
+    all_losses = []
+    current_loss = 0
+
+    for epoch in range(n_epochs):
+        model.train()
+        for seqs, labels, seq_lens in train_loader:
+            n_steps += 1
+            loss, n_examples = train_batch(
+                model, loss_func, seqs, labels, seq_lens, opt)
+            current_loss += loss
+
+            if n_steps % save_every == 0:
+                print('%d (%s) %.4f' %
+                      (n_steps, timeSince(start), loss))
+                all_losses.append(current_loss / save_every)
+                current_loss = 0
+
+    return all_losses
+
 
 
 if __name__ == "__main__":

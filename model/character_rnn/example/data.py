@@ -3,7 +3,7 @@ import glob
 from unidecode import unidecode
 import string
 from torch.utils.data import Dataset, DataLoader
-
+from torch.nn.utils.rnn import pad_sequence
 
 all_letters = string.ascii_letters + " .,;'-"
 n_letters = len(all_letters)
@@ -85,6 +85,52 @@ class NamesData(Dataset):
         return line, label
 
 
-dataset = NamesData("../../practical-pytorch/data/names/*.txt")
-dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=1, collate_fn = pad_seq)
-i, (labels, padded_seqs, seq_lens, seqs) = next(enumerate(dataloader))
+class ToyData(Dataset):
+    """Create a dataset for the toy data"""
+
+    def __init__(self, fn):
+        self.data = self.read_toy_data(fn)
+        self.letters = string.ascii_lowercase
+        self.n_letters = len(self.letters)
+
+    def __len__(self):
+        return len(self.data["seq"])
+
+    def __getitem__(self, idx):
+        seq = self.seq2tensor(self.data["seq"][idx])
+        label = int(self.data["label"][idx])
+        return seq, label
+
+    def read_toy_data(self, fn):
+        container = {"seq": [], "label": []}
+        with open(fn) as f:
+            for line in f:
+                split_line = line.strip().split("\t")
+                container["seq"].append(split_line[0])
+                container["label"].append(split_line[1])
+        return container
+
+    def seq2tensor(self, seq):
+        tensor = torch.zeros(len(seq), self.n_letters)
+        for i, letter in enumerate(seq):
+            tensor[i][self.letters.index(letter)] = 1
+        return tensor
+
+
+    def pad_seq(self, samples):
+        seq, label = zip(*samples)
+        seq_lens = [len(s) for s in seq]
+        sorted_list = sorted(zip(seq, label, seq_lens), key=lambda x: -x[2])
+        seq, label, seq_lens = zip(*sorted_list)
+        seq = pad_sequence(seq)
+        return seq, label, seq_lens
+
+# dataset = NamesData("../../practical-pytorch/data/names/*.txt")
+# dataloader = DataLoader(dataset, batch_size=4, shuffle=True,
+#                         num_workers=1, collate_fn=pad_seq)
+# i, (labels, padded_seqs, seq_lens, seqs) = next(enumerate(dataloader))
+
+toy_data = ToyData("../processed_data/model/character_rnn/example/toy_data/toy_data.tsv")
+assert len(toy_data) == 10000
+toy_loader = DataLoader(toy_data, batch_size=4, collate_fn=toy_data.pad_seq)
+i, res = next(enumerate(toy_loader))
