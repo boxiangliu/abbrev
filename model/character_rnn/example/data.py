@@ -117,7 +117,7 @@ class ToyData(Dataset):
             tensor[i][self.letters.index(letter)] = 1
         return tensor
 
-    def pad_seq(self, samples):
+    def _pad_seq(self, samples):
         seq, label = zip(*samples)
         seq_lens = [len(s) for s in seq]
         sorted_list = sorted(zip(seq, label, seq_lens), key=lambda x: -x[2])
@@ -126,7 +126,7 @@ class ToyData(Dataset):
         return seq, torch.tensor(label), torch.tensor(seq_lens)
 
     def pack_seq(self, samples):
-        seqs, labels, seq_lens = self.pad_seq(samples)
+        seqs, labels, seq_lens = self._pad_seq(samples)
         seqs = pack_padded_sequence(seqs, seq_lens)
         return seqs, labels, seq_lens
 

@@ -115,7 +115,7 @@ def get_data(batch_size):
     data = ToyData(
         "../processed_data/model/character_rnn/example/toy_data/toy_data.tsv")
     assert len(data) == 10000
-    return data, DataLoader(data, batch_size=batch_size, collate_fn=data.pad_seq)
+    return data, DataLoader(data, batch_size=batch_size, collate_fn=data.pack_seq)
 
 
 def train_batch(model, loss_func, seqs, labels, seq_lens, opt=None):
@@ -156,6 +156,7 @@ def fit(n_epochs, model, loss_func, opt, train_loader, save_every=1000):
 
 device = torch.device(
     "cuda") if torch.cuda.is_available() else torch.device("cpu")
+device = torch.device("cpu")
 toy_data, toy_loader = get_data(batch_size)
 toy_loader = WrappedDataLoader(toy_loader, to_device)
 input_size = output_size = toy_data.n_letters
@@ -163,6 +164,10 @@ model, opt = get_model(input_size, hidden_size, output_size, device)
 # model = nn.DataParallel(model)
 loss_func = nn.NLLLoss()
 fit(n_epochs, model, loss_func, opt, toy_loader)
+
+
+seqs, labels, seq_lens = next(iter(toy_loader))
+
 
 n = 0
 for seqs, labels, seq_lens in toy_loader:
