@@ -80,7 +80,7 @@ class RNN(nn.Module):
 
         output = torch.cat([output[t - 1, b, :].unsqueeze(0)
                             for (t, b) in zip(seq_lens, range(batch_size))], dim=0)
-        assert output.size() == torch.Size(batch_size, self.hidden_size)
+        assert output.size() == torch.Size([batch_size, self.hidden_size])
 
         output = self.fc(output)
         return self.softmax(output)
