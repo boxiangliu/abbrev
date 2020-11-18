@@ -5,6 +5,7 @@ import sys
 sys.path.append(
     "/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
 from data import ToyData
+from torch.utils.data import DataLoader
 from model import RNN
 import random
 import time
@@ -12,7 +13,7 @@ import math
 import pickle
 
 hidden_size = 128
-n_epochs = 50
+n_epochs = 5
 print_every = 5000
 plot_every = 1000
 # If you set this too high, it might explode. If too low, it might not learn
@@ -150,6 +151,8 @@ def fit(n_epochs, model, loss_func, opt, train_loader, save_every=1000):
 toy_data, toy_loader = get_data(batch_size)
 input_size = output_size = toy_data.n_letters
 model, opt = get_model(input_size, hidden_size, output_size)
+loss_func = nn.NLLLoss()
+fit(n_epochs, model, loss_func, opt, toy_loader)
 
 if __name__ == "__main__":
     main()
