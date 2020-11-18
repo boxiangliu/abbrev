@@ -57,6 +57,8 @@ class RNN(nn.Module):
                 hidden_size (int): dimesion of hidden layer.
                 output_size (int): number of output categories.  
         """
+        super(RNN, self).__init__()
+
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size

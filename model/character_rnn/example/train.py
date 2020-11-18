@@ -4,20 +4,20 @@ from torch.autograd import Variable
 import sys
 sys.path.append(
     "/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
-from data import *
+from data import ToyData
 from model import RNN
 import random
 import time
 import math
 import pickle
 
-n_hidden = 128
+hidden_size = 128
 n_epochs = 50
 print_every = 5000
 plot_every = 1000
 # If you set this too high, it might explode. If too low, it might not learn
 learning_rate = 0.005
-n_batch = 4
+batch_size = 4
 n_layers = 1
 bidirectional = False
 
@@ -110,7 +110,7 @@ def get_data(batch_size):
     data = ToyData(
         "../processed_data/model/character_rnn/example/toy_data/toy_data.tsv")
     assert len(data) == 10000
-    return DataLoader(data, batch_size=batch_size, collate_fn=data.pad_seq)
+    return data, DataLoader(data, batch_size=batch_size, collate_fn=data.pad_seq)
 
 
 def train_batch(model, loss_func, seqs, labels, seq_lens, opt=None):
@@ -147,7 +147,9 @@ def fit(n_epochs, model, loss_func, opt, train_loader, save_every=1000):
 
     return all_losses
 
-
+toy_data, toy_loader = get_data(batch_size)
+input_size = output_size = toy_data.n_letters
+model, opt = get_model(input_size, hidden_size, output_size)
 
 if __name__ == "__main__":
     main()
