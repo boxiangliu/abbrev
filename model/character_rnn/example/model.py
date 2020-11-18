@@ -76,9 +76,6 @@ class RNN(nn.Module):
                     to select the appropriate timestep as output.
         """
         output, hidden = self.rnn(seqs)
-        print(f"Seq size: {seqs.size()}")
-        print(f"Output size: {output.size()}")
-        print(f"Hidden size: {hidden.size()}")
         # batch_size = output.size()[1]
 
         # output = torch.cat([output[t - 1, b, :].unsqueeze(0)

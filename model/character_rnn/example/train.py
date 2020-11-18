@@ -18,7 +18,7 @@ print_every = 5000
 plot_every = 1000
 # If you set this too high, it might explode. If too low, it might not learn
 learning_rate = 0.005
-batch_size = 16
+batch_size = 4
 n_layers = 1
 bidirectional = False
 
@@ -120,13 +120,6 @@ def get_data(batch_size):
 
 def train_batch(model, loss_func, seqs, labels, seq_lens, opt=None):
     output = model(seqs, seq_lens)
-    print("Output:")
-    print(output)
-    print(output.size())
-    
-    print("Label:")
-    print(labels)
-    print(labels.size())
 
     loss = loss_func(output, labels)
     batch_size = seqs.size()[1]
