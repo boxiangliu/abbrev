@@ -18,7 +18,7 @@ print_every = 5000
 plot_every = 1000
 # If you set this too high, it might explode. If too low, it might not learn
 learning_rate = 0.005
-batch_size = 4
+batch_size = 16
 n_layers = 1
 bidirectional = False
 
@@ -100,6 +100,10 @@ def main():
         pickle.dump(all_losses, fout)
 
 
+def to_device(*args):
+    return [x.to(device) for x in args]
+
+
 def get_model(input_size, hidden_size, output_size, device):
     model = RNN(input_size, hidden_size, output_size).to(device)
     optimizer = torch.optim.SGD(
@@ -127,7 +131,7 @@ def train_batch(model, loss_func, seqs, labels, seq_lens, opt=None):
     return loss.item(), batch_size
 
 
-def fit(n_epochs, model, loss_func, opt, train_loader, device, save_every=1000):
+def fit(n_epochs, model, loss_func, opt, train_loader, save_every=1000):
     n_steps = 0
     all_losses = []
     current_loss = 0
@@ -152,10 +156,12 @@ def fit(n_epochs, model, loss_func, opt, train_loader, device, save_every=1000):
 device = torch.device(
     "cuda") if torch.cuda.is_available() else torch.device("cpu")
 toy_data, toy_loader = get_data(batch_size)
+toy_loader = WrappedDataLoader(toy_loader, to_device)
 input_size = output_size = toy_data.n_letters
 model, opt = get_model(input_size, hidden_size, output_size, device)
+model = nn.DataParallel(model)
 loss_func = nn.NLLLoss()
-fit(n_epochs, model, loss_func, opt, toy_loader, device)
+fit(n_epochs, model, loss_func, opt, toy_loader)
 
 n = 0
 for seqs, labels, seq_lens in toy_loader:

@@ -3,7 +3,7 @@ import glob
 from unidecode import unidecode
 import string
 from torch.utils.data import Dataset, DataLoader
-from torch.nn.utils.rnn import pad_sequence
+from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
 
 all_letters = string.ascii_letters + " .,;'-"
 n_letters = len(all_letters)
@@ -116,7 +116,6 @@ class ToyData(Dataset):
             tensor[i][self.letters.index(letter)] = 1
         return tensor
 
-
     def pad_seq(self, samples):
         seq, label = zip(*samples)
         seq_lens = [len(s) for s in seq]
@@ -125,8 +124,14 @@ class ToyData(Dataset):
         seq = pad_sequence(seq)
         return seq, torch.tensor(label), torch.tensor(seq_lens)
 
+    def pack_seq(self, samples):
+        seqs, labels, seq_lens = self.pad_seq(samples)
+        seqs = pack_padded_sequence(seqs, seq_lens)
+        return seqs, labels, seq_lens
+
 
 class WrappedDataLoader:
+
     def __init__(self, dl, func):
         self.dl = dl
         self.func = func
@@ -140,12 +145,19 @@ class WrappedDataLoader:
             yield (self.func(*b))
 
 
+class MyDataParallel(nn.DataParallel):
+
+    def __getattr__(self, name):
+        return getattr(self.module, name)
+
+
 # dataset = NamesData("../../practical-pytorch/data/names/*.txt")
 # dataloader = DataLoader(dataset, batch_size=4, shuffle=True,
 #                         num_workers=1, collate_fn=pad_seq)
 # i, (labels, padded_seqs, seq_lens, seqs) = next(enumerate(dataloader))
 
-toy_data = ToyData("../processed_data/model/character_rnn/example/toy_data/toy_data.tsv")
+toy_data = ToyData(
+    "../processed_data/model/character_rnn/example/toy_data/toy_data.tsv")
 assert len(toy_data) == 10000
-toy_loader = DataLoader(toy_data, batch_size=4, collate_fn=toy_data.pad_seq)
+toy_loader = DataLoader(toy_data, batch_size=4, collate_fn=toy_data.pack_seq)
 i, res = next(enumerate(toy_loader))
