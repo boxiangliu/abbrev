@@ -159,7 +159,7 @@ toy_data, toy_loader = get_data(batch_size)
 toy_loader = WrappedDataLoader(toy_loader, to_device)
 input_size = output_size = toy_data.n_letters
 model, opt = get_model(input_size, hidden_size, output_size, device)
-model = nn.DataParallel(model)
+# model = nn.DataParallel(model)
 loss_func = nn.NLLLoss()
 fit(n_epochs, model, loss_func, opt, toy_loader)
 

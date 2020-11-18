@@ -4,6 +4,7 @@ from unidecode import unidecode
 import string
 from torch.utils.data import Dataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
+import torch.nn as nn
 
 all_letters = string.ascii_letters + " .,;'-"
 n_letters = len(all_letters)
