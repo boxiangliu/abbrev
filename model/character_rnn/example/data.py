@@ -123,7 +123,7 @@ class ToyData(Dataset):
         sorted_list = sorted(zip(seq, label, seq_lens), key=lambda x: -x[2])
         seq, label, seq_lens = zip(*sorted_list)
         seq = pad_sequence(seq)
-        return seq, label, seq_lens
+        return seq, torch.tensor(label), torch.tensor(seq_lens)
 
 # dataset = NamesData("../../practical-pytorch/data/names/*.txt")
 # dataloader = DataLoader(dataset, batch_size=4, shuffle=True,

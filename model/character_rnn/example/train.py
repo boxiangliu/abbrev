@@ -154,5 +154,7 @@ model, opt = get_model(input_size, hidden_size, output_size)
 loss_func = nn.NLLLoss()
 fit(n_epochs, model, loss_func, opt, toy_loader)
 
+i, tmp = next(enumerate(toy_loader))
+tmp
 if __name__ == "__main__":
     main()
