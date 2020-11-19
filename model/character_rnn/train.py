@@ -50,6 +50,7 @@ def get_data(batch_size):
 
 def loss_batch(model, loss_func, seqs, labels, opt=None):
     output = model(seqs)
+    pred = torch.argmax(output, dim=1)
 
     loss = loss_func(output, labels)
 
@@ -58,15 +59,13 @@ def loss_batch(model, loss_func, seqs, labels, opt=None):
         opt.step()
         opt.zero_grad()
 
-    return loss.item()
+    return loss.item(), pred
 
 
 def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1000):
     n_steps = 0
-    train_loss = 0
-    n_train_examples = 0
-    train_losses = []
-    eval_losses = []
+    n_train_examples, train_loss, train_corrects = 0, 0, 0
+    train_losses, train_accuracies, eval_losses, eval_accuracies = [], [], [], []
     start = time.time()
 
     for epoch in range(n_epochs):
@@ -75,28 +74,36 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
             model.train()
             n_steps += 1
             n_train_examples += len(labels)
-            loss = loss_batch(
+            loss, pred = loss_batch(
                 model, loss_func, seqs, labels, opt)
             train_loss += loss
+            train_corrects += sum(pred == labels)
 
             if n_steps % save_every == 0:
 
                 avg_train_loss = train_loss / n_train_examples
                 train_losses.append(avg_train_loss)
-                train_loss = 0
-                n_train_examples = 0
+                train_accuracy = train_corrects / n_train_examples
+                train_accuracies.append(train_accuracy)
+                train_loss, n_train_examples, train_corrects = 0, 0, 0
 
                 model.eval()
+                eval_loss, eval_corrects, n_eval_examples = 0, 0, 0
                 with torch.no_grad():
-                    eval_loss = sum([loss_batch(model, loss_func, seqs, labels) / len(labels)
-                                     for seqs, labels, seq_lens in eval_loader])
-                avg_eval_loss = eval_loss / len(eval_loader)
+                    for seqs, labels, seq_lens in eval_loader:
+                        loss, pred = loss_batch(model, loss_func, seqs, labels)
+                        eval_loss += loss
+                        eval_corrects += sum(pred == labels)
+                        n_eval_examples += len(labels)
+                avg_eval_loss = eval_loss / n_eval_examples
+                eval_accuracy = eval_corrects / n_eval_examples
                 eval_losses.append(avg_eval_loss)
+                eval_accuracies.append(eval_accuracy)
 
-                print('STEP %d (%s) TRAIN=%.4f EVAL=%.4f' %
-                      (n_steps, timeSince(start), avg_train_loss, avg_eval_loss))
+                print('STEP %d (%s) TRAIN=%.4f ACC=%.4f; EVAL=%.4f ACC=%.4f' %
+                      (n_steps, timeSince(start), avg_train_loss, train_accuracy, avg_eval_loss, eval_accuracy))
 
-    return train_losses, eval_losses
+    return train_losses, eval_losses, train_accuracies, eval_accuracies
 
 
 device = torch.device(
@@ -113,7 +120,7 @@ train_losses, eval_losses = fit(
     n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
 
 from scipy.signal import savgol_filter
-eval_losses_smooth = savgol_filter(eval_losses,15,3)
+eval_losses_smooth = savgol_filter(eval_losses, 15, 3)
 
 
 import matplotlib.pyplot as plt
@@ -125,9 +132,9 @@ plt.savefig("losses.png")
 
 torch.save(model, 'sf-classification.pt')
 with open("./all_losses.pkl", "wb") as fout:
-    pickle.dump([train_losses, eval_losses] , fout)
+    pickle.dump([train_losses, eval_losses], fout)
 
 
 for seq, label in eval_data:
-    model(seq.unsqueeze(1))
-
+    model(seq.unsqueeze(1).to(device))
+seq.unsqueeze(1).to(device).size()
