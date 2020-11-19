@@ -20,11 +20,9 @@ class RNN(nn.Module):
         self.fc = nn.Linear(in_features=hidden_size, out_features=output_size)
         self.softmax = nn.LogSoftmax(dim=1)
 
-    def forward(self, seqs, seq_lens):
+    def forward(self, seqs):
         """Args:
                 seqs (PackedSequence): Packed padded sequence.
-                seq_lens (list or tuple): pre-padding sequence lengths used 
-                    to select the appropriate timestep as output.
         """
         output, hidden = self.rnn(seqs)
         output = self.fc(hidden.squeeze())

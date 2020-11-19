@@ -6,6 +6,8 @@ from torch.utils.data import Dataset, DataLoader
 from collections import defaultdict
 from pathlib import Path
 import torch.nn as nn
+from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
+
 
 all_letters = string.printable
 n_letters = len(all_letters)
