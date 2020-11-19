@@ -110,9 +110,10 @@ class SFData(Dataset):
         return len(self.data["seq"])
 
     def __getitem__(self, idx):
-        seq = self.seq2tensor(self.data["seq"][idx])
+        seq = self.data["seq"][idx]
+        tensor = self.seq2tensor(seq)
         label = int(self.data["label"][idx])
-        return seq, label
+        return tensor, label, seq
 
     def read_files(self, flist, exclude):
         seqs = []
@@ -135,17 +136,17 @@ class SFData(Dataset):
         return tensor
 
     def _pad_seq(self, samples):
-        seq, label = zip(*samples)
-        seq_lens = [len(s) for s in seq]
-        sorted_list = sorted(zip(seq, label, seq_lens), key=lambda x: -x[2])
-        seq, label, seq_lens = zip(*sorted_list)
-        seq = pad_sequence(seq)
-        return seq, torch.tensor(label), torch.tensor(seq_lens)
+        tensor, label, seq = zip(*samples)
+        seq_lens = [len(s) for s in tensor]
+        sorted_list = sorted(zip(tensor, label, seq_lens, seq), key=lambda x: -x[2])
+        tensor, label, seq_lens, seq = zip(*sorted_list)
+        tensor = pad_sequence(tensor)
+        return tensor, torch.tensor(label), torch.tensor(seq_lens), seq
 
     def pack_seq(self, samples):
-        seqs, labels, seq_lens = self._pad_seq(samples)
-        seqs = pack_padded_sequence(seqs, seq_lens)
-        return seqs, labels, seq_lens
+        tensors, labels, seq_lens, seqs = self._pad_seq(samples)
+        tensors = pack_padded_sequence(tensors, seq_lens)
+        return tensors, labels, seq_lens, seqs
 
     def tensor2seq(self, tensor):
         return "".join([self.characters[j] for i, j in tensor.nonzero()])
