@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 
 class RNN(nn.Module):
     """Recurrent neural network"""
