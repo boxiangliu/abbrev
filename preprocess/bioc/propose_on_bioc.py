@@ -31,7 +31,7 @@ def main():
 
         elif line.startswith("annotation:\tSF"):
             gold_sf = line.strip().split("\t")[2]
-            gold_sfs.append(gold_sf)
+            gold_sfs.add(gold_sf)
 
     for proposal in proposals:
         if proposal in gold_sfs:
