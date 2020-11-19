@@ -11,7 +11,7 @@ from collections import defaultdict
 @click.option("--model_fn", type=str, help="Path to model.")
 @click.option("--eval_fn", type=str, help="Path to eval file.")
 def main(model_fn, eval_fn):
-    model = torch.load(model_fn)
+    model = torch.load(model_fn).to(torch.device("cpu"))
     model.eval()
 
     eval_data = SFData([eval_fn])
