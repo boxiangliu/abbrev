@@ -147,6 +147,9 @@ class SFData(Dataset):
         seqs = pack_padded_sequence(seqs, seq_lens)
         return seqs, labels, seq_lens
 
+    def tensor2seq(self, tensor):
+        return "".join([self.characters[j] for i, j in tensor.nonzero()])
+
 
 class WrappedDataLoader:
 

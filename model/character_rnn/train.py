@@ -10,7 +10,7 @@ import math
 import pickle
 from pathlib import Path
 
-hidden_size = 128
+hidden_size = 512
 n_epochs = 100
 save_every = 500
 # If you set this too high, it might explode. If too low, it might not learn
@@ -112,6 +112,12 @@ loss_func = nn.NLLLoss()
 train_losses, eval_losses = fit(
     n_epochs, model, loss_func, opt, train_loader, eval_loader)
 
+import matplotlib.pyplot as plt
+plt.plot(train_losses)
+plt.savefig("train_losses.png")
+
+plt.plot(eval_losses)
+plt.savefig("eval_losses.png")
 
 torch.save(model, 'char-rnn-classification.pt')
 with open("./all_losses.pkl", "wb") as fout:
