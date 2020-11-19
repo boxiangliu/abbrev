@@ -18,8 +18,7 @@ class RNN(nn.Module):
         self.output_size = output_size
         self.arch = arch
 
-        self.dropout1 = nn.Dropout(p=0.2)
-        self.dropout2 = nn.Dropout(p=0.5)
+        self.dropout = nn.Dropout(p=0.5)
 
         if arch == "rnn":
             self.rnn = nn.RNN(input_size=input_size, hidden_size=hidden_size)
@@ -33,13 +32,12 @@ class RNN(nn.Module):
         """Args:
                 seqs (PackedSequence): Packed padded sequence.
         """
-        seqs = self.dropout1(seqs)
         if self.arch == "rnn":
             output, hidden = self.rnn(seqs)
         elif self.arch == "lstm":
             output, (hidden, cell) = self.rnn(seqs)
 
-        hidden = self.dropout2(hidden)
+        hidden = self.dropout(hidden)
         output = self.fc(hidden[0])
 
         return self.softmax(output)
