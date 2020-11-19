@@ -11,10 +11,10 @@ import pickle
 from pathlib import Path
 
 hidden_size = 128
-n_epochs = 10
+n_epochs = 100
 save_every = 500
 # If you set this too high, it might explode. If too low, it might not learn
-learning_rate = 0.01
+learning_rate = 0.005
 batch_size = 16
 
 
@@ -30,8 +30,8 @@ def to_device(*args):
     return [x.to(device) for x in args]
 
 
-def get_model(input_size, hidden_size, output_size, device):
-    model = RNN(input_size, hidden_size, output_size).to(device)
+def get_model(input_size, hidden_size, output_size, arch, device):
+    model = RNN(input_size, hidden_size, output_size, arch).to(device)
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
     return model, optimizer
@@ -70,11 +70,9 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
     start = time.time()
 
     for epoch in range(n_epochs):
-
-        model.train()
-
         for seqs, labels, seq_lens in train_loader:
 
+            model.train()
             n_steps += 1
             n_train_examples += len(labels)
             loss = loss_batch(
@@ -89,14 +87,10 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
                 n_train_examples = 0
 
                 model.eval()
-                eval_loss = 0
-                n_eval_examples = 0
-                for seqs, labels, seq_lens in eval_loader:
-                    n_eval_examples += len(labels)
-                    loss = loss_batch(
-                        model, loss_func, seqs, labels)
-                    eval_loss += loss
-                avg_eval_loss = eval_loss / n_eval_examples
+                with torch.no_grad():
+                    eval_loss = sum([loss_batch(model, loss_func, seqs, labels) / len(labels)
+                                     for seqs, labels, seq_lens in eval_loader])
+                avg_eval_loss = eval_loss / len(eval_loader)
                 eval_losses.append(avg_eval_loss)
 
                 print('STEP %d (%s) TRAIN=%.4f EVAL=%.4f' %
@@ -107,14 +101,16 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
 
 device = torch.device(
     "cuda") if torch.cuda.is_available() else torch.device("cpu")
+arch = "lstm"
 train_data, train_loader, eval_data, eval_loader = get_data(batch_size)
 train_loader = WrappedDataLoader(train_loader, to_device)
 eval_loader = WrappedDataLoader(eval_loader, to_device)
 input_size = train_data.n_characters
 output_size = 2
-model, opt = get_model(input_size, hidden_size, output_size, device)
+model, opt = get_model(input_size, hidden_size, output_size, arch, device)
 loss_func = nn.NLLLoss()
-train_losses, eval_losses = fit(n_epochs, model, loss_func, opt, train_loader, eval_loader)
+train_losses, eval_losses = fit(
+    n_epochs, model, loss_func, opt, train_loader, eval_loader)
 
 
 torch.save(model, 'char-rnn-classification.pt')

@@ -4,7 +4,7 @@ import torch.nn as nn
 class RNN(nn.Module):
     """Recurrent neural network"""
 
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, input_size, hidden_size, output_size, arch="rnn"):
         """Args:
                 input_size (int): input dimension of a time step.
                 hidden_size (int): dimesion of hidden layer.
@@ -15,8 +15,12 @@ class RNN(nn.Module):
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
+        self.arch = arch
+        if arch == "rnn":
+            self.rnn = nn.RNN(input_size=input_size, hidden_size=hidden_size)
+        elif arch == "lstm":
+            self.rnn = nn.LSTM(input_size=input_size, hidden_size=hidden_size)
 
-        self.rnn = nn.RNN(input_size=input_size, hidden_size=hidden_size)
         self.fc = nn.Linear(in_features=hidden_size, out_features=output_size)
         self.softmax = nn.LogSoftmax(dim=1)
 
@@ -24,7 +28,11 @@ class RNN(nn.Module):
         """Args:
                 seqs (PackedSequence): Packed padded sequence.
         """
-        output, hidden = self.rnn(seqs)
+        if self.arch == "rnn":
+            output, hidden = self.rnn(seqs)
+        elif self.arch == "lstm":
+            output, hidden, cell = self.rnn(seqs)
+
         output = self.fc(hidden.squeeze())
         return self.softmax(output)
 
