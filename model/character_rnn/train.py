@@ -18,7 +18,11 @@ save_every = 50
 # If you set this too high, it might explode. If too low, it might not learn
 learning_rate = 0.005
 batch_size = 16
-dropout = 0.5
+output_size = 2
+arch = "lstm"
+device = torch.device(
+    "cuda") if torch.cuda.is_available() else torch.device("cpu")
+
 
 OUT_DIR = Path("../processed_data/model/character_rnn/lstm/run_01/")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -36,8 +40,8 @@ def to_device(*args):
     return [x.to(device) for x in args]
 
 
-def get_model(input_size, hidden_size, output_size, arch, device, dropout=0):
-    model = RNN(input_size, hidden_size, output_size, arch, dropout).to(device)
+def get_model(input_size, hidden_size, output_size, arch, device):
+    model = RNN(input_size, hidden_size, output_size, arch).to(device)
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
     return model, optimizer
@@ -141,15 +145,11 @@ def save_metrics(metrics):
 
 
 def main():
-    device = torch.device(
-        "cuda") if torch.cuda.is_available() else torch.device("cpu")
-    arch = "lstm"
     train_data, train_loader, eval_data, eval_loader = get_data(batch_size)
     train_loader = WrappedDataLoader(train_loader, to_device)
     eval_loader = WrappedDataLoader(eval_loader, to_device)
     input_size = train_data.n_characters
-    output_size = 2
-    model, opt = get_model(input_size, hidden_size, output_size, arch, device, dropout)
+    model, opt = get_model(input_size, hidden_size, output_size, arch, device)
     loss_func = nn.NLLLoss()
     train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
         n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
