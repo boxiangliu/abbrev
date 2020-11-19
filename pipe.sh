@@ -176,7 +176,7 @@ python3 model/character_rnn/example/toy_data.py > ../processed_data/model/charac
 # Classify short forms #
 ########################
 # Classify short forms into valid or invalid short forms. 
-cat  ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python3 preprocess/bioc/propose_on_bioc.py > preprocess/bioc/propose_on_bioc/Ab3P
+cat  ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python3 preprocess/bioc/propose_on_bioc.py > ../processed_data/preprocess/bioc/propose_on_bioc/Ab3P
 
 ############
 # Analysis #

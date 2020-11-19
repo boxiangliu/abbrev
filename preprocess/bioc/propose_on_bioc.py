@@ -29,7 +29,7 @@ def main():
             line = line.strip().split("\t")[1]
             find(line, proposals)
 
-        elif line.starswith("annotation:\tSF"):
+        elif line.startswith("annotation:\tSF"):
             gold_sf = line.strip().split("\t")[2]
             gold_sfs.append(gold_sf)
 
