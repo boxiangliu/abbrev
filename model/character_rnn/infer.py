@@ -21,7 +21,7 @@ def main(model_fn, eval_fn):
         for tensors, labels, seq_lens, seqs in eval_loader:
             container["pred"] += torch.argmax(model(tensors), dim=1).tolist()
             container["label"] += labels.tolist()
-            container["seq"] += seqs.tolist()
+            container["seq"] += list(seqs)
 
     for pred, label, seq in zip(container["pred"], container["label"], container["seq"]):
         sys.stdout.write(f"{seq}\t{pred}\t{label}\n")
