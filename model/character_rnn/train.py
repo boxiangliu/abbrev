@@ -163,7 +163,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-for seq, label in eval_data:
-    model(seq.unsqueeze(1).to(device))
-seq.unsqueeze(1).to(device).size()
