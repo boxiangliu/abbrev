@@ -116,12 +116,12 @@ input_size = train_data.n_characters
 output_size = 2
 model, opt = get_model(input_size, hidden_size, output_size, arch, device)
 loss_func = nn.NLLLoss()
-train_losses, eval_losses = fit(
+train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
     n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
 
 from scipy.signal import savgol_filter
 eval_losses_smooth = savgol_filter(eval_losses, 15, 3)
-
+eval_accuracies_smooth = savgol_filter(eval_accuracies, 15, 3)
 
 import matplotlib.pyplot as plt
 plt.close()
@@ -130,9 +130,15 @@ plt.plot(eval_losses, label="eval")
 plt.plot(eval_losses_smooth, label="smooth eval")
 plt.savefig("losses.png")
 
+plt.close()
+plt.plot(train_accuracies, label="train")
+plt.plot(eval_accuracies, label="eval")
+plt.plot(eval_accuracies_smooth, label="smooth eval")
+plt.savefig("accuracies.png")
+
 torch.save(model, 'sf-classification.pt')
 with open("./all_losses.pkl", "wb") as fout:
-    pickle.dump([train_losses, eval_losses], fout)
+    pickle.dump([train_losses, eval_losses, train_accuracies, eval_accuracies], fout)
 
 
 for seq, label in eval_data:
