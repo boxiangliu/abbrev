@@ -26,3 +26,6 @@ def main(model_fn, eval_fn):
     for pred, label, seq in zip(container["pred"], container["label"], container["seq"]):
         sys.stdout.write(f"{seq}\t{pred}\t{label}\n")
 
+if __name__ == "__main__":
+    main()
+
