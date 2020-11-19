@@ -33,7 +33,7 @@ class RNN(nn.Module):
         """Args:
                 seqs (PackedSequence): Packed padded sequence.
         """
-        seqs = nn.dropout1(seqs)
+        seqs = self.dropout1(seqs)
         if self.arch == "rnn":
             output, hidden = self.rnn(seqs)
         elif self.arch == "lstm":

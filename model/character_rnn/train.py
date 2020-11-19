@@ -82,7 +82,6 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
 
             model.train()
             n_steps += 1
-            n_train_examples += len(labels)
             loss, pred = loss_batch(
                 model, loss_func, seqs, labels, opt)
             train_loss += loss
@@ -144,23 +143,20 @@ def save_metrics(metrics):
         pickle.dump(metrics, fout)
 
 
-def main():
-    train_data, train_loader, eval_data, eval_loader = get_data(batch_size)
-    train_loader = WrappedDataLoader(train_loader, to_device)
-    eval_loader = WrappedDataLoader(eval_loader, to_device)
-    input_size = train_data.n_characters
-    model, opt = get_model(input_size, hidden_size, output_size, arch, device)
-    loss_func = nn.NLLLoss()
-    train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
-        n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
+train_data, train_loader, eval_data, eval_loader = get_data(batch_size)
+train_loader = WrappedDataLoader(train_loader, to_device)
+eval_loader = WrappedDataLoader(eval_loader, to_device)
+input_size = train_data.n_characters
+model, opt = get_model(input_size, hidden_size, output_size, arch, device)
+loss_func = nn.NLLLoss()
+train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
+    n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
 
 
-    plot_metrics(train_losses, eval_losses, train_accuracies, eval_accuracies)
-    torch.save(model, OUT_DIR / 'model.pt')
-    save_metrics([train_losses, eval_losses, train_accuracies, eval_accuracies])
+plot_metrics(train_losses, eval_losses, train_accuracies, eval_accuracies)
+torch.save(model, OUT_DIR / 'model.pt')
+save_metrics([train_losses, eval_losses, train_accuracies, eval_accuracies])
 
-
-main()
 
 for seq, label in eval_data:
     model(seq.unsqueeze(1).to(device))
