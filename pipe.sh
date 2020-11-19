@@ -44,6 +44,7 @@ cut -f5 ../processed_data/preprocess/propose/pubmed19n0*.tsv | uniq | python3 pr
 
 
 # Converting Bio-C formatted XML to txt format:
+# Ken did this. 
 python3 preprocess/bioc/xml_to_txt.sh
 
 # Create training examples for character RNN:
@@ -169,6 +170,13 @@ cut -f1 ../processed_data/model/propose/MED1250_proposal.tsv | python model/freq
 ############
 # Create toy example:
 python3 model/character_rnn/example/toy_data.py > ../processed_data/model/character_rnn/example/toy_data/toy_data.tsv
+
+
+########################
+# Classify short forms #
+########################
+# Classify short forms into valid or invalid short forms. 
+cat  ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python3 preprocess/bioc/propose_on_bioc.py > preprocess/bioc/propose_on_bioc/Ab3P
 
 ############
 # Analysis #
