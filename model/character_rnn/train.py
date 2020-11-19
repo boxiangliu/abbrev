@@ -11,8 +11,8 @@ import pickle
 from pathlib import Path
 
 hidden_size = 512
-n_epochs = 100
-save_every = 500
+n_epochs = 15
+save_every = 50
 # If you set this too high, it might explode. If too low, it might not learn
 learning_rate = 0.005
 batch_size = 16
@@ -39,12 +39,12 @@ def get_model(input_size, hidden_size, output_size, arch, device):
 
 def get_data(batch_size):
     data_dir = Path("../processed_data/preprocess/bioc/propose_on_bioc/")
-    sf_eval = SFData([data_dir / "SH"])
+    sf_eval = SFData([data_dir / "medstract"])
     sf_train = SFData([data_dir / "Ab3P", data_dir / "bioadi",
-                       data_dir / "medstract"], exclude=set(sf_eval.data["seq"]))
-    return sf_train, DataLoader(sf_train, batch_size=batch_size,
+                       data_dir / "SH"], exclude=set(sf_eval.data["seq"]))
+    return sf_train, DataLoader(sf_train, batch_size=batch_size, shuffle=True,
                                 collate_fn=sf_train.pack_seq), \
-        sf_eval, DataLoader(sf_eval, batch_size=batch_size,
+        sf_eval, DataLoader(sf_eval, batch_size=batch_size * 4,
                             collate_fn=sf_eval.pack_seq)
 
 
@@ -110,15 +110,24 @@ output_size = 2
 model, opt = get_model(input_size, hidden_size, output_size, arch, device)
 loss_func = nn.NLLLoss()
 train_losses, eval_losses = fit(
-    n_epochs, model, loss_func, opt, train_loader, eval_loader)
+    n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
+
+from scipy.signal import savgol_filter
+eval_losses_smooth = savgol_filter(eval_losses,15,3)
+
 
 import matplotlib.pyplot as plt
-plt.plot(train_losses)
-plt.savefig("train_losses.png")
+plt.close()
+plt.plot(train_losses, label="train")
+plt.plot(eval_losses, label="eval")
+plt.plot(eval_losses_smooth, label="smooth eval")
+plt.savefig("losses.png")
 
-plt.plot(eval_losses)
-plt.savefig("eval_losses.png")
-
-torch.save(model, 'char-rnn-classification.pt')
+torch.save(model, 'sf-classification.pt')
 with open("./all_losses.pkl", "wb") as fout:
-    pickle.dump(all_losses, fout)
+    pickle.dump([train_losses, eval_losses] , fout)
+
+
+for seq, label in eval_data:
+    model(seq.unsqueeze(1))
+
