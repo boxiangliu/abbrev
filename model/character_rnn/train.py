@@ -1,10 +1,8 @@
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 import sys
-sys.path.append(
-    "/mnt/scratch/boxiang/projects/abbrev/scripts/model/character_rnn/example/")
-from data import ToyData, WrappedDataLoader
+sys.path.append("./model/character_rnn/")
+from data import SFData, WrappedDataLoader
 from torch.utils.data import DataLoader
 from model import RNN
 import random

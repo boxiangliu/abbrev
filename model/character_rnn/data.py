@@ -5,7 +5,7 @@ import os
 from torch.utils.data import Dataset, DataLoader
 from collections import defaultdict
 from pathlib import Path
-
+import torch.nn as nn
 
 all_letters = string.printable
 n_letters = len(all_letters)
@@ -89,7 +89,7 @@ def pad_seq(samples):
     return torch.tensor(labels), padded_seqs, seq_lens
 
 
-class SF(nn.Module):
+class SFData(Dataset):
     """Classify short form into valid and invalid"""
 
     def __init__(self, flist, exclude=set()):
