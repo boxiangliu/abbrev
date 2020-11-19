@@ -145,11 +145,8 @@ class SFData(Dataset):
         seqs = pack_padded_sequence(seqs, seq_lens)
         return seqs, labels, seq_lens
 
-data_dir = Path("../processed_data/preprocess/bioc/propose_on_bioc/")
-sf_eval = SF([data_dir / "SH"])
-sf_train = SF([data_dir / "Ab3P", data_dir / "bioadi", data_dir / "medstract"], exclude=set(sf_eval.data["seq"]))
 
-dataset = SFLFPairs("test")
-dataloader = DataLoader(dataset, batch_size=4, shuffle=True,
-                        num_workers=1, collate_fn=pad_seq)
-i, (labels, padded_seqs, seq_lens) = next(enumerate(dataloader))
+# dataset = SFLFPairs("test")
+# dataloader = DataLoader(dataset, batch_size=4, shuffle=True,
+#                         num_workers=1, collate_fn=pad_seq)
+# i, (labels, padded_seqs, seq_lens) = next(enumerate(dataloader))

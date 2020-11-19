@@ -5,10 +5,10 @@ sys.path.append("./model/character_rnn/")
 from data import SFData, WrappedDataLoader
 from torch.utils.data import DataLoader
 from model import RNN
-import random
 import time
 import math
 import pickle
+from pathlib import Path
 
 hidden_size = 128
 n_epochs = 5
@@ -38,10 +38,14 @@ def get_model(input_size, hidden_size, output_size, device):
 
 
 def get_data(batch_size):
-    data = ToyData(
-        "../processed_data/model/character_rnn/example/toy_data/toy_data.tsv")
-    assert len(data) == 10000
-    return data, DataLoader(data, batch_size=batch_size, collate_fn=data.pack_seq)
+    data_dir = Path("../processed_data/preprocess/bioc/propose_on_bioc/")
+    sf_eval = SFData([data_dir / "SH"])
+    sf_train = SFData([data_dir / "Ab3P", data_dir / "bioadi",
+                       data_dir / "medstract"], exclude=set(sf_eval.data["seq"]))
+    return sf_train, DataLoader(sf_train, batch_size=batch_size,
+                                collate_fn=sf_train.pack_seq), \
+        sf_eval, DataLoader(sf_eval, batch_size=batch_size,
+                            collate_fn=sf_eval.pack_seq)
 
 
 def train_batch(model, loss_func, seqs, labels, seq_lens, opt=None):
@@ -81,7 +85,7 @@ def fit(n_epochs, model, loss_func, opt, train_loader, save_every=1000):
 
 device = torch.device(
     "cuda") if torch.cuda.is_available() else torch.device("cpu")
-toy_data, toy_loader = get_data(batch_size)
+train_data, train_loader, eval_data, eval_loader = get_data(batch_size)
 toy_loader = WrappedDataLoader(toy_loader, to_device)
 input_size = output_size = toy_data.n_letters
 model, opt = get_model(input_size, hidden_size, output_size, device)
