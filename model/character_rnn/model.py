@@ -31,7 +31,7 @@ class RNN(nn.Module):
         if self.arch == "rnn":
             output, hidden = self.rnn(seqs)
         elif self.arch == "lstm":
-            output, hidden, cell = self.rnn(seqs)
+            output, (hidden, cell) = self.rnn(seqs)
 
         output = self.fc(hidden.squeeze())
         return self.softmax(output)
