@@ -146,6 +146,21 @@ class SFData(Dataset):
         return seqs, labels, seq_lens
 
 
+class WrappedDataLoader:
+
+    def __init__(self, dl, func):
+        self.dl = dl
+        self.func = func
+
+    def __len__(self):
+        return len(self.dl)
+
+    def __iter__(self):
+        batches = iter(self.dl)
+        for b in batches:
+            yield (self.func(*b))
+
+
 # dataset = SFLFPairs("test")
 # dataloader = DataLoader(dataset, batch_size=4, shuffle=True,
 #                         num_workers=1, collate_fn=pad_seq)
