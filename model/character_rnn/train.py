@@ -84,7 +84,7 @@ def timeSince(since):
 def to_device(*args):
     container = []
     for x in args:
-        container.append(x.to(DEVICE) if torch.is_tensor(x) else x)
+        container.append(x.to(DEVICE) if hasattr(x, "to") else x)
     return container
 
 
