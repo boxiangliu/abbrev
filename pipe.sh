@@ -183,6 +183,7 @@ done
 
 # Train LSTM model: 
 python3 model/character_rnn/train.py --config_fn ../processed_data/model/character_rnn/lstm/run_01/config.json
+python3 model/character_rnn/train.py --config_fn ../processed_data/model/character_rnn/lstm/run_02/config.json
 
 # Output prediction result: 
 python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_01/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_on_bioc/medstract > ../processed_data/model/character_rnn/lstm/run_01/preds.tsv

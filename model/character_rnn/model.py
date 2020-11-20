@@ -36,7 +36,7 @@ class RNN(nn.Module):
                 seqs (tensor): padded sequence.
                 seq_lens (tensor): sequence lengths.
         """
-        seqs = self.pack_padded_sequence(seqs, seq_lens)
+        seqs = self.pack_padded_sequence(seqs, seq_lens.cpu())
 
         if self.arch == "rnn":
             output, hidden = self.rnn(seqs)
@@ -79,7 +79,7 @@ class EmbedRNN(nn.Module):
                 seqs (PackedSequence): Packed padded sequence.
         """
         embedding = self.embed(seqs)
-        seqs =  self.pack_padded_sequence(embedding, seq_lens)
+        seqs =  self.pack_padded_sequence(embedding, seq_lens.cpu())
         output, (hidden, cell) = self.rnn(seqs)
         hidden = self.dropout(hidden)
         output = self.fc(hidden[0])
