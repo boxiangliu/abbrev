@@ -18,7 +18,7 @@ import click
 
 @click.command()
 @click.option("--config_fn", type=str, help="Path to configuration file.")
-def main():
+def main(config_fn):
     config = read_config(config_fn)
     hidden_size, n_epochs, save_every, learning_rate, \
         batch_size, output_size, arch = set_config(config)
