@@ -4,7 +4,7 @@ import sys
 sys.path.append("./model/character_rnn/")
 from data import SFData, WrappedDataLoader
 from torch.utils.data import DataLoader
-from model import RNN
+from model import RNN, EmbedRNN
 import time
 import math
 import pickle
@@ -69,6 +69,9 @@ def set_config(config):
     batch_size = config["batch_size"]
     output_size = config["output_size"]
     arch = config["arch"]
+
+    for k, v in config.items():
+        sys.stderr.write(f"{k}={v}\n")
 
     return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, arch
 
