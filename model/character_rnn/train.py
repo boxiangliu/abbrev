@@ -27,7 +27,7 @@ def main(config_fn):
     train_loader = WrappedDataLoader(train_loader, to_device)
     eval_loader = WrappedDataLoader(eval_loader, to_device)
     input_size = train_data.n_characters
-    model, opt = get_model(input_size, hidden_size, output_size, arch)
+    model, opt = get_model(input_size, hidden_size, output_size, learning_rate, arch)
     loss_func = nn.NLLLoss()
     train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
         n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
@@ -85,7 +85,7 @@ def to_device(*args):
     return [x.to(DEVICE) for x in args]
 
 
-def get_model(input_size, hidden_size, output_size, arch):
+def get_model(input_size, hidden_size, output_size, learning_rate, arch):
     model = RNN(input_size, hidden_size, output_size, arch).to(DEVICE)
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
