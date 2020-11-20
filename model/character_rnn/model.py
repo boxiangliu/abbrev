@@ -53,7 +53,7 @@ class RNN(nn.Module):
 class EmbedRNN(nn.Module):
     """Recurrent neural network"""
 
-    def __init__(self, input_size, hidden_size, output_size, embed_size=16, arch="rnn"):
+    def __init__(self, input_size, hidden_size, output_size, embed_size=16):
         """Args:
                 input_size (int): input dimension of a time step.
                 hidden_size (int): dimesion of hidden layer.
@@ -61,11 +61,12 @@ class EmbedRNN(nn.Module):
         """
         super(EmbedRNN, self).__init__()
 
+        print(f"input_size:{input_size}")
+
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
         self.embed_size = embed_size
-        self.arch = arch
 
         self.dropout = nn.Dropout(p=0.5)
         self.embed = nn.Embedding(input_size, embed_size)

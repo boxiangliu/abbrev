@@ -93,7 +93,7 @@ def to_device(*args):
 
 def get_model(input_size, hidden_size, output_size, learning_rate, arch):
     if arch == "lstm_embed":
-        model = EmbedRNN(input_size, hidden_size, output_size, arch).to(DEVICE)
+        model = EmbedRNN(input_size, hidden_size, output_size).to(DEVICE)
     else:
         model = RNN(input_size, hidden_size, output_size, arch).to(DEVICE)
     optimizer = torch.optim.SGD(
