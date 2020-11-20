@@ -20,14 +20,14 @@ def main(model_fn, eval_fn):
         container = defaultdict(list)
         for tensors, labels, seq_lens, seqs in eval_loader:
             prob = model(tensors)
-            container["prob"] += prob[:, 1].tolist()
+            container["prob"] += prob[:, 1].exp().tolist()
             container["pred"] += torch.argmax(prob, dim=1).tolist()
             container["label"] += labels.tolist()
             container["seq"] += list(seqs)
 
     sys.stdout.write("seq\tpred\tlabel\n")
     for prob, pred, label, seq in zip(container["prob"], container["pred"], container["label"], container["seq"]):
-        sys.stdout.write(f"{seq}\t{prob}\t{pred}\t{label}\n")
+        sys.stdout.write(f"{seq}\t{prob:.04f}\t{pred}\t{label}\n")
 
 if __name__ == "__main__":
     main()
