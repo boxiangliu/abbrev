@@ -73,7 +73,7 @@ class EmbedRNN(nn.Module):
         self.rnn = nn.LSTM(input_size=embed_size, hidden_size=hidden_size)
         self.fc = nn.Linear(in_features=embed_size, out_features=output_size)
         self.softmax = nn.LogSoftmax(dim=1)
-        self.pack_padded_seq = pack_padded_seq
+        self.pack_padded_sequence = pack_padded_sequence
 
     def forward(self, seqs, seq_lens):
         """Args:
