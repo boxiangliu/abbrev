@@ -19,13 +19,15 @@ def main(model_fn, eval_fn):
     with torch.no_grad():
         container = defaultdict(list)
         for tensors, labels, seq_lens, seqs in eval_loader:
-            container["pred"] += torch.argmax(model(tensors), dim=1).tolist()
+            prob = model(tensors)
+            container["prob"] += prob[:, 1].tolist()
+            container["pred"] += torch.argmax(prob, dim=1).tolist()
             container["label"] += labels.tolist()
             container["seq"] += list(seqs)
 
     sys.stdout.write("seq\tpred\tlabel\n")
-    for pred, label, seq in zip(container["pred"], container["label"], container["seq"]):
-        sys.stdout.write(f"{seq}\t{pred}\t{label}\n")
+    for prob, pred, label, seq in zip(container["prob"], container["pred"], container["label"], container["seq"]):
+        sys.stdout.write(f"{seq}\t{prob}\t{pred}\t{label}\n")
 
 if __name__ == "__main__":
     main()

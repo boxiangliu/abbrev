@@ -41,3 +41,16 @@ class RNN(nn.Module):
         output = self.fc(hidden[0])
 
         return self.softmax(output)
+
+
+model = nn.Transformer()
+src = torch.rand((10, 32, 512))
+tgt = torch.rand((20, 32, 512))
+out = model(src, tgt)
+
+
+
+encoder_layer = nn.TransformerEncoderLayer(d_model=512, nhead=8, dim_feedforward=512)
+encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
+out = encoder(src)
+out.size()
