@@ -94,7 +94,7 @@ def pad_seq(samples):
 class SFData(Dataset):
     """Classify short form into valid and invalid"""
 
-    def __init__(self, flist, exclude=set()):
+    def __init__(self, flist, exclude=set(), one_hot=True):
         """Args:
             flist (list): a list of files.
             exclude (set): a set of short forms to exclude.
@@ -105,13 +105,18 @@ class SFData(Dataset):
         # empty string means unknown
         self.characters = [""] + list(string.printable)
         self.n_characters = len(self.characters)
+        self.one_hot = one_hot
 
     def __len__(self):
         return len(self.data["seq"])
 
     def __getitem__(self, idx):
         seq = self.data["seq"][idx]
-        tensor = self.seq2tensor(seq)
+        if self.one_hot:
+            tensor = self.seq2one_hot(seq)
+        else:
+            tensor = self.seq2idx(seq)
+
         label = int(self.data["label"][idx])
         return tensor, label, seq
 
@@ -128,17 +133,25 @@ class SFData(Dataset):
                             labels.append(split_line[1])
         return {"seq": seqs, "label": labels}
 
-    def seq2tensor(self, seq):
+    def seq2one_hot(self, seq):
         tensor = torch.zeros(len(seq), self.n_characters)
         for i, character in enumerate(seq):
             ascii_char = unidecode(character)
             tensor[i][self.characters.index(ascii_char)] = 1
         return tensor
 
+    def seq2idx(self, seq):
+        tensor = torch.zeros(len(seq))
+        for i, character in enumerate(seq):
+            ascii_char = unidecode(character)
+            tensor[i] = self.characters.index(ascii_char)
+        return tensor
+
     def _pad_seq(self, samples):
         tensor, label, seq = zip(*samples)
         seq_lens = [len(s) for s in tensor]
-        sorted_list = sorted(zip(tensor, label, seq_lens, seq), key=lambda x: -x[2])
+        sorted_list = sorted(
+            zip(tensor, label, seq_lens, seq), key=lambda x: -x[2])
         tensor, label, seq_lens, seq = zip(*sorted_list)
         tensor = pad_sequence(tensor)
         return tensor, torch.tensor(label), torch.tensor(seq_lens), seq
@@ -148,7 +161,7 @@ class SFData(Dataset):
         tensors = pack_padded_sequence(tensors, seq_lens)
         return tensors, labels, seq_lens, seqs
 
-    def tensor2seq(self, tensor):
+    def one_hot2seq(self, tensor):
         return "".join([self.characters[j] for i, j in tensor.nonzero()])
 
 

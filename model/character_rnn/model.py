@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
 
 
 class RNN(nn.Module):
@@ -43,8 +44,47 @@ class RNN(nn.Module):
         return self.softmax(output)
 
 
+
+class EmbedRNN(nn.Module):
+    """Recurrent neural network"""
+
+    def __init__(self, input_size, hidden_size, output_size, embed_size=16, arch="rnn"):
+        """Args:
+                input_size (int): input dimension of a time step.
+                hidden_size (int): dimesion of hidden layer.
+                output_size (int): number of output categories.  
+        """
+        super(RNN, self).__init__()
+
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.output_size = output_size
+        self.embed_size = embed_size
+        self.arch = arch
+
+        self.dropout = nn.Dropout(p=0.5)
+        self.embed = nn.Embedding(input_size, embed_size)
+        self.rnn = nn.LSTM(input_size=embed_size, hidden_size=hidden_size)
+        self.fc = nn.Linear(in_features=embed_size, out_features=output_size)
+        self.softmax = nn.LogSoftmax(dim=1)
+        self.pack_padded_seq = pack_padded_seq
+
+    def forward(self, seqs, seq_lens):
+        """Args:
+                seqs (PackedSequence): Packed padded sequence.
+        """
+        embedding = self.embed(seqs)
+        seqs =  self.pack_padded_sequence(embedding, seq_lens)
+        output, (hidden, cell) = self.rnn(seqs)
+        hidden = self.dropout(hidden)
+        output = self.fc(hidden[0])
+
+        return self.softmax(output)
+
+
 class BERT(nn.Module):
     """Transformer encoder side"""
+
     def __init__(self, input_size, hidden_size, output_size):
         """Args:
                 input_size (int): input dimension of a time step.
@@ -57,15 +97,14 @@ class BERT(nn.Module):
         self.hidden_size = hidden_size
         self.output_size = output_size
 
-        self.encoder_layer = nn.TransformerEncoderLayer(d_model=input_size, nhead=8, dim_feedforward=hidden_size)
+        self.encoder_layer = nn.TransformerEncoderLayer(
+            d_model=input_size, nhead=8, dim_feedforward=hidden_size)
         self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
-        self.decoder = nn.Linear(in_features=hidden_size, out_features=output_size)
+        self.decoder = nn.Linear(
+            in_features=hidden_size, out_features=output_size)
         self.softmax = nn.LogSoftmax(dim=1)
 
     def forward(self, seqs):
         output = self.encoder(seqs)
-        output = self.decoder(output[0]) # the [CLS] token
+        output = self.decoder(output[0])  # the [CLS] token
         return self.softmax(output)
-
-
-
