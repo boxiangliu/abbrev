@@ -89,7 +89,10 @@ def to_device(*args):
 
 
 def get_model(input_size, hidden_size, output_size, learning_rate, arch):
-    model = RNN(input_size, hidden_size, output_size, arch).to(DEVICE)
+    if arch == "lstm_embed":
+        model = EmbedRNN(input_size, hidden_size, output_size, arch).to(DEVICE)
+    else:
+        model = RNN(input_size, hidden_size, output_size, arch).to(DEVICE)
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
     return model, optimizer
@@ -106,8 +109,8 @@ def get_data(batch_size):
                             collate_fn=sf_eval._pad_seq)
 
 
-def loss_batch(model, loss_func, tensors, labels, opt=None):
-    output = model(tensors)
+def loss_batch(model, loss_func, tensors, seq_lens, labels, opt=None):
+    output = model(tensors, seq_lens)
     pred = torch.argmax(output, dim=1)
 
     loss = loss_func(output, labels)
@@ -131,7 +134,7 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
             model.train()
             n_steps += 1
             loss, pred = loss_batch(
-                model, loss_func, tensors, labels, opt)
+                model, loss_func, tensors, seq_lens, labels, opt)
             train_loss += loss
             train_corrects += sum(pred == labels)
             n_train_examples += len(labels)
@@ -149,7 +152,7 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
                 with torch.no_grad():
                     for tensors, labels, seq_lens, seqs in eval_loader:
                         loss, pred = loss_batch(
-                            model, loss_func, tensors, labels)
+                            model, loss_func, tensors, seq_lens, labels)
                         eval_loss += loss
                         eval_corrects += sum(pred == labels)
                         n_eval_examples += len(labels)
