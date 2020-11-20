@@ -25,7 +25,7 @@ def main(model_fn, eval_fn):
             container["label"] += labels.tolist()
             container["seq"] += list(seqs)
 
-    sys.stdout.write("seq\tpred\tlabel\n")
+    sys.stdout.write("seq\tprob\tpred\tlabel\n")
     for prob, pred, label, seq in zip(container["prob"], container["pred"], container["label"], container["seq"]):
         sys.stdout.write(f"{seq}\t{prob:.04f}\t{pred}\t{label}\n")
 

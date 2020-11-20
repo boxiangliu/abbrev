@@ -11,21 +11,66 @@ import pickle
 from pathlib import Path
 from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
+import json
+import click
 
-hidden_size = 512
-n_epochs = 15
-save_every = 50
-# If you set this too high, it might explode. If too low, it might not learn
-learning_rate = 0.005
-batch_size = 16
-output_size = 2
-arch = "lstm"
-device = torch.device(
-    "cuda") if torch.cuda.is_available() else torch.device("cpu")
+# config_fn = "../processed_data/model/character_rnn/lstm/run_01/config.json"
+
+@click.command()
+@click.option("--config_fn", type=str, help="Path to configuration file.")
+def main():
+    config = read_config(config_fn)
+    hidden_size, n_epochs, save_every, learning_rate, \
+        batch_size, output_size, arch = set_config(config)
+
+    train_data, train_loader, eval_data, eval_loader = get_data(batch_size)
+    train_loader = WrappedDataLoader(train_loader, to_device)
+    eval_loader = WrappedDataLoader(eval_loader, to_device)
+    input_size = train_data.n_characters
+    model, opt = get_model(input_size, hidden_size, output_size, arch)
+    loss_func = nn.NLLLoss()
+    train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
+        n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
+
+    plot_metrics(train_losses, eval_losses, train_accuracies, eval_accuracies)
+    torch.save(model, OUT_DIR / 'model.pt')
+    save_metrics([train_losses, eval_losses,
+                  train_accuracies, eval_accuracies])
 
 
-OUT_DIR = Path("../processed_data/model/character_rnn/lstm/run_01/")
-OUT_DIR.mkdir(parents=True, exist_ok=True)
+def read_config(config_fn):
+    with open(config_fn) as f:
+        config = json.load(f)
+    return config
+
+
+def set_config(config):
+    # hidden_size = 512
+    # n_epochs = 15
+    # save_every = 50
+    # # If you set this too high, it might explode. If too low, it might not learn
+    # learning_rate = 0.005
+    # batch_size = 16
+    # output_size = 2
+    # arch = "lstm"
+    # OUT_DIR = Path("../processed_data/model/character_rnn/lstm/run_01/")
+
+    global DEVICE, OUT_DIR
+    DEVICE = torch.device(
+        "cuda") if torch.cuda.is_available() else torch.device("cpu")
+
+    OUT_DIR = Path(config["out_dir"])
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    hidden_size = config["hidden_size"]
+    n_epochs = config["n_epochs"]
+    save_every = config["save_every"]
+    learning_rate = config["learning_rate"]
+    batch_size = config["batch_size"]
+    output_size = config["output_size"]
+    arch = config["arch"]
+
+    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, arch
 
 
 def timeSince(since):
@@ -37,11 +82,11 @@ def timeSince(since):
 
 
 def to_device(*args):
-    return [x.to(device) for x in args]
+    return [x.to(DEVICE) for x in args]
 
 
-def get_model(input_size, hidden_size, output_size, arch, device):
-    model = RNN(input_size, hidden_size, output_size, arch).to(device)
+def get_model(input_size, hidden_size, output_size, arch):
+    model = RNN(input_size, hidden_size, output_size, arch).to(DEVICE)
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
     return model, optimizer
@@ -100,7 +145,8 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
                 eval_loss, eval_corrects, n_eval_examples = 0, 0, 0
                 with torch.no_grad():
                     for tensors, labels, seq_lens, seqs in eval_loader:
-                        loss, pred = loss_batch(model, loss_func, tensors, labels)
+                        loss, pred = loss_batch(
+                            model, loss_func, tensors, labels)
                         eval_loss += loss
                         eval_corrects += sum(pred == labels)
                         n_eval_examples += len(labels)
@@ -143,22 +189,6 @@ def plot_metrics(train_losses, eval_losses, train_accuracies, eval_accuracies):
 def save_metrics(metrics):
     with open(OUT_DIR / "all_losses.pkl", "wb") as fout:
         pickle.dump(metrics, fout)
-
-
-def main():
-    train_data, train_loader, eval_data, eval_loader = get_data(batch_size)
-    train_loader = WrappedDataLoader(train_loader, to_device)
-    eval_loader = WrappedDataLoader(eval_loader, to_device)
-    input_size = train_data.n_characters
-    model, opt = get_model(input_size, hidden_size, output_size, arch, device)
-    loss_func = nn.NLLLoss()
-    train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
-        n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
-
-    plot_metrics(train_losses, eval_losses, train_accuracies, eval_accuracies)
-    torch.save(model, OUT_DIR / 'model.pt')
-    save_metrics([train_losses, eval_losses,
-                  train_accuracies, eval_accuracies])
 
 
 if __name__ == "__main__":

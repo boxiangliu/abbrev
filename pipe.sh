@@ -182,7 +182,7 @@ for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
 done
 
 # Train LSTM model: 
-python3 model/character_rnn/train.py
+python3 model/character_rnn/train.py --config ../processed_data/model/character_rnn/lstm/run_01/config.json
 
 # Output prediction result: 
 python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_01/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_on_bioc/medstract > ../processed_data/model/character_rnn/lstm/run_01/preds.tsv

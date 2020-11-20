@@ -43,14 +43,29 @@ class RNN(nn.Module):
         return self.softmax(output)
 
 
-model = nn.Transformer()
-src = torch.rand((10, 32, 512))
-tgt = torch.rand((20, 32, 512))
-out = model(src, tgt)
+class BERT(nn.Module):
+    """Transformer encoder side"""
+    def __init__(self, input_size, hidden_size, output_size):
+        """Args:
+                input_size (int): input dimension of a time step.
+                hidden_size (int): dimesion of hidden layer.
+                output_size (int): number of output categories.
+        """
+        super(BERT, self).__init__()
+
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.output_size = output_size
+
+        self.encoder_layer = nn.TransformerEncoderLayer(d_model=input_size, nhead=8, dim_feedforward=hidden_size)
+        self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
+        self.decoder = nn.Linear(in_features=hidden_size, out_features=output_size)
+        self.softmax = nn.LogSoftmax(dim=1)
+
+    def forward(self, seqs):
+        output = self.encoder(seqs)
+        output = self.decoder(output[0]) # the [CLS] token
+        return self.softmax(output)
 
 
 
-encoder_layer = nn.TransformerEncoderLayer(d_model=512, nhead=8, dim_feedforward=512)
-encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
-out = encoder(src)
-out.size()
