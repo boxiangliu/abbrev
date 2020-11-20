@@ -59,7 +59,7 @@ class EmbedRNN(nn.Module):
                 hidden_size (int): dimesion of hidden layer.
                 output_size (int): number of output categories.  
         """
-        super(RNN, self).__init__()
+        super(EmbedRNN, self).__init__()
 
         self.input_size = input_size
         self.hidden_size = hidden_size
