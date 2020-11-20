@@ -82,7 +82,10 @@ def timeSince(since):
 
 
 def to_device(*args):
-    return [x.to(DEVICE) for x in args if torch.is_tensor(x)]
+    container = []
+    for x in args:
+        container.append(x.to(DEVICE) if torch.is_tensor(x) else x)
+    return container
 
 
 def get_model(input_size, hidden_size, output_size, learning_rate, arch):
