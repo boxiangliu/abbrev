@@ -28,11 +28,16 @@ class RNN(nn.Module):
 
         self.fc = nn.Linear(in_features=hidden_size, out_features=output_size)
         self.softmax = nn.LogSoftmax(dim=1)
+        self.pack_padded_sequence = pack_padded_sequence
 
-    def forward(self, seqs):
+
+    def forward(self, seqs, seq_lens):
         """Args:
-                seqs (PackedSequence): Packed padded sequence.
+                seqs (tensor): padded sequence.
+                seq_lens (tensor): sequence lengths.
         """
+        seqs = self.pack_padded_sequence(seqs, seq_lens)
+
         if self.arch == "rnn":
             output, hidden = self.rnn(seqs)
         elif self.arch == "lstm":

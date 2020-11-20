@@ -101,9 +101,9 @@ def get_data(batch_size):
     sf_train = SFData([data_dir / "Ab3P", data_dir / "bioadi",
                        data_dir / "SH"], exclude=set(sf_eval.data["seq"]))
     return sf_train, DataLoader(sf_train, batch_size=batch_size, shuffle=True,
-                                collate_fn=sf_train.pack_seq), \
+                                collate_fn=sf_train._pad_seq), \
         sf_eval, DataLoader(sf_eval, batch_size=batch_size * 4,
-                            collate_fn=sf_eval.pack_seq)
+                            collate_fn=sf_eval._pad_seq)
 
 
 def loss_batch(model, loss_func, tensors, labels, opt=None):
