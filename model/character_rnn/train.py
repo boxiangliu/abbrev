@@ -29,7 +29,7 @@ def main(config_fn):
     eval_loader = WrappedDataLoader(eval_loader, to_device)
     input_size = train_data.n_characters
     model, opt = get_model(input_size, hidden_size,
-                           output_size, learning_rate, arch)
+                           output_size, embed_size, learning_rate, arch)
     loss_func = nn.NLLLoss()
     train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
         n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
@@ -71,6 +71,7 @@ def set_config(config):
     batch_size = config["batch_size"]
     output_size = config["output_size"]
     arch = config["arch"]
+    embed_size = config["embed_size"] if ("embed_size" in config) else 16
 
     for k, v in config.items():
         sys.stderr.write(f"{k}={v}\n")
@@ -93,9 +94,9 @@ def to_device(*args):
     return container
 
 
-def get_model(input_size, hidden_size, output_size, learning_rate, arch):
+def get_model(input_size, hidden_size, output_size, embed_size, learning_rate, arch):
     if arch == "lstm_embed":
-        model = EmbedRNN(input_size, hidden_size, output_size).to(DEVICE)
+        model = EmbedRNN(input_size, hidden_size, output_size, embed_size).to(DEVICE)
     else:
         model = RNN(input_size, hidden_size, output_size, arch).to(DEVICE)
     optimizer = torch.optim.SGD(
