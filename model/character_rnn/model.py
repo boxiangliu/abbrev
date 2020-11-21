@@ -83,6 +83,8 @@ class EmbedRNN(nn.Module):
         seqs =  self.pack_padded_sequence(embedding, seq_lens.cpu())
         output, (hidden, cell) = self.rnn(seqs)
         hidden = self.dropout(hidden)
+        print(hidden)
+        print(hidden.size())
         output = self.fc(hidden[0])
 
         return self.softmax(output)
