@@ -24,7 +24,7 @@ def main(config_fn):
     hidden_size, n_epochs, save_every, learning_rate, \
         batch_size, output_size, arch = set_config(config)
 
-    train_data, train_loader, eval_data, eval_loader = get_data(batch_size)
+    train_data, train_loader, eval_data, eval_loader = get_data(batch_size, arch)
     train_loader = WrappedDataLoader(train_loader, to_device)
     eval_loader = WrappedDataLoader(eval_loader, to_device)
     input_size = train_data.n_characters
