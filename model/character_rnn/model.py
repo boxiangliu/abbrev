@@ -71,7 +71,7 @@ class EmbedRNN(nn.Module):
         self.dropout = nn.Dropout(p=0.5)
         self.embed = nn.Embedding(input_size, embed_size)
         self.rnn = nn.LSTM(input_size=embed_size, hidden_size=hidden_size)
-        self.fc = nn.Linear(in_features=embed_size, out_features=output_size)
+        self.fc = nn.Linear(in_features=hidden_size, out_features=output_size)
         self.softmax = nn.LogSoftmax(dim=1)
         self.pack_padded_sequence = pack_padded_sequence
 
@@ -83,8 +83,6 @@ class EmbedRNN(nn.Module):
         seqs =  self.pack_padded_sequence(embedding, seq_lens.cpu())
         output, (hidden, cell) = self.rnn(seqs)
         hidden = self.dropout(hidden)
-        print(hidden)
-        print(hidden.size())
         output = self.fc(hidden[0])
 
         return self.softmax(output)
