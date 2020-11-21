@@ -16,6 +16,7 @@ import click
 
 # config_fn = "../processed_data/model/character_rnn/lstm/run_01/config.json"
 
+
 @click.command()
 @click.option("--config_fn", type=str, help="Path to configuration file.")
 def main(config_fn):
@@ -27,7 +28,8 @@ def main(config_fn):
     train_loader = WrappedDataLoader(train_loader, to_device)
     eval_loader = WrappedDataLoader(eval_loader, to_device)
     input_size = train_data.n_characters
-    model, opt = get_model(input_size, hidden_size, output_size, learning_rate, arch)
+    model, opt = get_model(input_size, hidden_size,
+                           output_size, learning_rate, arch)
     loss_func = nn.NLLLoss()
     train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
         n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
@@ -101,11 +103,18 @@ def get_model(input_size, hidden_size, output_size, learning_rate, arch):
     return model, optimizer
 
 
-def get_data(batch_size):
+def get_data(batch_size, arch):
     data_dir = Path("../processed_data/preprocess/bioc/propose_on_bioc/")
-    sf_eval = SFData([data_dir / "medstract"])
-    sf_train = SFData([data_dir / "Ab3P", data_dir / "bioadi",
-                       data_dir / "SH"], exclude=set(sf_eval.data["seq"]))
+    if arch == "lstm_embed":
+        sf_eval = SFData([data_dir / "medstract"], one_hot=False)
+        sf_train = SFData([data_dir / "Ab3P", data_dir / "bioadi",
+                           data_dir / "SH"], exclude=set(sf_eval.data["seq"]), one_hot=False)
+    else:
+        sf_eval = SFData([data_dir / "medstract"], one_hot=True)
+        sf_train = SFData([data_dir / "Ab3P", data_dir / "bioadi",
+                           data_dir / "SH"], exclude=set(sf_eval.data["seq"]), one_hot=True)
+
+
     return sf_train, DataLoader(sf_train, batch_size=batch_size, shuffle=True,
                                 collate_fn=sf_train._pad_seq), \
         sf_eval, DataLoader(sf_eval, batch_size=batch_size * 4,

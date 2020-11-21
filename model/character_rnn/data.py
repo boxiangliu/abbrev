@@ -180,6 +180,17 @@ class WrappedDataLoader:
             yield (self.func(*b))
 
 
+# from torch.utils.data import DataLoader
+# from pathlib import Path
+# data_dir = Path("../processed_data/preprocess/bioc/propose_on_bioc/")
+# from model.character_rnn.data import SFData
+# data1 = SFData([data_dir / "medstract"], one_hot=False)
+# loader = DataLoader(data1, batch_size=2, shuffle=True, collate_fn=data1._pad_seq)
+# tensors, labels, seq_lens, seqs = next(iter(loader))
+# tensors.dtype
+# labels
+# seqs
+# seq_lens
 # dataset = SFLFPairs("test")
 # dataloader = DataLoader(dataset, batch_size=4, shuffle=True,
 #                         num_workers=1, collate_fn=pad_seq)
