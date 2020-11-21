@@ -141,7 +141,7 @@ class SFData(Dataset):
         return tensor
 
     def seq2idx(self, seq):
-        tensor = torch.zeros(len(seq))
+        tensor = torch.zeros(len(seq), dtype=torch.long)
         for i, character in enumerate(seq):
             ascii_char = unidecode(character)
             tensor[i] = self.characters.index(ascii_char)
