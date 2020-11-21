@@ -22,7 +22,7 @@ import click
 def main(config_fn):
     config = read_config(config_fn)
     hidden_size, n_epochs, save_every, learning_rate, \
-        batch_size, output_size, arch = set_config(config)
+        batch_size, output_size, embed_size, arch = set_config(config)
 
     train_data, train_loader, eval_data, eval_loader = get_data(batch_size, arch)
     train_loader = WrappedDataLoader(train_loader, to_device)
@@ -76,7 +76,7 @@ def set_config(config):
     for k, v in config.items():
         sys.stderr.write(f"{k}={v}\n")
 
-    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, arch
+    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, embed_size, arch
 
 
 def timeSince(since):
