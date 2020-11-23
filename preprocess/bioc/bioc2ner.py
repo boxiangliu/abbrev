@@ -56,7 +56,10 @@ for line in sys.stdin:
         split_line = line.split("\t")
         form_type = split_line[1]
         form_text = split_line[2]
-        start, length = [int(x) for x in split_line[3].split("+")]
+        try:
+            start, length = [int(x) for x in split_line[3].split("+")]
+        except:
+            print(split_line)
 
         if form_type.startswith("SF"):
             sfs.append(form_text)
