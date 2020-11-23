@@ -59,7 +59,7 @@ for line in tqdm(sys.stdin):
         try:
             start, length = [int(x) for x in split_line[3].split("+")]
         except:
-            sys.stdout.write(line)
+            sys.stderr.write(line)
 
         if form_type.startswith("SF"):
             sfs.append(form_text)
