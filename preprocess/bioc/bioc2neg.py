@@ -59,11 +59,11 @@ def propose_sf_lf(text, exclude):
 
 
 text = ""
-exclude = set()
+gold = set()
 for line in sys.stdin:
     if line.startswith("text:"):
         # Take care of last chunk
-        pairs = propose_sf_lf(text, exclude)
+        pairs = propose_sf_lf(text, gold)
         for sf, lf in pairs:
             sys.stdout.write(f"{sf}\t{lf}\n")
 
