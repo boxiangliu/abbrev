@@ -34,7 +34,7 @@ for line in tqdm(sys.stdin):
                                 if token_interval[0] == interval[0] else f"I-{form_type}"
                     if suffix == "":
                         suffix = "O"
-                    sys.stdout.write(f"{prefix}\t{suffix}\n")
+                    sys.stdout.write(f"{prefix}\t{token.text}\t{suffix}\n")
 
 
         text = line.strip().split("\t")[1]
