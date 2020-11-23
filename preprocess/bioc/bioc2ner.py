@@ -56,15 +56,14 @@ for line in tqdm(sys.stdin):
         split_line = line.strip().split("\t")
         form_type = split_line[1]
         form_text = split_line[2]
-        try:
-            start, length = [int(x) for x in split_line[3].split("+")]
-        except:
-            sys.stderr.write(line)
+        form_interval = [[int(y) for y in x.split("+")] for x in split_line[3].split("|")]
 
         if form_type.startswith("SF"):
             sfs.append(form_text)
-            intervals[(start, start + length)] = "SF"
+            for start, length in form_interval:
+                intervals[(start, start + length)] = "SF"
 
         elif form_type.startswith("LF"):
             lfs.append(form_text)
-            intervals[(start, start + length)] = "LF"
+            for start, length in form_interval:
+                intervals[(start, start + length)] = "LF"
