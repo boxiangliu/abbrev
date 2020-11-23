@@ -3,7 +3,7 @@ import sys
 
 
 def get_token_interval(token):
-    start, end = token["misc"].split("|")
+    start, end = token.misc.split("|")
     start = int(start.replace("start_char="))
     end = int(end.replace("end_char="))
     return start, end
