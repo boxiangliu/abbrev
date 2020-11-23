@@ -1,6 +1,6 @@
 import stanza
 import sys
-
+from tqdm import tqdm
 
 def get_token_interval(token):
     start, end = token.misc.split("|")
@@ -17,7 +17,7 @@ nlp = stanza.Pipeline(lang="en", processors="tokenize")
 text_len, text_counter = 0, 0
 sfs, lfs, intervals = [], [], {}
 
-for line in sys.stdin:
+for line in tqdm(sys.stdin):
     if line.startswith("id:"):
         pmid = int(line.strip().split("\t")[1])
 
@@ -53,13 +53,13 @@ for line in sys.stdin:
             text_counter = 0
 
     elif line.startswith("annotation:"):
-        split_line = line.split("\t")
+        split_line = line.strip().split("\t")
         form_type = split_line[1]
         form_text = split_line[2]
         try:
             start, length = [int(x) for x in split_line[3].split("+")]
         except:
-            print(split_line)
+            sys.stdout.write(line)
 
         if form_type.startswith("SF"):
             sfs.append(form_text)
