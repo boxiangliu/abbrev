@@ -62,7 +62,7 @@ for line in tqdm(sys.stdin):
         if form_type.startswith("SF"):
             sfs.append(form_text)
             for start, length in form_interval:
-                intervals[(start - text_offset, start + length - text_offset)] = "SF"
+                intervals[(start - text_offset - 1, start + length - text_offset)] = "SF"
 
         elif form_type.startswith("LF"):
             lfs.append(form_text)
