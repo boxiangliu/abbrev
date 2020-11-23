@@ -46,7 +46,7 @@ def combine_sf_lf(sfs, lfs, exclude=set()):
     pairs = []
     for sf, lf in zip(sfs, lfs):
         pair = (sf["sf"], lf)
-        if pair not in exclude:
+        if pair[0] not in exclude:
             pairs.append(pair)
     return pairs
 
@@ -77,5 +77,5 @@ for line in sys.stdin:
             sf = split_line[2]
         else:
             lf = split_line[2]
-            gold.add((sf, lf))
+            gold.add(sf)
 
