@@ -24,7 +24,7 @@ for line in sys.stdin:
     elif line.startswith("text:"):
         if sfs != []:
             for sent_no, sentence in enumerate(text.sentences):
-                for token in sentence:
+                for token in sentence.tokens:
                     token_interval = get_token_interval(token)
                     prefix = f"{pmid}\t{text_type}\t{sent_no}"
                     suffix = ""
