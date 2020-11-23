@@ -189,6 +189,15 @@ python3 model/character_rnn/train.py --config_fn ../processed_data/model/charact
 python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_01/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_on_bioc/medstract > ../processed_data/model/character_rnn/lstm/run_01/preds.tsv
 
 
+#################
+# Seq2seq model #
+#################
+# Create NER dataset:
+cat  ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python3 preprocess/bioc/bioc2ner.py > ../processed_data/preprocess/bioc/bioc2ner/Ab3P
+
+
+
+
 ############
 # Analysis #
 ############
