@@ -35,6 +35,7 @@ for line in tqdm(sys.stdin):
                     if suffix == "":
                         suffix = "O"
                     sys.stdout.write(f"{prefix}\t{token.text}\t{suffix}\n")
+        sfs, lfs, intervals = [], [], {}
 
 
         text = line.strip().split("\t")[1]
@@ -49,7 +50,7 @@ for line in tqdm(sys.stdin):
 
         elif text_counter == 2:
             text_type = "abstract"
-            text_offset = prev_len
+            text_offset = prev_len + 1
             text_counter = 0
 
     elif line.startswith("annotation:"):
@@ -61,9 +62,9 @@ for line in tqdm(sys.stdin):
         if form_type.startswith("SF"):
             sfs.append(form_text)
             for start, length in form_interval:
-                intervals[(start, start + length)] = "SF"
+                intervals[(start - offset, start + length - offset)] = "SF"
 
         elif form_type.startswith("LF"):
             lfs.append(form_text)
             for start, length in form_interval:
-                intervals[(start, start + length)] = "LF"
+                intervals[(start - offset, start + length - offset)] = "LF"
