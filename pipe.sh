@@ -178,7 +178,7 @@ python3 model/character_rnn/example/toy_data.py > ../processed_data/model/charac
 # Classify short forms into valid or invalid short forms.
 for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
     base=`basename $fn _bioc_gold.txt`
-    cat $fn | python3 preprocess/bioc/propose_on_bioc.py > ../processed_data/preprocess/bioc/propose_on_bioc/$base
+    cat $fn | python3 preprocess/bioc/propose_sf_on_bioc.py > ../processed_data/preprocess/bioc/propose_sf_on_bioc/$base
 done
 
 # Train LSTM model: 
@@ -188,20 +188,36 @@ python3 model/character_rnn/train.py --config_fn ../processed_data/model/charact
 # Output prediction result: 
 python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_01/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_on_bioc/medstract > ../processed_data/model/character_rnn/lstm/run_01/preds.tsv
 
+####################
+# QA and rejection #
+####################
+# The QA and rejection experiment does the following
+# 1. propose short forms and questions
+# 2. use BERT QA to propose long forms 
+# 3. use character-based LSTM to reject. 
+
+# Propose short form, questions, and answers.
+cat python3 preprocess/bioc/propose_qa_on_bioc.py 
+
+
+
+
+
 
 #################
 # Seq2seq model #
 #################
 # Create NER dataset:
-cat  ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python3 preprocess/bioc/bioc2ner.py > ../processed_data/preprocess/bioc/bioc2ner/Ab3P
-
-
+for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
+    base=`basename $fn _bioc_gold.txt`
+    cat $fn | python3 preprocess/bioc/bioc2ner.py > ../processed_data/preprocess/bioc/bioc2ner/$base
+done
 
 
 ############
 # Analysis #
 ############
 # TBD:
-python model/analysis/ab3p5bert.py 
+cat ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python model/analysis/ab3p5bert.py
 
 
