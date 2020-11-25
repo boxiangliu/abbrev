@@ -50,7 +50,7 @@ def main():
 
             bad_proposals = [sf for sf in proposals if sf not in sf_lf]
             good_proposals = [(sf, sf_lf[sf]) for sf in proposals if sf in sf_lf]
-            if (sfs != []) or (proposals != []):
+            if (good_proposals != []) or (bad_proposals != []):
                 for sent_no, sentence in enumerate(text.sentences):
                     for sf, lf in good_proposals:
                         if (sf in sentence.text) and (lf in sentence.text):
