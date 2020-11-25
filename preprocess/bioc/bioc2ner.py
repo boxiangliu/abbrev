@@ -2,7 +2,6 @@ import stanza
 import sys
 from tqdm import tqdm
 
-
 def get_token_interval(token):
     start, end = token.misc.split("|")
     start = int(start.replace("start_char=", ""))
@@ -12,20 +11,6 @@ def get_token_interval(token):
 
 def subset(interval1, interval2):
     return (interval1[0] >= interval2[0]) and (interval1[1] <= interval2[1])
-
-
-def get_text_type(text_counter):
-    text_counter += 1
-    if text_counter == 1:
-        text_type = "title"
-        text_offset = 0
-
-    elif text_counter == 2:
-        text_type = "abstract"
-        text_offset = prev_len + 1
-        text_counter = 0
-
-    return text_type, text_counter
 
 
 nlp = stanza.Pipeline(lang="en", processors="tokenize")
@@ -52,28 +37,34 @@ for line in tqdm(sys.stdin):
                     sys.stdout.write(f"{prefix}\t{token.text}\t{suffix}\n")
         sfs, lfs, intervals = [], [], {}
 
+
         text = line.strip().split("\t")[1]
         prev_len = text_len
         text_len = len(text)
         text = nlp(text)
 
-        text_type, text_counter = get_text_type(text_counter)
+        text_counter += 1
+        if text_counter == 1:
+            text_type = "title"
+            text_offset = 0
+
+        elif text_counter == 2:
+            text_type = "abstract"
+            text_offset = prev_len + 1
+            text_counter = 0
 
     elif line.startswith("annotation:"):
         split_line = line.strip().split("\t")
         form_type = split_line[1]
         form_text = split_line[2]
-        form_interval = [[int(y) for y in x.split("+")]
-                         for x in split_line[3].split("|")]
+        form_interval = [[int(y) for y in x.split("+")] for x in split_line[3].split("|")]
 
         if form_type.startswith("SF"):
             sfs.append(form_text)
             for start, length in form_interval:
-                intervals[(start - text_offset - 1, start +
-                           length - text_offset)] = "SF"
+                intervals[(start - text_offset - 1, start + length - text_offset)] = "SF"
 
         elif form_type.startswith("LF"):
             lfs.append(form_text)
             for start, length in form_interval:
-                intervals[(start - text_offset, start +
-                           length - text_offset)] = "LF"
+                intervals[(start - text_offset, start + length - text_offset)] = "LF"

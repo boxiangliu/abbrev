@@ -26,11 +26,9 @@ def get_text_type(text_counter):
     text_counter += 1
     if text_counter == 1:
         text_type = "title"
-        text_offset = 0
 
     elif text_counter == 2:
         text_type = "abstract"
-        text_offset = prev_len + 1
         text_counter = 0
 
     return text_type, text_counter
