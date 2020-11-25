@@ -9,7 +9,7 @@ for line in tqdm(sys.stdin):
         if split_line[3] == "input":
             valid_sf, gold_lf = (1, lf) \
                 if float(split_line[2]) == 1.0 else (0, "none")
-            gold_answer = 1
+            correct_lf, gold_answer = 1, 1
         else:
             correct_lf = int(lf == gold_lf)
             gold_answer = 0
