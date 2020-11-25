@@ -207,6 +207,8 @@ done
 
 # Predict on proposed short forms:
 for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,medstract,SH}`; do
+
+for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P`; do
     base=`basename $fn`; echo $base
     sbatch -p  1080Ti,1080Ti_mlong,1080Ti_slong,2080Ti,2080Ti_mlong,M40x8,M40x8_mlong,M40x8_slong,P100,TitanXx8,TitanXx8_mlong,TitanXx8_slong,V100_DGX,V100x8 \
         --gres=gpu:1 --job-name=$base --output=../processed_data/preprocess/bioc/propose_qa_on_bioc/${base}.log \

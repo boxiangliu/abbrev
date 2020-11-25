@@ -16,7 +16,8 @@ from collections import OrderedDict
 @click.option("--topk", type=int, help="Output top K predictions.", default=5)
 @click.option("--nonredundant", is_flag=True, help="Only output non-redundant predictions.")
 def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
-    device = 0 if torch.cuda.is_available() else -1
+    # device = 0 if torch.cuda.is_available() else -1
+    device = -1
 
     predictor = pipeline("question-answering",
                          model=model,
