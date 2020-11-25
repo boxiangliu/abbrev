@@ -39,6 +39,8 @@ def main():
     nlp = stanza.Pipeline(lang="en", processors="tokenize")
     text_counter = 0
     proposals, sfs, lfs = [], [], []
+    sys.stdout.write("sf\tlf\tscore\tcomment\tpmid\ttype\tsent_no\tsent\n")
+
     for line in tqdm(sys.stdin):
 
         if line.startswith("id:"):
@@ -52,20 +54,12 @@ def main():
                 for sent_no, sentence in enumerate(text.sentences):
                     for sf, lf in zip(sfs, lfs):
                         if (sf in sentence.text) and (lf in sentence.text):
-                            out_line = "\t".join([sf, lf, "-1", "todo", pmid, text_type, str(sent_no), sentence.text])
-                            # out_line = f"sentence:\t{sentence.text}\n"
-                            # out_line += f"SF:\t{sf}\n"
-                            # out_line += f"question:\tWhat does {sf} stand for?\n"
-                            # out_line += f"answer:\t{lf}\n\n"
-                            sys.stdout.write(out_line)
+                            out_line = "\t".join([sf, lf, "1", "todo", pmid, text_type, str(sent_no), sentence.text])
+                            sys.stdout.write(out_line + "\n")
                     for proposal in bad_proposals:
                         if "(" + proposal in sentence.text:
                             out_line = "\t".join([sf, "none", "-1", "todo", pmid, text_type, str(sent_no), sentence.text])
-                            # out_line = f"sentence:\t{sentence.text}\n"
-                            # out_line += f"SF:\t{proposal}\n"
-                            # out_line += f"question:\tWhat does {proposal} stand for?\n"
-                            # out_line += f"answer:\tN/A\n\n"
-                            sys.stdout.write(out_line)
+                            sys.stdout.write(out_line + "\n")
                 proposals, sfs, lfs = [], [], []
 
             text = line.strip().split("\t")[1]
