@@ -42,7 +42,7 @@ def main():
     for line in tqdm(sys.stdin):
 
         if line.startswith("id:"):
-            pmid = int(line.strip().split("\t")[1])
+            pmid = line.strip().split("\t")[1]
 
         elif line.startswith("text:"):
 
