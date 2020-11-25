@@ -216,7 +216,7 @@ for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P`; do
         --nonredundant --topk 10 --data_fn $fn --out_fn ../processed_data/preprocess/bioc/propose_qa_on_bioc/${base}.fasta"
 done
 
-
+cat ../processed_data/preprocess/bioc/propose_qa_on_bioc/SH.fasta | python3 model/qa_reject/QA_output_to_LSTM_input.py
 
 #################
 # Seq2seq model #

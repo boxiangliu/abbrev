@@ -5,7 +5,7 @@ for line in tqdm(sys.stdin):
     if line.startswith("  "):
         split_line = line.strip().split("|")
         if split_line[3] == "input":
-            if int(split_line[2]) == 1:
+            if float(split_line[2]) == 1.0:
                 valid_sf = 1
                 gold_lf = split_line[1]
             else: 
@@ -18,7 +18,7 @@ for line in tqdm(sys.stdin):
                 correct_lf = 1
             out_line = f"{sf}\t{lf}\t{valid_sf}\t{correct_lf}\n"
             sys.stdout.write(out_line)
-        
+
 
 
 
