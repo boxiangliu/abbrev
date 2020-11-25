@@ -60,7 +60,7 @@ def main():
                             sys.stdout.write(out_line)
                     for proposal in bad_proposals:
                         if "(" + proposal in sentence.text:
-                            out_line = "\t".join([sf, "none", "-1", "todo", pmid, text_type, sent_no, sentence.text])
+                            out_line = "\t".join([sf, "none", "-1", "todo", pmid, text_type, str(sent_no), sentence.text])
                             # out_line = f"sentence:\t{sentence.text}\n"
                             # out_line += f"SF:\t{proposal}\n"
                             # out_line += f"question:\tWhat does {proposal} stand for?\n"
