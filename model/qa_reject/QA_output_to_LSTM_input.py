@@ -6,20 +6,10 @@ for line in tqdm(sys.stdin):
     if line.startswith("  "):
         split_line = line.strip().split("|")
         if split_line[3] == "input":
-            if float(split_line[2]) == 1.0:
-                valid_sf = 1
-                gold_lf = split_line[1]
-            else: 
-                valid_sf = 0
-                gold_lf = "none"
+            valid_sf, gold_lf = 1, split_line[1] \
+                if float(split_line[2]) == 1.0 else 0, "none"
         else:
-            sf = split_line[0]
-            lf = split_line[1]
-            if lf == gold_lf:
-                correct_lf = 1
+            sf, lf = split_line[0], split_line[1]
+            correct_lf = int(lf == gold_lf)
             out_line = f"{sf}\t{lf}\t{valid_sf}\t{correct_lf}\n"
             sys.stdout.write(out_line)
-
-
-
-
