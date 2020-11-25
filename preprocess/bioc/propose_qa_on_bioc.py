@@ -52,7 +52,7 @@ def main():
                 for sent_no, sentence in enumerate(text.sentences):
                     for sf, lf in zip(sfs, lfs):
                         if (sf in sentence.text) and (lf in sentence.text):
-                            out_line = "\t".join([sf, lf, "-1", "todo", pmid, text_type, sent_no, sentence.text])
+                            out_line = "\t".join([sf, lf, "-1", "todo", pmid, text_type, str(sent_no), sentence.text])
                             # out_line = f"sentence:\t{sentence.text}\n"
                             # out_line += f"SF:\t{sf}\n"
                             # out_line += f"question:\tWhat does {sf} stand for?\n"
