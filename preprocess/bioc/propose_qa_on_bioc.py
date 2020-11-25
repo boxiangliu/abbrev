@@ -58,7 +58,7 @@ def main():
                             sys.stdout.write(out_line + "\n")
                     for proposal in bad_proposals:
                         if "(" + proposal in sentence.text:
-                            out_line = "\t".join([sf, "none", "-1", "todo", pmid, text_type, str(sent_no), sentence.text])
+                            out_line = "\t".join([proposal, "none", "-1", "todo", pmid, text_type, str(sent_no), sentence.text])
                             sys.stdout.write(out_line + "\n")
                 proposals, sfs, lfs = [], [], []
 
