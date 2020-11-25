@@ -188,6 +188,8 @@ python3 model/character_rnn/train.py --config_fn ../processed_data/model/charact
 # Output prediction result: 
 python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_01/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_on_bioc/medstract > ../processed_data/model/character_rnn/lstm/run_01/preds.tsv
 
+
+
 ####################
 # QA and rejection #
 ####################
@@ -199,10 +201,18 @@ python3 model/character_rnn/infer.py --model_fn ../processed_data/model/characte
 # Propose short form, questions, and answers.
 for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
     base=`basename $fn _bioc_gold.txt`
-    cat $fn | python3 preprocess/bioc/propose_qa_on_bioc.py > ../processed_data/preprocess/bioc/propose_sf_on_bioc/$base
+    cat $fn | python3 preprocess/bioc/propose_qa_on_bioc.py > ../processed_data/preprocess/bioc/propose_qa_on_bioc/$base
 done
 
 
+# Predict on proposed short forms:
+for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,medstract,SH}`; do
+    base=`basename $fn`; echo $base
+    sbatch -p  1080Ti,1080Ti_mlong,1080Ti_slong,2080Ti,2080Ti_mlong,M40x8,M40x8_mlong,M40x8_slong,P100,TitanXx8,TitanXx8_mlong,TitanXx8_slong,V100_DGX,V100x8 \
+        --gres=gpu:1 --job-name=$base --output=../processed_data/preprocess/bioc/propose_qa_on_bioc/${base}.log \
+        --wrap "python model/predict.py --model bert-large-cased-whole-word-masking-finetuned-squad --tokenizer bert-large-cased-whole-word-masking-finetuned-squad \
+        --nonredundant --topk 10 --data_fn $fn --out_fn ../processed_data/preprocess/bioc/propose_qa_on_bioc/${base}.fasta"
+done
 
 
 

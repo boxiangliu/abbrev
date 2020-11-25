@@ -38,7 +38,7 @@ def main():
 
     nlp = stanza.Pipeline(lang="en", processors="tokenize")
     text_counter = 0
-    proposals, sfs, lfs = [], [], []
+    proposals, sf_lf = [], {}
     sys.stdout.write("sf\tlf\tscore\tcomment\tpmid\ttype\tsent_no\tsent\n")
 
     for line in tqdm(sys.stdin):
@@ -48,11 +48,11 @@ def main():
 
         elif line.startswith("text:"):
 
-            bad_proposals = [x for x in proposals if x not in sfs]
-
+            bad_proposals = [sf for sf in proposals if sf not in sf_lf]
+            good_proposals = [(sf, sf_lf[sf]) for sf in proposals if sf in sf_lf]
             if (sfs != []) or (proposals != []):
                 for sent_no, sentence in enumerate(text.sentences):
-                    for sf, lf in zip(sfs, lfs):
+                    for sf, lf in good_proposals:
                         if (sf in sentence.text) and (lf in sentence.text):
                             out_line = "\t".join([sf, lf, "1", "todo", pmid, text_type, str(sent_no), sentence.text])
                             sys.stdout.write(out_line + "\n")
@@ -71,9 +71,10 @@ def main():
         elif line.startswith("annotation:"):
             split_line = line.strip().split("\t")
             if split_line[1].startswith("SF"):
-                sfs.append(split_line[2])
+                sf = split_line[2]
             elif split_line[1].startswith("LF"):
-                lfs.append(split_line[2])
+                lf = split_line[2]
+                sf_lf[sf] = lf
 
 
 if __name__ == "__main__":
