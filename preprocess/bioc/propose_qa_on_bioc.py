@@ -29,6 +29,8 @@ def main():
 
         if line.startswith("text:"):
 
+            bad_proposals = [x for x in proposals if x not in sfs]
+
             if (sfs != []) or (proposals != []):
                 for sentence in text.sentences:
                     for sf, lf in zip(sfs, lfs):
@@ -49,7 +51,6 @@ def main():
 
             text = line.strip().split("\t")[1]
             find(text, proposals)
-            bad_proposals = [x for x in proposals if x not in sfs]
             text = nlp(text)
 
         elif line.startswith("annotation:"):

@@ -197,7 +197,7 @@ python3 model/character_rnn/infer.py --model_fn ../processed_data/model/characte
 # 3. use character-based LSTM to reject. 
 
 # Propose short form, questions, and answers.
-cat python3 preprocess/bioc/propose_qa_on_bioc.py 
+cat ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python3 preprocess/bioc/propose_qa_on_bioc.py 
 
 
 
