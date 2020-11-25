@@ -1,6 +1,7 @@
 import sys
 from tqdm import tqdm
 
+sys.stdout.write(f"sf\tlf\tgood_sf\tgood_lf\n")
 for line in tqdm(sys.stdin):
     if line.startswith("  "):
         split_line = line.strip().split("|")
