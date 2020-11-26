@@ -206,9 +206,8 @@ done
 
 
 # Predict on proposed short forms:
+# Note that Ab3P will throw an "Insufficient memory" error. Use CPU instead of GPU for Ab3P.
 for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,medstract,SH}`; do
-
-for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P`; do
     base=`basename $fn`; echo $base
     sbatch -p  1080Ti,1080Ti_mlong,1080Ti_slong,2080Ti,2080Ti_mlong,M40x8,M40x8_mlong,M40x8_slong,P100,TitanXx8,TitanXx8_mlong,TitanXx8_slong,V100_DGX,V100x8 \
         --gres=gpu:1 --job-name=$base --output=../processed_data/preprocess/bioc/propose_qa_on_bioc/${base}.log \
@@ -216,7 +215,10 @@ for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P`; do
         --nonredundant --topk 10 --data_fn $fn --out_fn ../processed_data/preprocess/bioc/propose_qa_on_bioc/${base}.fasta"
 done
 
-cat ../processed_data/preprocess/bioc/propose_qa_on_bioc/SH.fasta | python3 model/qa_reject/QA_output_to_LSTM_input.py > ../processed_data/model/qa_reject/QA_output_to_LSTM_input/SH
+for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,medstract,SH}.fasta`; do
+    base=`basename $fn .fasta`; echo $base
+    cat $fn | python3 model/qa_reject/QA_output_to_LSTM_input.py > ../processed_data/model/qa_reject/QA_output_to_LSTM_input/$base
+done
 
 #################
 # Seq2seq model #
