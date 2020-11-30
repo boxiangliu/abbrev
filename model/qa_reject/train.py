@@ -157,7 +157,7 @@ def eval(eval_loader, eval_losses, eval_sf_losses, eval_pair_losses, eval_sf_acc
             eval_sf_corrects += sum(sf_pred == sf_labels)
             eval_pair_corrects += sum(pair_pred == pair_labels)
 
-            n_eval_examples += len(labels)
+            n_eval_examples += len(sf_labels)
 
     avg_eval_loss, avg_eval_sf_loss, avg_eval_pair_loss = \
         eval_loss / save_every, eval_sf_loss / save_every, eval_pair_loss / save_every
@@ -200,7 +200,7 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
             train_sf_corrects += sum(sf_pred == sf_labels)
             train_pair_corrects += sum(pair_pred == pair_labels)
 
-            n_train_examples += len(labels)
+            n_train_examples += len(sf_labels)
 
             if n_steps % save_every == 0:
 
