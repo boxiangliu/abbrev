@@ -160,9 +160,9 @@ def eval(model, loss_func, eval_loader, eval_losses, eval_sf_losses, eval_pair_l
             n_eval_examples += len(sf_labels)
 
     avg_eval_loss, avg_eval_sf_loss, avg_eval_pair_loss = \
-        eval_loss / save_every, eval_sf_loss / save_every, eval_pair_loss / save_every
+        [x / len(eval_loader) for x in [eval_loss, eval_sf_loss, eval_pair_loss]]
     eval_sf_accuracy, eval_pair_accuracy = \
-        eval_sf_corrects / n_eval_examples, eval_pair_corrects / n_eval_examples
+        [x / n_eval_examples for x in [eval_sf_corrects, eval_pair_corrects]]
 
     eval_losses.append(avg_eval_loss)
     eval_sf_losses.append(avg_eval_sf_loss)
