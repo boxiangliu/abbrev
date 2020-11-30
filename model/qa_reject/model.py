@@ -37,8 +37,8 @@ class EmbedRNN(nn.Module):
         """
         sf_embedding = self.embed(sfs)
         lf_embedding = self.embed(lfs)
-        sfs = self.pack_padded_sequence(sf_embedding, sf_lens.cpu())
-        lfs = self.pack_padded_sequence(lf_embedding, lf_lens.cpu())
+        sfs = self.pack_padded_sequence(sf_embedding, sf_lens.cpu(), enforce_sorted=False)
+        lfs = self.pack_padded_sequence(lf_embedding, lf_lens.cpu(), enforce_sorted=False)
 
         sf_output, (sf_hidden, sf_cell) = self.rnn(sfs)
         lf_output, (lf_hidden, lf_cell) = self.rnn(lfs)
