@@ -46,7 +46,7 @@ class EmbedRNN(nn.Module):
         sf_hidden = self.dropout(sf_hidden)
         lf_hidden = self.dropout(lf_hidden)
 
-        sf_output = self.fc1(sf_hidden)
+        sf_output = self.fc1(sf_hidden[0])
         # hidden[0] -> remove zeroth dimension
         pair_output = torch.cat([sf_hidden[0], lf_hidden[0]], dim=1)
         pair_output = self.fc2(pair_output)
