@@ -220,6 +220,10 @@ for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,
     cat $fn | python3 model/qa_reject/QA_output_to_LSTM_input.py > ../processed_data/model/qa_reject/QA_output_to_LSTM_input/$base
 done
 
+
+# Train SF-LF model
+python3 model/qa_reject/train.py --config_fn ../processed_data/model/qa_reject/lstm/run_01/config.json
+
 #################
 # Seq2seq model #
 #################

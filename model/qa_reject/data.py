@@ -27,6 +27,8 @@ class SFLFData(Dataset):
         """
         self.flist = flist
         self.data = self.read_files(flist, exclude)
+        self.sf_lf_pairs = set([(sf, lf)
+                                for sf, lf in zip(self.data["sf"], self.data["lf"])])
         # empty string means unknown
         self.characters = [""] + list(string.printable)
         self.n_characters = len(self.characters)
@@ -47,13 +49,17 @@ class SFLFData(Dataset):
         pair_label = self.data["pair_label"][idx]
         is_gold = self.data["is_gold"][idx]
 
-        return sf_tensor, lf_tensor, sf_label, pair_label, is_gold, sf, lf
+        return sf_tensor, lf_tensor, sf_label, \
+            pair_label, is_gold, sf, lf
 
     def read_files(self, flist, exclude):
         sfs, lfs, sf_labels, pair_labels, is_golds = [], [], [], [], []
         for fn in flist:
             with open(fn) as f:
                 for line in f:
+                    if line.startswith("sf\tlf\tgood_sf"):
+                        continue
+
                     sf, lf, sf_label, pair_label, is_gold = \
                         line.strip().split("\t")
 
@@ -64,6 +70,7 @@ class SFLFData(Dataset):
                         pair_labels.append(int(pair_label))
                         is_golds.append(int(is_gold))
 
+        assert len(sfs) == len(lfs)
         return {"sf": sfs, "lf": lfs, "sf_label": sf_labels,
                 "pair_label": pair_labels, "is_gold": is_golds}
 
@@ -96,8 +103,10 @@ class SFLFData(Dataset):
     def pack_seq(self, samples):
         sf_tensors, lf_tensors, sf_labels, pair_labels, is_golds, \
             sf_lens, lf_lens, sfs, lfs = self._pad_seq(samples)
-        sf_tensors = pack_padded_sequence(sf_tensors, sf_lens, enforce_sorted=False)
-        lf_tensors = pack_padded_sequence(lf_tensors, lf_lens, enforce_sorted=False)
+        sf_tensors = pack_padded_sequence(
+            sf_tensors, sf_lens, enforce_sorted=False)
+        lf_tensors = pack_padded_sequence(
+            lf_tensors, lf_lens, enforce_sorted=False)
         return sf_tensors, lf_tensors, sf_labels, \
             pair_labels, is_golds, \
             sf_lens, lf_lens, sfs, lfs
