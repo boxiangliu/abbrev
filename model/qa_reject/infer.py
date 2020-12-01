@@ -24,7 +24,6 @@ def main(model_fn, eval_fn, arch):
         container = defaultdict(list)
         for sf_tensors, lf_tensors, sf_labels, pair_labels, \
                 is_golds, sf_lens, lf_lens, sfs, lfs in eval_loader:
-            prob = model(tensors, seq_lens)
 
             sf_prob, pair_prob = model(sf_tensors, lf_tensors, sf_lens, lf_lens)
             sf_pred, pair_pred = torch.argmax(sf_prob, dim=1), \
