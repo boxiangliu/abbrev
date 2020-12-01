@@ -226,7 +226,7 @@ done
 python3 model/qa_reject/train.py --config_fn ../processed_data/model/qa_reject/lstm/run_01/config.json
 
 # Infer: 
-python3 model/qa_reject/infer.py --model_fn ../processed_data/model/qa_reject/lstm/run_02/model.pt --eval_fn ../processed_data/model/qa_reject/QA_output_to_LSTM_input/medstract --arch lstm_embed > ../processed_data/model/qa_reject/lstm/run_01/preds.tsv
+python3 model/qa_reject/infer.py --model_fn ../processed_data/model/qa_reject/lstm/run_01/model.pt --eval_fn ../processed_data/model/qa_reject/QA_output_to_LSTM_input/medstract --arch lstm_embed > ../processed_data/model/qa_reject/lstm/run_01/preds.tsv
 
 
 

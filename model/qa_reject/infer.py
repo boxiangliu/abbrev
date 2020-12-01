@@ -16,9 +16,9 @@ def main(model_fn, eval_fn, arch):
     model.eval()
 
     if arch == "lstm_embed":
-        eval_data = SFData([eval_fn], one_hot=False)
+        eval_data = SFLFData([eval_fn], one_hot=False)
     else:
-        eval_data = SFData([eval_fn], one_hot=True)
+        eval_data = SFLFData([eval_fn], one_hot=True)
     eval_loader = DataLoader(eval_data, batch_size = 64, collate_fn=eval_data._pad_seq)
     with torch.no_grad():
         container = defaultdict(list)
