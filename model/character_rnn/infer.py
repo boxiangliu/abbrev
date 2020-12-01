@@ -19,7 +19,7 @@ def main(model_fn, eval_fn):
     with torch.no_grad():
         container = defaultdict(list)
         for tensors, labels, seq_lens, seqs in eval_loader:
-            prob = model(tensors)
+            prob = model(tensors, seq_lens)
             container["prob"] += prob[:, 1].exp().tolist()
             container["pred"] += torch.argmax(prob, dim=1).tolist()
             container["label"] += labels.tolist()
