@@ -10,12 +10,16 @@ from collections import defaultdict
 @click.command()
 @click.option("--model_fn", type=str, help="Path to model.")
 @click.option("--eval_fn", type=str, help="Path to eval file.")
-def main(model_fn, eval_fn):
+@click.option("--arch", type=str, help="Model architecture.")
+def main(model_fn, eval_fn, arch):
     model = torch.load(model_fn).to(torch.device("cpu"))
     model.eval()
 
-    eval_data = SFData([eval_fn])
-    eval_loader = DataLoader(eval_data, batch_size = 64, collate_fn=eval_data.pack_seq)
+    if arch == "lstm_embed":
+        eval_data = SFData([eval_fn], one_hot=False)
+    else:
+        eval_data = SFData([eval_fn], one_hot=True)
+    eval_loader = DataLoader(eval_data, batch_size = 64, collate_fn=eval_data._pad_seq)
     with torch.no_grad():
         container = defaultdict(list)
         for tensors, labels, seq_lens, seqs in eval_loader:
