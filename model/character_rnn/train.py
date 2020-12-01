@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import sys
-sys.path.append("./model/character_rnn/")
+sys.path.insert(0,"./model/character_rnn/")
 from data import SFData, WrappedDataLoader
 from torch.utils.data import DataLoader
 from model import RNN, EmbedRNN

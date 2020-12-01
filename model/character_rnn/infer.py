@@ -1,6 +1,6 @@
 import click
 import sys
-sys.path.append("./model/character_rnn/")
+sys.path.insert(0, "./model/character_rnn/")
 from train import get_data
 from data import SFData
 import torch
