@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
-import sys
-sys.path.append("./model/qa_reject/")
-from data import SFLFData, WrappedDataLoader
 from torch.utils.data import DataLoader
+import sys
+sys.path.insert(0, "./model/qa_reject/")
+from data import SFLFData, WrappedDataLoader
 from model import EmbedRNN
 import time
 import math
@@ -36,11 +36,11 @@ def main(config_fn):
         train_sf_accuracies, train_pair_accuracies, eval_sf_accuracies, eval_pair_accuracies = fit(
             n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
 
-    plot_metrics(train_losses, train_sf_losses, train_pair_losses, eval_losses, eval_sf_losses, eval_pair_losses,
-                 train_sf_accuracies, train_pair_accuracies, eval_sf_accuracies, eval_pair_accuracies)
     torch.save(model, OUT_DIR / 'model.pt')
     save_metrics([train_losses, train_sf_losses, train_pair_losses, eval_losses, eval_sf_losses, eval_pair_losses,
                   train_sf_accuracies, train_pair_accuracies, eval_sf_accuracies, eval_pair_accuracies])
+    plot_metrics(train_losses, train_sf_losses, train_pair_losses, eval_losses, eval_sf_losses, eval_pair_losses,
+                 train_sf_accuracies, train_pair_accuracies, eval_sf_accuracies, eval_pair_accuracies)
 
 
 def read_config(config_fn):
@@ -263,7 +263,7 @@ def plot_metrics(train_losses, train_sf_losses, train_pair_losses, eval_losses, 
         legend_position = "upper right" if _type == "loss" else "lower right"
         title, ylabel, out_fn = f"{criterion} {_type}", _type, OUT_DIR / f"{criterion}_{_type}.png"
         plot_single_metric(train_metric, eval_metric,
-                           legend_position, title, ylable, out_fn)
+                           legend_position, title, ylabel, out_fn)
 
 
 def save_metrics(metrics):
