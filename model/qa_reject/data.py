@@ -115,6 +115,60 @@ class SFLFData(Dataset):
         return "".join([self.characters[j] for i, j in tensor.nonzero()])
 
 
+class ToyData(Dataset):
+
+    def __init__(self, fn):
+        """Args:
+            fn (list): file name.
+            exclude (set): a set of short forms to exclude.
+                This can be used to remove short forms in eval set.
+        """
+        self.fn = fn
+        self.data = self.read_file(fn)
+        self.characters = " " + string.ascii_letters
+        self.n_characters = len(self.characters)
+
+    def __len__(self):
+        return len(self.data["sf"])
+
+    def __getitem__(self, idx):
+        sf = self.data["sf"][idx]
+        lf = self.data["lf"][idx]
+        label = self.data["label"][idx]
+
+        sf_tensor, lf_tensor = self.seq2idx(sf), self.seq2idx(lf)
+
+        return sf_tensor, lf_tensor, label, sf, lf
+
+    def read_file(self, fn):
+        sfs, lfs, labels = [[] for _ in range(3)]
+        with open(fn) as f:
+            for line in f:
+                if line.startswith("sf\tlf"):
+                    continue
+                sf, lf, label = line.strip().split("\t")
+                sfs.append(sf)
+                lfs.append(lf)
+                labels.append(label)
+        return {"sf": sfs, "lf": lfs, "label": labels}
+
+    def seq2idx(self, seq):
+        tensor = torch.zeros(len(seq), dtype=torch.long)
+        for i, character in enumerate(seq):
+            tensor[i] = self.characters.index(character)
+        return tensor
+
+    def _pad_seq(self, samples):
+        sf_tensors, lf_tensors, labels, sfs, lfs = zip(*samples)
+        sf_lens = [len(s) for s in sf_tensors]
+        lf_lens = [len(s) for s in lf_tensors]
+        sf_tensors = pad_sequence(sf_tensors)
+        lf_tensors = pad_sequence(lf_tensors)
+        return sf_tensors, lf_tensors, torch.tensor(labels), \
+            torch.tensor(sf_lens), torch.tensor(lf_lens), \
+            sfs, lfs
+
+
 class WrappedDataLoader:
 
     def __init__(self, dl, func):

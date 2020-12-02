@@ -230,7 +230,8 @@ python3 model/qa_reject/infer.py --model_fn ../processed_data/model/qa_reject/ls
 
 
 # Generate toy SF-LF data:
-python3 model/qa_reject/toy_data.py --n_examples 10 > ../processed_data/model/qa_reject/toy_data/train
+python3 model/qa_reject/toy_data.py --n_examples 10000 > ../processed_data/model/qa_reject/toy_data/train
+python3 model/qa_reject/toy_data.py --n_examples 1000 > ../processed_data/model/qa_reject/toy_data/test
 
 #################
 # Seq2seq model #
