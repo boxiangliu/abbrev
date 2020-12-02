@@ -143,7 +143,7 @@ def eval(model, loss_func, eval_loader, eval_losses, eval_accuracies):
             n_eval_examples += len(labels)
 
     avg_eval_loss = eval_loss / len(eval_loader)
-    eval_accuracy = eval_sf_corrects / n_eval_examples
+    eval_accuracy = eval_corrects / n_eval_examples
 
     eval_losses.append(avg_eval_loss)
     eval_accuracies.append(eval_accuracy)
@@ -175,7 +175,7 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
                 avg_train_loss = train_loss / save_every
                 train_losses.append(avg_train_loss)
 
-                train_accuracy = train_sf_corrects / n_train_examples
+                train_accuracy = train_corrects / n_train_examples
                 train_accuracies.append(train_accuracy)
 
                 train_loss, train_corrects, n_train_examples = [0 for _ in range(3)]
