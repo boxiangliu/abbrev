@@ -165,7 +165,6 @@ class ToyData(Dataset):
         lf_lens = [len(s) for s in lf_tensors]
         sf_tensors = pad_sequence(sf_tensors)
         lf_tensors = pad_sequence(lf_tensors)
-        import ipdb; ipdb.set_trace()
         return sf_tensors, lf_tensors, torch.tensor(labels), \
             torch.tensor(sf_lens), torch.tensor(lf_lens), \
             sfs, lfs
