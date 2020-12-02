@@ -183,12 +183,16 @@ done
 
 # Train LSTM model: 
 python3 model/character_rnn/train.py --config_fn ../processed_data/model/character_rnn/lstm/run_01/config.json
-python3 model/character_rnn/train.py --config_fn ../processed_data/model/character_rnn/lstm/run_02/config.json
+for i in {2..5}; do
+    python3 model/character_rnn/train.py --config_fn ../processed_data/model/character_rnn/lstm/run_0${i}/config.json
+done
 
 # Output prediction result: 
 python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_01/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_sf_on_bioc/medstract --arch lstm > ../processed_data/model/character_rnn/lstm/run_01/preds.tsv
 python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_02/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_sf_on_bioc/medstract --arch lstm_embed > ../processed_data/model/character_rnn/lstm/run_02/preds.tsv
-
+python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_03/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_sf_on_bioc/SH --arch lstm_embed > ../processed_data/model/character_rnn/lstm/run_03/preds.tsv
+python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_04/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_sf_on_bioc/bioadi --arch lstm_embed > ../processed_data/model/character_rnn/lstm/run_04/preds.tsv
+python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_05/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_sf_on_bioc/Ab3P --arch lstm_embed > ../processed_data/model/character_rnn/lstm/run_05/preds.tsv
 
 
 ####################
@@ -233,8 +237,10 @@ python3 model/qa_reject/infer.py --model_fn ../processed_data/model/qa_reject/ls
 python3 model/qa_reject/toy_data.py --n_examples 10000 > ../processed_data/model/qa_reject/toy_data/train
 python3 model/qa_reject/toy_data.py --n_examples 1000 > ../processed_data/model/qa_reject/toy_data/test
 
+
 # Train on toy data:
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_01/config.json
+
 
 #################
 # Seq2seq model #
