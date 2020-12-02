@@ -8,10 +8,11 @@ min_chars, max_chars = 2, 10
 chars = string.ascii_uppercase + string.digits
 n_chars = len(chars)
 
+
 @click.command()
-@click.option("--N", type=int, help="Number of examples to generate.")
-def main(N):
-    for n in range(N):
+@click.option("--n_examples", type=int, help="Number of examples to generate.")
+def main(n_examples):
+    for n in range(n_examples):
         sys.stdout.write("sf\tlf\tlabel\n")
         SF, LF = gen_valid_pair(n_words_per_lf, min_chars,
                                 max_chars, n_chars_per_sf, chars, n_chars)
