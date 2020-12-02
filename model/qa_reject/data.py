@@ -147,6 +147,7 @@ class ToyData(Dataset):
                 if line.startswith("sf\tlf"):
                     continue
                 sf, lf, label = line.strip().split("\t")
+                label = int(label)
                 sfs.append(sf)
                 lfs.append(lf)
                 labels.append(label)
