@@ -13,8 +13,8 @@ n_chars = len(chars)
 @click.command()
 @click.option("--n_examples", type=int, help="Number of examples to generate.")
 def main(n_examples):
+    sys.stdout.write("sf\tlf\tlabel\n")
     for n in range(n_examples):
-        sys.stdout.write("sf\tlf\tlabel\n")
         SF, LF = gen_valid_pair(n_words_per_lf, min_chars,
                                 max_chars, chars, n_chars)
         sys.stdout.write(f"{SF}\t{LF}\t1\n")
