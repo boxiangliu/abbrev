@@ -52,3 +52,6 @@ def gen_random_pair(n_words_per_lf, min_chars, max_chars, n_chars_per_sf, chars,
     while random_SF == SF:
         random_SF = gen_sf(n_chars_per_sf, chars, n_chars)
     return random_SF, LF
+
+if __name__ == '__main__':
+    main()
