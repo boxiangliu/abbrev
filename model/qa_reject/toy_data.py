@@ -34,7 +34,7 @@ def gen_lf(n_words_per_lf, min_chars, max_chars, chars, n_chars):
 
 
 def lf_to_sf(lf):
-    return "".join([x[0] for x in lf.split("\t")])
+    return "".join([x[0] for x in lf.split(" ")])
 
 
 def gen_sf(n_chars_per_sf, chars, n_chars):
