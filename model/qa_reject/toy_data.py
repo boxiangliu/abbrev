@@ -30,7 +30,7 @@ def gen_lf(n_words_per_lf, min_chars, max_chars, chars, n_chars):
         word = "".join([chars[random.randint(0, n_chars - 1)]
                         for _ in range(length)])
         LF.append(word)
-    return "\t".join(LF)
+    return " ".join(LF)
 
 
 def lf_to_sf(lf):
