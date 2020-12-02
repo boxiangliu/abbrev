@@ -1,6 +1,7 @@
 import random
 import string
 import click
+import sys
 
 # N = 10000
 n_words_per_lf, n_chars_per_sf = 2, 2
