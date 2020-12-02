@@ -172,7 +172,7 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
 
             if n_steps % save_every == 0:
 
-                avg_train_loss, = train_loss / save_every
+                avg_train_loss = train_loss / save_every
                 train_losses.append(avg_train_loss)
 
                 train_accuracy = train_sf_corrects / n_train_examples
