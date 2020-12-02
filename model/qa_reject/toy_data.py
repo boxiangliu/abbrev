@@ -6,7 +6,7 @@ import sys
 # N = 10000
 n_words_per_lf, n_chars_per_sf = 2, 2
 min_chars, max_chars = 2, 10
-chars = string.ascii_uppercase + string.digits
+chars = string.ascii_lowercase
 n_chars = len(chars)
 
 
@@ -35,11 +35,11 @@ def gen_lf(n_words_per_lf, min_chars, max_chars, chars, n_chars):
 
 
 def lf_to_sf(lf):
-    return "".join([x[0] for x in lf.split(" ")])
+    return "".join([x[0].upper() for x in lf.split(" ")])
 
 
 def gen_sf(n_chars_per_sf, chars, n_chars):
-    return "".join([chars[random.randint(0, n_chars - 1)] for _ in range(n_chars_per_sf)])
+    return "".join([chars[random.randint(0, n_chars - 1)].upper() for _ in range(n_chars_per_sf)])
 
 
 def gen_valid_pair(n_words_per_lf, min_chars, max_chars, chars, n_chars):
