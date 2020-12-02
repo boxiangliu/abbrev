@@ -16,7 +16,7 @@ def main(n_examples):
     for n in range(n_examples):
         sys.stdout.write("sf\tlf\tlabel\n")
         SF, LF = gen_valid_pair(n_words_per_lf, min_chars,
-                                max_chars, n_chars_per_sf, chars, n_chars)
+                                max_chars, chars, n_chars)
         sys.stdout.write(f"{SF}\t{LF}\t1\n")
         rand_SF, rand_LF = gen_random_pair(
             n_words_per_lf, min_chars, max_chars, n_chars_per_sf, chars, n_chars)
