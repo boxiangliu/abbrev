@@ -21,11 +21,11 @@ import click
 @click.option("--config_fn", type=str, help="Path to configuration file.")
 def main(config_fn):
     config = read_config(config_fn)
-    hidden_size, n_epochs, save_every, learning_rate, \
-        batch_size, output_size, embed_size, arch = set_config(config)
+    hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, \
+        embed_size, train_sets, eval_sets, arch = set_config(config)
 
     train_data, train_loader, eval_data, eval_loader = get_data(
-        batch_size, arch)
+        batch_size, , train_sets, eval_sets, arch)
     train_loader = WrappedDataLoader(train_loader, to_device)
     eval_loader = WrappedDataLoader(eval_loader, to_device)
     input_size = train_data.n_characters
@@ -76,11 +76,13 @@ def set_config(config):
     output_size = config["output_size"]
     arch = config["arch"]
     embed_size = config["embed_size"] if ("embed_size" in config) else 16
+    train_sets = config["train_sets"]
+    eval_sets = config["eval_sets"]
 
     for k, v in config.items():
         sys.stderr.write(f"{k}={v}\n")
 
-    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, embed_size, arch
+    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, embed_size, train_sets, eval_sets, arch
 
 
 def timeSince(since):
@@ -106,16 +108,12 @@ def get_model(input_size, hidden_size, output_size, embed_size, learning_rate, a
     return model, optimizer
 
 
-def get_data(batch_size, arch):
+def get_data(batch_size, train_sets, eval_sets, arch):
     data_dir = DATA_DIR
-    if arch == "lstm_embed":
-        sf_eval = SFLFData([data_dir / "medstract"], one_hot=False)
-        sf_train = SFLFData([data_dir / "Ab3P", data_dir / "bioadi",
-                             data_dir / "SH"], exclude=set(sf_eval.sf_lf_pairs), one_hot=False)
-    else:
-        sf_eval = SFLFData([data_dir / "medstract"], one_hot=True)
-        sf_train = SFLFData([data_dir / "Ab3P", data_dir / "bioadi",
-                             data_dir / "SH"], exclude=set(sf_eval.sf_lf_pairs), one_hot=True)
+
+    sf_eval = SFLFData([data_dir / x for x in eval_sets], one_hot=False)
+    sf_train = SFLFData([data_dir / x for x in train_sets], \
+        exclude=set(sf_eval.sf_lf_pairs), one_hot=False)
 
     return sf_train, DataLoader(sf_train, batch_size=batch_size, shuffle=True,
                                 collate_fn=sf_train._pad_seq), \
