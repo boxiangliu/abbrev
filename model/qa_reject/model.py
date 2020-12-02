@@ -25,9 +25,9 @@ class EmbedRNN(nn.Module):
         self.embed = nn.Embedding(input_size, embed_size)
         self.rnn = nn.LSTM(input_size=embed_size, hidden_size=hidden_size)
         self.fc1 = nn.Linear(in_features=hidden_size,
-                            out_features=output_size)
+                             out_features=output_size)
         self.fc2 = nn.Linear(in_features=2 * hidden_size,
-                            out_features=output_size)
+                             out_features=output_size)
         self.softmax = nn.LogSoftmax(dim=1)
         self.pack_padded_sequence = pack_padded_sequence
 
@@ -37,8 +37,10 @@ class EmbedRNN(nn.Module):
         """
         sf_embedding = self.embed(sfs)
         lf_embedding = self.embed(lfs)
-        sfs = self.pack_padded_sequence(sf_embedding, sf_lens.cpu(), enforce_sorted=False)
-        lfs = self.pack_padded_sequence(lf_embedding, lf_lens.cpu(), enforce_sorted=False)
+        sfs = self.pack_padded_sequence(
+            sf_embedding, sf_lens.cpu(), enforce_sorted=False)
+        lfs = self.pack_padded_sequence(
+            lf_embedding, lf_lens.cpu(), enforce_sorted=False)
 
         sf_output, (sf_hidden, sf_cell) = self.rnn(sfs)
         lf_output, (lf_hidden, lf_cell) = self.rnn(lfs)
@@ -84,8 +86,10 @@ class ToyEmbedRNN(nn.Module):
         """
         sf_embedding = self.embed(sfs)
         lf_embedding = self.embed(lfs)
-        sfs = self.pack_padded_sequence(sf_embedding, sf_lens.cpu(), enforce_sorted=False)
-        lfs = self.pack_padded_sequence(lf_embedding, lf_lens.cpu(), enforce_sorted=False)
+        sfs = self.pack_padded_sequence(
+            sf_embedding, sf_lens.cpu(), enforce_sorted=False)
+        lfs = self.pack_padded_sequence(
+            lf_embedding, lf_lens.cpu(), enforce_sorted=False)
 
         sf_output, (sf_hidden, sf_cell) = self.rnn(sfs)
         lf_output, (lf_hidden, lf_cell) = self.rnn(lfs)
