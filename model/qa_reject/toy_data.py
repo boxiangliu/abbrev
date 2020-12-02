@@ -49,7 +49,7 @@ def gen_valid_pair(n_words_per_lf, min_chars, max_chars, chars, n_chars):
 
 def gen_random_pair(n_words_per_lf, min_chars, max_chars, n_chars_per_sf, chars, n_chars):
     LF = gen_lf(n_words_per_lf, min_chars, max_chars, chars, n_chars)
-    SF = lf_to_sf(lf)
+    SF = lf_to_sf(LF)
     random_SF = SF
     while random_SF == SF:
         random_SF = gen_sf(n_chars_per_sf, chars, n_chars)
