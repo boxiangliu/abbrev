@@ -38,7 +38,7 @@ def main(config_fn):
     torch.save(model, OUT_DIR / 'model.pt')
     save_metrics([train_losses, eval_losses,
                   train_accuracies, eval_accuracies])
-    plot_metrics(train_losses, eval_losses, eval_losses,
+    plot_metrics(train_losses, eval_losses,
                  train_accuracies, eval_accuracies)
 
 
