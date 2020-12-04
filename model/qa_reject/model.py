@@ -101,3 +101,47 @@ class ToyEmbedRNN(nn.Module):
         pair_output = self.fc(pair_output)
 
         return self.softmax(pair_output)
+
+
+class ToyEmbedRNNSequence(nn.Module):
+    """Recurrent neural network"""
+
+    def __init__(self, input_size, hidden_size, output_size, embed_size=16):
+        """Args:
+                input_size (int): input dimension of a time step.
+                hidden_size (int): dimesion of hidden layer.
+                output_size (int): number of output categories.  
+        """
+        super(ToyEmbedRNN, self).__init__()
+
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.output_size = output_size
+        self.embed_size = embed_size
+
+        self.dropout = nn.Dropout(p=0.5)
+        self.embed = nn.Embedding(input_size, embed_size)
+        self.rnn = nn.LSTM(input_size=embed_size, hidden_size=hidden_size)
+        self.fc = nn.Linear(in_features=2 * hidden_size,
+                            out_features=output_size)
+        self.softmax = nn.LogSoftmax(dim=1)
+        self.pack_padded_sequence = pack_padded_sequence
+
+    def forward(self, sfs, lfs, sf_lens, lf_lens):
+        """Args:
+                seqs (PackedSequence): Packed padded sequence.
+        """
+        sf_embedding = self.embed(sfs)
+        lf_embedding = self.embed(lfs)
+
+        sf_output, (sf_hidden, sf_cell) = self.rnn(sf_embedding)
+        lf_output, (lf_hidden, lf_cell) = self.rnn(lf_embedding)
+
+        output = torch.cat([sf_output, lf_output], dim=0)
+        sf_hidden = self.dropout(sf_hidden)
+        lf_hidden = self.dropout(lf_hidden)
+
+        pair_output = torch.cat([sf_hidden[0], lf_hidden[0]], dim=1)
+        pair_output = self.fc(pair_output)
+
+        return self.softmax(pair_output)

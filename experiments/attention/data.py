@@ -5,6 +5,7 @@ import string
 import re
 import random
 
+MAX_LENGTH = 10
 SOS_token = 0
 EOS_token = 1
 

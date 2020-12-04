@@ -2,7 +2,10 @@ import torch
 import torch.nn as nn
 from torch import optim
 import torch.nn.functional as F
-MAX_LENGTH = 10
+import sys
+sys.path.insert(0, "./experiments/attention/")
+from data import MAX_LENGTH
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class EncoderRNN(nn.Module):
