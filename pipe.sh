@@ -22,6 +22,12 @@ bash preprocess/ab3p/run_ab3p.sh --in_dir /mnt/scratch/boxiang/projects/abbrev/p
 python3 preprocess/ab3p/summarize_ab3p.py
 
 
+# Run Ab3P on BioC formatted data:
+for f in ../data/BioC/*/*_bioc_gold.txt; do
+    base=`basename $f`
+    bash preprocess/ab3p/run_ab3p_simple.sh $f | sed "s/^  /ab3p:\t/" > ../processed_data/preprocess/ab3p/BioC/$base
+done
+
 # Reformat MED1250 to FASTA format:
 python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_labeled" --out_fn "../processed_data/preprocess/med1250/text2fasta/MED1250_labeled"
 # The output file "../processed_data/preprocess/med1250/text2fasta/MED1250_labeled" has only 810 SF-LF pairs, but the original file "../data/MED1250/MED1250_labeled"
