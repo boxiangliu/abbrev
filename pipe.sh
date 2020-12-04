@@ -24,7 +24,8 @@ python3 preprocess/ab3p/summarize_ab3p.py
 
 # Reformat MED1250 to FASTA format:
 python3 preprocess/med1250/text2fasta.py --med1250_fn "../data/MED1250/MED1250_labeled" --out_fn "../processed_data/preprocess/med1250/text2fasta/MED1250_labeled"
-
+# The output file "../processed_data/preprocess/med1250/text2fasta/MED1250_labeled" has only 810 SF-LF pairs, but the original file "../data/MED1250/MED1250_labeled"
+# has 1221 SF-LF pairs. What happened in the text2fasta.py script?
 
 # Extract answerable sentences. 
 # An answerable sentence is one with a short form and long form pair.
