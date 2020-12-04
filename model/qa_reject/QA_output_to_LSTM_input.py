@@ -1,7 +1,7 @@
 import sys
 from tqdm import tqdm
 
-sys.stdout.write(f"sf\tlf\tgood_sf\tgood_lf\tgold_answer\n")
+sys.stdout.write(f"sf\tlf\tgood_sf\tgood_lf\tgold_answer\tpmid\ttype\tsent_no\n")
 for line in tqdm(sys.stdin):
     if line.startswith(">"):
         pmid, type_, sent_no = line.replace(">","").strip().split("|")
