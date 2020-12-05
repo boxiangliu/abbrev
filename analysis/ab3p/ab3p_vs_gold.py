@@ -37,17 +37,20 @@ for line in tqdm(sys.stdin):
     if sf and ab3p_lf == None, then correct_sf = 0; correct_lf = 0; extra = 0.
     lf sf and gold_lf == None, then correct_sf = 0; correct_lf = 0; extra = 1. 
     """
-sys.stdout.write("pmid\ttext\tsf\tgold_lf\tab3p_lf\tscore\tcorrect_sf\tcorrect_lf\textra_pair\n")
-for pmid, pmid_content in container.items():
-    for text, text_content in pmid_content.items():
-        for sf, (gold_lf, ab3p_lf, score) in text_content.items():
-            if gold_lf == ab3p_lf:
-                correct_sf, correct_lf, extra_pair = 1, 1, 0
-            elif ab3p_lf == "":
-                correct_sf, correct_lf, extra_pair = 0, 0, 0
-            elif gold_lf == "":
-                correct_sf, correct_lf, extra_pair = 0, 0, 1
-            elif gold_lf != ab3p_lf:
-                correct_sf, correct_lf, extra_pair = 1, 0, 0
-            sys.stdout.write(f"{pmid}\t{text}\t{sf}\t{gold_lf}\t{ab3p_lf}\t{score}\t{correct_sf}\t{correct_lf}\t{extra_pair}\n")
+try:
+    sys.stdout.write("pmid\ttext\tsf\tgold_lf\tab3p_lf\tscore\tcorrect_sf\tcorrect_lf\textra_pair\n")
+    for pmid, pmid_content in container.items():
+        for text, text_content in pmid_content.items():
+            for sf, (gold_lf, ab3p_lf, score) in text_content.items():
+                if gold_lf == ab3p_lf:
+                    correct_sf, correct_lf, extra_pair = 1, 1, 0
+                elif ab3p_lf == "":
+                    correct_sf, correct_lf, extra_pair = 0, 0, 0
+                elif gold_lf == "":
+                    correct_sf, correct_lf, extra_pair = 0, 0, 1
+                elif gold_lf != ab3p_lf:
+                    correct_sf, correct_lf, extra_pair = 1, 0, 0
+                sys.stdout.write(f"{pmid}\t{text}\t{sf}\t{gold_lf}\t{ab3p_lf}\t{score}\t{correct_sf}\t{correct_lf}\t{extra_pair}\n")
 
+except BrokenPipeError:
+    pass
