@@ -266,4 +266,5 @@ done
 cat ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python model/analysis/ab3p5bert.py
 
 
-# Compare BERT 
+# Compare Ab3P results with the gold standard:
+cat ../processed_data/preprocess/ab3p/BioC/Ab3P_bioc_gold.txt | python3 analysis/ab3p/ab3p_vs_gold.py 
