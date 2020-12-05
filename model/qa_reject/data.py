@@ -60,7 +60,7 @@ class SFLFData(Dataset):
                     if line.startswith("sf\tlf\tgood_sf"):
                         continue
 
-                    sf, lf, sf_label, pair_label, is_gold = \
+                    sf, lf, sf_label, pair_label, is_gold, pmid, type_, sent_no = \
                         line.strip().split("\t")
 
                     if (sf, lf) not in exclude:

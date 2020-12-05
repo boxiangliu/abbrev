@@ -229,7 +229,7 @@ done
 
 for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,medstract,SH}.fasta`; do
     base=`basename $fn .fasta`; echo $base
-    cat $fn | python3 model/qa_reject/QA_output_to_LSTM_input.py > ../processed_data/model/qa_reject/QA_output_to_LSTM_input/${base}_
+    cat $fn | python3 model/qa_reject/QA_output_to_LSTM_input.py > ../processed_data/model/qa_reject/QA_output_to_LSTM_input/${base}
 done
 
 
@@ -266,3 +266,4 @@ done
 cat ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python model/analysis/ab3p5bert.py
 
 
+# Compare BERT 
