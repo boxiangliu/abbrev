@@ -274,7 +274,7 @@ done
 
 
 # Compare BERT SQuAD results with the gold standard:
-cat ../processed_data/model/qa_reject/QA_output_to_LSTM_input/Ab3P | python analysis/ab3p/squad_vs_gold.py | head -n 10
+cat ../processed_data/model/qa_reject/QA_output_to_LSTM_input/Ab3P | python analysis/squad/squad_vs_gold.py | head -n 10
 
 
 

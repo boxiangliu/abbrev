@@ -34,7 +34,7 @@ for line in tqdm(sys.stdin):
             container[pmid][type_][sent_no][sf]["squad_lf"].append(squad_lf)
 
 try:
-    sys.stdout.write("pmid\ttype_\tsent_no\tsf\tgold_lf\tsquad_lf\tcorrect_sf\tcorrect_lf\textra_pair\n")
+    sys.stdout.write("pmid\ttype\tsent_no\tsf\tgold_lf\tsquad_lf\tcorrect_sf\tcorrect_lf\textra_pair\n")
     for pmid, pmid_content in container.items():
         for type_, type_content in pmid_content.items():
             for sent_no, sent_no_content in type_content.items():
@@ -48,7 +48,7 @@ try:
                             correct_sf, correct_lf, extra_pair = 0, 0, 1
                         elif squad_lf != gold_lf:
                             correct_sf, correct_lf, extra_pair = 1, 0, 0
-                        sys.stdout.write(f"{pmid}\t{text}\t{sf}\t{gold_lf}\t{ab3p_lf}\t{score}\t{correct_sf}\t{correct_lf}\t{extra_pair}\n")
+                        sys.stdout.write(f"{pmid}\t{type_}\t{sent_no}\t{sf}\t{gold_lf}\t{squad_lf}\t{correct_sf}\t{correct_lf}\t{extra_pair}\n")
 
 except BrokenPipeError:
     pass
