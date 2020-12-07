@@ -35,7 +35,6 @@ def main(proposal, squad):
         for line in tqdm(f):
             sf, lf, score, comment, pmid, type_, sent_no, sent = line.strip().split("\t")
             if comment == "omit":
-                sys.stderr.write("1\n")
                 container = init_container(container, pmid, type_, sent_no, sf)
                 container[pmid][type_][sent_no][sf]["gold_lf"].append(lf)
                 container[pmid][type_][sent_no][sf]["squad_lf"].append(None)
@@ -54,7 +53,6 @@ def main(proposal, squad):
                             elif gold_lf == "none":
                                 correct_sf, correct_lf, extra_pair = 0, 0, 1
                             elif squad_lf is None:
-                                sys.stderr.write("2\n")
                                 correct_sf, correct_lf, extra_pair = 0, 0, 0
                             elif squad_lf != gold_lf:
                                 correct_sf, correct_lf, extra_pair = 1, 0, 0
