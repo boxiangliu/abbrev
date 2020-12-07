@@ -36,7 +36,7 @@ def main(proposal, squad):
             try:
                 sf, lf, score, comment, pmid, type_, sent_no, sent = line.strip().split("\t")
             except:
-                import ipdb; ipdb.set_trace()
+                sys.stderr.write(line)
 
             if comment == "omit":
                 container = init_container(container, pmid, type_, sent_no, sf)
