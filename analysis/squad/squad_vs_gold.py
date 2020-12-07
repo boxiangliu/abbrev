@@ -33,7 +33,11 @@ def main(proposal, squad):
 
     with open(proposal) as f:
         for line in tqdm(f):
-            sf, lf, score, comment, pmid, type_, sent_no, sent = line.strip().split("\t")
+            try:
+                sf, lf, score, comment, pmid, type_, sent_no, sent = line.strip().split("\t")
+            except:
+                ipdb; ipdb.set_trace()
+
             if comment == "omit":
                 container = init_container(container, pmid, type_, sent_no, sf)
                 container[pmid][type_][sent_no][sf]["gold_lf"].append(lf)
