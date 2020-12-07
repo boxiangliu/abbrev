@@ -39,6 +39,8 @@ def main(proposal, squad):
                     container = init_container(container, pmid, type_, sent_no, sf)
                     container[pmid][type_][sent_no][sf]["gold_lf"].append(lf)
                     container[pmid][type_][sent_no][sf]["squad_lf"].append(None)
+            except:
+                pass
 
     try:
         sys.stdout.write("pmid\ttype\tsent_no\tsf\tgold_lf\tsquad_lf\tcorrect_sf\tcorrect_lf\textra_pair\n")
