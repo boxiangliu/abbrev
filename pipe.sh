@@ -216,7 +216,6 @@ for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
     cat $fn | python3 preprocess/bioc/propose_qa_on_bioc.py > ../processed_data/preprocess/bioc/propose_qa_on_bioc/$base
 done
 
-cat ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python3 preprocess/bioc/propose_qa_on_bioc.py > test
 
 # Predict on proposed short forms:
 # Note that Ab3P will throw an "Insufficient memory" error. Use CPU instead of GPU for Ab3P.
@@ -277,7 +276,7 @@ done
 # Compare BERT SQuAD results with the gold standard:
 for fn in `ls ../processed_data/model/qa_reject/QA_output_to_LSTM_input/{Ab3P,bioadi,SH,medstract}`; do
     base=`basename $fn`
-    cat $fn | python analysis/squad/squad_vs_gold.py > ../processed_data/analysis/squad/squad_vs_gold/$base
+    python analysis/squad/squad_vs_gold.py --proposal ../processed_data/preprocess/bioc/propose_qa_on_bioc/$base --squad $f > ../processed_data/analysis/squad/squad_vs_gold/$base
 done
 
 

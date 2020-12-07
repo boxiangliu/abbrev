@@ -24,6 +24,7 @@ def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
                          device=device)
 
     data = pd.read_csv(data_fn, sep="\t")
+    data = data.loc[lambda x: x["comment"] != "omit"]
     contexts, questions, answers, sfs, pmids, types, sent_nos = extract_examples(
         data, mode="eval")
 
