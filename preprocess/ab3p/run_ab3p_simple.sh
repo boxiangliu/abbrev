@@ -5,6 +5,6 @@ in_fn=$1
 identify_abbr=/mnt/scratch/boxiang/projects/Ab3P/identify_abbr
 echo "/mnt/scratch/boxiang/projects/Ab3P/WordData/" > path_Ab3P
 
-$identify_abbr $in_fn 
+$identify_abbr $in_fn
 
 rm path_Ab3P
