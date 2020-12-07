@@ -54,6 +54,7 @@ def main(proposal, squad):
                                 correct_sf, correct_lf, extra_pair = 0, 0, 1
                             elif squad_lf is None:
                                 correct_sf, correct_lf, extra_pair = 0, 0, 0
+                                squad_lf = "none"
                             elif squad_lf != gold_lf:
                                 correct_sf, correct_lf, extra_pair = 1, 0, 0
                             sys.stdout.write(f"{pmid}\t{type_}\t{sent_no}\t{sf}\t{gold_lf}\t{squad_lf}\t{correct_sf}\t{correct_lf}\t{extra_pair}\n")
