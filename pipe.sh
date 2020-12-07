@@ -279,6 +279,7 @@ for fn in `ls ../processed_data/model/qa_reject/QA_output_to_LSTM_input/{Ab3P,bi
     python analysis/squad/squad_vs_gold.py --proposal ../processed_data/preprocess/bioc/propose_qa_on_bioc/$base --squad $f > ../processed_data/analysis/squad/squad_vs_gold/$base
 done
 
+python analysis/squad/squad_vs_gold.py --proposal ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P --squad ../processed_data/model/qa_reject/QA_output_to_LSTM_input/Ab3P
 
 
 
