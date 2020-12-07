@@ -267,4 +267,28 @@ cat ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python model/analysis/ab3p5bert.
 
 
 # Compare Ab3P results with the gold standard:
-cat ../processed_data/preprocess/ab3p/BioC/Ab3P_bioc_gold.txt | python3 analysis/ab3p/ab3p_vs_gold.py 
+for fn in `ls ../processed_data/preprocess/ab3p/BioC/*_bioc_gold.txt`; do
+    base=`basename $fn _bioc_gold.txt`
+    cat $fn | python3 analysis/ab3p/ab3p_vs_gold.py > ../processed_data/analysis/ab3p/ab3p_vs_gold/$base
+done
+
+
+# Compare BERT SQuAD results with the gold standard:
+cat ../processed_data/model/qa_reject/QA_output_to_LSTM_input/Ab3P | python analysis/ab3p/squad_vs_gold.py | head -n 10
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
