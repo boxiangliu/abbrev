@@ -66,7 +66,7 @@ def main():
                             out_line = "\t".join([sf, lf, "1", "omit", pmid, text_type, str(sent_no), sentence.text])
                             sys.stdout.write(out_line + "\n")
 
-                proposals, sfs, lfs = [], [], []
+                proposals, sf_lf = [], {}
 
             text = line.strip().split("\t")[1]
             find(text, proposals)

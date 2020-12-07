@@ -216,6 +216,7 @@ for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
     cat $fn | python3 preprocess/bioc/propose_qa_on_bioc.py > ../processed_data/preprocess/bioc/propose_qa_on_bioc/$base
 done
 
+cat ../data/BioC/Ab3P-BioC/Ab3P_bioc_gold.txt | python3 preprocess/bioc/propose_qa_on_bioc.py > test
 
 # Predict on proposed short forms:
 # Note that Ab3P will throw an "Insufficient memory" error. Use CPU instead of GPU for Ab3P.
