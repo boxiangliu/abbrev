@@ -35,7 +35,7 @@ def main(proposal, squad):
         for line in tqdm(f):
             sf, lf, score, comment, pmid, type_, sent_no, sent = line.strip().split("\t")
             if comment == "omit":
-                print(1)
+                sys.stderr.write("1\n")
                 container = init_container(container, pmid, type_, sent_no, sf)
                 container[pmid][type_][sent_no][sf]["gold_lf"].append(lf)
                 container[pmid][type_][sent_no][sf]["squad_lf"].append(None)
