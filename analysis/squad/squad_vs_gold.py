@@ -35,13 +35,10 @@ def main(proposal, squad):
         for line in tqdm(f):
             try:
                 sf, lf, score, comment, pmid, type_, sent_no, sent = line.strip().split("\t")
-            except:
-                sys.stderr.write(line)
-
-            if comment == "omit":
-                container = init_container(container, pmid, type_, sent_no, sf)
-                container[pmid][type_][sent_no][sf]["gold_lf"].append(lf)
-                container[pmid][type_][sent_no][sf]["squad_lf"].append(None)
+                if comment == "omit":
+                    container = init_container(container, pmid, type_, sent_no, sf)
+                    container[pmid][type_][sent_no][sf]["gold_lf"].append(lf)
+                    container[pmid][type_][sent_no][sf]["squad_lf"].append(None)
 
     try:
         sys.stdout.write("pmid\ttype\tsent_no\tsf\tgold_lf\tsquad_lf\tcorrect_sf\tcorrect_lf\textra_pair\n")
