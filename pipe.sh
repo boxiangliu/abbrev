@@ -274,14 +274,10 @@ done
 
 
 # Compare BERT SQuAD results with the gold standard:
-cat ../processed_data/model/qa_reject/QA_output_to_LSTM_input/Ab3P | python analysis/squad/squad_vs_gold.py | head -n 10
-
-
-
-
-
-
-
+for fn in `ls ../processed_data/model/qa_reject/QA_output_to_LSTM_input/{Ab3P,bioadi,SH,medstract}`; do
+    base=`basename $fn`
+    cat $fn | python analysis/squad/squad_vs_gold.py > ../processed_data/analysis/squad/squad_vs_gold/$base
+done
 
 
 

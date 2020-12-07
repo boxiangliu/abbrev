@@ -50,7 +50,8 @@ def main():
 
             bad_proposals = [sf for sf in proposals if sf not in sf_lf]
             good_proposals = [(sf, sf_lf[sf]) for sf in proposals if sf in sf_lf]
-            if (good_proposals != []) or (bad_proposals != []):
+            omitted = [(sf, sf_lf[sf]) for sf in sf_lf.keys() if sf not in proposals]
+            if (good_proposals != []) or (bad_proposals != []) or (omitted != []):
                 for sent_no, sentence in enumerate(text.sentences):
                     for sf, lf in good_proposals:
                         if (sf in sentence.text) and (lf in sentence.text):
@@ -60,6 +61,11 @@ def main():
                         if "(" + proposal in sentence.text:
                             out_line = "\t".join([proposal, "none", "-1", "todo", pmid, text_type, str(sent_no), sentence.text])
                             sys.stdout.write(out_line + "\n")
+                    for sf, lf in omitted:
+                        if (sf in sentence.text) and (lf in sentence.text):
+                            out_line = "\t".join([sf, lf, "1", "omit", pmid, text_type, str(sent_no), sentence.text])
+                            sys.stdout.write(out_line + "\n")
+
                 proposals, sfs, lfs = [], [], []
 
             text = line.strip().split("\t")[1]
