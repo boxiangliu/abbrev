@@ -23,7 +23,7 @@ def main(model, tokenizer, data_fn, out_fn, topk, nonredundant):
                          tokenizer=tokenizer,
                          device=device)
 
-    data = pd.read_csv(data_fn, sep="\t")
+    data = pd.read_csv(data_fn, sep="\t", dtype={"pmid":str, "sent_no": str})
     data = data.loc[lambda x: x["comment"] != "omit"]
     contexts, questions, answers, sfs, pmids, types, sent_nos = extract_examples(
         data, mode="eval")
