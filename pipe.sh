@@ -262,8 +262,19 @@ done
 ######################
 # Suffix frequencies #
 ######################
-bash model/suffix_freq/get_suffix_freqs.sh ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P.fasta
-bash model/suffix_freq/get_suffix_freqs.sh test
+# Generate suffix frequencies.
+# Copied from Ken's directory, 
+bash model/suffix_freq/get_suffix_freqs.sh 
+
+# Parse suffix frequencies:
+cat ../processed_data/model/suffix_freq/get_suffix_freqs/suffix_freqs.txt | python3 model/suffix_freq/parse_suffix_freqs.py > ../processed_data/model/suffix_freq/parse_suffix_freqs/suffix_freqs.tsv
+
+
+#######################
+# logistic regression #
+#######################
+
+
 
 #################
 # Seq2seq model #
