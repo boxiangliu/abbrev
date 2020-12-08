@@ -25,6 +25,6 @@ for line in sys.stdin:
         if (ab3p_sf == sf) and (ab3p_lf == lf):
             sys.stdout.write(f"{sf}\t{lf}\t{score}\t{pmid}\t{type_}\t{sent_no}\n")
         else:
-            sys.stdout.write(f"{sf}\t{lf}\t0\n")
+            sys.stdout.write(f"{sf}\t{lf}\t0\t{pmid}\t{type_}\t{sent_no}\n")
 
         prev_state = "ab3p"
