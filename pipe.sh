@@ -249,6 +249,12 @@ python3 model/qa_reject/toy_data.py --n_examples 1000 > ../processed_data/model/
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_01/config.json
 
 
+########################
+# Ab3P on SQuAD output #
+########################
+cat ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P.fasta | python3 model/qa_to_ab3p/qa_to_ab3p-input.py > ../processed_data/model/qa_to_ab3p/qa_to_ab3p-input/Ab3P 
+bash preprocess/ab3p/run_ab3p_simple.sh ../processed_data/model/qa_to_ab3p/qa_to_ab3p-input/Ab3P 
+
 #################
 # Seq2seq model #
 #################
