@@ -263,6 +263,7 @@ done
 # Suffix frequencies #
 ######################
 bash model/suffix_freq/get_suffix_freqs.sh ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P.fasta
+bash model/suffix_freq/get_suffix_freqs.sh test
 
 #################
 # Seq2seq model #
