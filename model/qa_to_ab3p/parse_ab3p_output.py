@@ -16,11 +16,15 @@ for line in sys.stdin:
             sys.stdout.write(f"{sf}\t{lf}\t0\n")
 
         lf, sf = line.strip().split("\t")[1:3]
+        sf = sf[1:-1]
+
         prev_state = "squad"
 
     elif line.startswith("  "):
         ab3p_sf, ab3p_lf, score = line.strip().split("|")
         if (ab3p_sf == sf) and (ab3p_lf == lf):
             sys.stdout.write(f"{sf}\t{lf}\t{score}\n")
-        
+        else:
+            sys.stdout.write(f"{sf}\t{lf}\t0\n")
+
         prev_state = "ab3p"
