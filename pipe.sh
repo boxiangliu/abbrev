@@ -252,8 +252,17 @@ python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reje
 ########################
 # Ab3P on SQuAD output #
 ########################
-cat ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P.fasta | python3 model/qa_to_ab3p/qa_to_ab3p-input.py > ../processed_data/model/qa_to_ab3p/qa_to_ab3p-input/Ab3P 
-bash preprocess/ab3p/run_ab3p_simple.sh ../processed_data/model/qa_to_ab3p/qa_to_ab3p-input/Ab3P 
+for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/*.fasta`; do
+    base=`basename $fn .fasta`
+    cat $fn | python3 model/qa_to_ab3p/qa_to_ab3p-input.py > ../processed_data/model/qa_to_ab3p/qa_to_ab3p-input/$base 
+    bash preprocess/ab3p/run_ab3p_simple.sh ../processed_data/model/qa_to_ab3p/qa_to_ab3p-input/$base | python3 model/qa_to_ab3p/parse_ab3p_output.py > ../processed_data/model/qa_to_ab3p/parse_ab3p_output/$base
+done
+
+
+######################
+# Suffix frequencies #
+######################
+bash model/suffix_freq/get_suffix_freqs.sh ../processed_data/preprocess/bioc/propose_qa_on_bioc/Ab3P.fasta
 
 #################
 # Seq2seq model #
