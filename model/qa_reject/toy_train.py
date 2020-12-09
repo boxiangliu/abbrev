@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 import sys
 sys.path.insert(0, "./model/qa_reject/")
 from data import ToyData, WrappedDataLoader
-from model import ToyEmbedRNN
+from model import ToyEmbedRNN, ToyEmbedRNNSequence
 import time
 import math
 import pickle
@@ -23,7 +23,7 @@ def main(config_fn):
     torch.manual_seed(42)
     config = read_config(config_fn)
     hidden_size, n_epochs, save_every, learning_rate, \
-        batch_size, output_size, embed_size, arch = set_config(config)
+        batch_size, output_size, embed_size, arch, max_length = set_config(config)
 
     train_data, train_loader, eval_data, eval_loader = get_data(
         batch_size, arch)
@@ -31,7 +31,7 @@ def main(config_fn):
     eval_loader = WrappedDataLoader(eval_loader, to_device)
     input_size = train_data.n_characters
     model, opt = get_model(input_size, hidden_size,
-                           output_size, embed_size, learning_rate, arch)
+                           output_size, embed_size, learning_rate, arch, max_length)
     loss_func = nn.NLLLoss()
     train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
         n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
@@ -76,11 +76,12 @@ def set_config(config):
     output_size = config["output_size"]
     arch = config["arch"]
     embed_size = config["embed_size"] if ("embed_size" in config) else 16
+    max_length = config["max_length"]
 
     for k, v in config.items():
         sys.stderr.write(f"{k}={v}\n")
 
-    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, embed_size, arch
+    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, embed_size, arch, max_length
 
 
 def timeSince(since):
@@ -98,9 +99,16 @@ def to_device(*args):
     return container
 
 
-def get_model(input_size, hidden_size, output_size, embed_size, learning_rate, arch):
-    model = ToyEmbedRNN(input_size, hidden_size,
-                        output_size, embed_size).to(DEVICE)
+def get_model(input_size, hidden_size, output_size, embed_size, learning_rate, arch, max_length):
+    if arch == "ToyEmbedRNN":
+        model = ToyEmbedRNN(input_size, hidden_size,
+                            output_size, embed_size).to(DEVICE)
+    elif arch == "ToyEmbedRNNSequence":
+        model = ToyEmbedRNNSequence(input_size, hidden_size,
+                    output_size, max_length, DEVICE).to(DEVICE)
+    else:
+        raise ValueError("architecture not implemented.")
+
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
     return model, optimizer

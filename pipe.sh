@@ -220,6 +220,8 @@ done
 # Predict on proposed short forms:
 # Note that Ab3P will throw an "Insufficient memory" error. Use CPU instead of GPU for Ab3P.
 for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,medstract,SH}`; do
+
+for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/SH`; do
     base=`basename $fn`; echo $base
     sbatch -p  1080Ti,1080Ti_mlong,1080Ti_slong,2080Ti,2080Ti_mlong,M40x8,M40x8_mlong,M40x8_slong,P100,TitanXx8,TitanXx8_mlong,TitanXx8_slong,V100_DGX,V100x8 \
         --gres=gpu:1 --job-name=$base --output=../processed_data/preprocess/bioc/propose_qa_on_bioc/${base}.log \
@@ -247,6 +249,7 @@ python3 model/qa_reject/toy_data.py --n_examples 1000 > ../processed_data/model/
 
 # Train on toy data:
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_01/config.json
+python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_02/config.json
 
 
 ########################
@@ -273,6 +276,8 @@ cat ../processed_data/model/suffix_freq/get_suffix_freqs/suffix_freqs.txt | pyth
 #######################
 # logistic regression #
 #######################
+# Merge frequencies and Ab3P result:
+python3 model/logistic_regression/merge_data_sources.py
 
 
 
