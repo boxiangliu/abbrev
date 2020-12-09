@@ -126,7 +126,7 @@ def get_data(batch_size, arch):
 
 
 def loss_batch(model, loss_func, sf_tensors, lf_tensors, sf_lens, lf_lens, labels, opt=None):
-    output = model(sf_tensors, lf_tensors, sf_lens, lf_lens)
+    output, _ = model(sf_tensors, lf_tensors, sf_lens, lf_lens)
     pred = torch.argmax(output, dim=1)
 
     loss = loss_func(output, labels)

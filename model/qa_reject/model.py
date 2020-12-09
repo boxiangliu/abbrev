@@ -100,7 +100,7 @@ class ToyEmbedRNN(nn.Module):
         pair_output = torch.cat([sf_hidden[0], lf_hidden[0]], dim=1)
         pair_output = self.fc(pair_output)
 
-        return self.softmax(pair_output)
+        return self.softmax(pair_output), 0
 
 
 class ToyEmbedRNNSequence(nn.Module):
@@ -142,23 +142,20 @@ class ToyEmbedRNNSequence(nn.Module):
         batch_size = sfs.size()[1]
 
         hidden = self.initHidden(batch_size)
-        # outputs = []
+        attn_weights_list = []
         for sf_embedding in sf_embeddings:
             attn_weights = F.softmax(self.attn(torch.cat([sf_embedding, hidden[0]], dim=1)), dim=1)
+            attn_weights_list.append(attn_weights,unsqueeze(0))
             attn_applied = torch.bmm(attn_weights.unsqueeze(1), lf_output.transpose(0, 1))
             output = torch.cat([sf_embedding, attn_applied.squeeze(1)], dim=1)
             output = self.attn_combine(output).unsqueeze(0)
             output = F.relu(output)
             output, hidden = self.rnn_sf(output, hidden)
-            # outputs.append(output)
 
-        # outputs = torch.cat(outputs, dim=0)
-        # output = torch.mean(outputs, dim=0)
 
-        # prob = F.log_softmax(self.fc(output), dim=1)
         prob = F.log_softmax(self.fc(output[0]), dim=1)
 
-        return prob
+        return prob, torch.cat(attn_weights_list, dim=0)
 
     def initHidden(self, batch_size):
         return torch.zeros(1, batch_size, self.hidden_size, device=self.device)
