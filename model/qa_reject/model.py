@@ -136,7 +136,7 @@ class ToyEmbedRNNSequence(nn.Module):
         """
         sf_embeddings = self.embed(sfs)
         lf_embeddings = self.embed(lfs)
-        lf_embeddings = pack_padded_sequence(lf_embeddings, lf_lens, enforce_sorted=False)
+        lf_embeddings = pack_padded_sequence(lf_embeddings, lf_lens.cpu(), enforce_sorted=False)
         lf_output, lf_hidden = self.rnn_lf(lf_embeddings)
         lf_output, _ = pad_packed_sequence(lf_output, total_length=self.max_length)
         batch_size = sfs.size()[1]
