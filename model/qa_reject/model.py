@@ -145,7 +145,7 @@ class ToyEmbedRNNSequence(nn.Module):
         attn_weights_list = []
         for sf_embedding in sf_embeddings:
             attn_weights = F.softmax(self.attn(torch.cat([sf_embedding, hidden[0]], dim=1)), dim=1)
-            attn_weights_list.append(attn_weights,unsqueeze(0))
+            attn_weights_list.append(attn_weights.unsqueeze(0))
             attn_applied = torch.bmm(attn_weights.unsqueeze(1), lf_output.transpose(0, 1))
             output = torch.cat([sf_embedding, attn_applied.squeeze(1)], dim=1)
             output = self.attn_combine(output).unsqueeze(0)
@@ -168,7 +168,7 @@ def testing_ToyEmbedRNNSequence():
     from data import ToyData, WrappedDataLoader
     from torch.utils.data import DataLoader
 
-    batch_size = 2
+    batch_size = 4
     train_data = ToyData('../processed_data/model/qa_reject/toy_data/train')
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True,collate_fn=train_data._pad_seq)
     input_size = train_data.n_characters
@@ -181,4 +181,4 @@ def testing_ToyEmbedRNNSequence():
     lfs = batch[1]
     sf_lens = batch[3]
     lf_lens = batch[4]
-    model(sfs, lfs, sf_lens, lf_lens)
+    prob, attn = model(sfs, lfs, sf_lens, lf_lens)
