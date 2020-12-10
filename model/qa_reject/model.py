@@ -235,7 +235,6 @@ class ToyEmbedRNNSequenceAvg(nn.Module):
             output, hidden = self.rnn_sf(output, hidden)
             outputs.append(output)
 
-        import ipdb; ipdb.set_trace()
         output = torch.cat(outputs, dim=0)
         output = torch.mean(output, dim=0)
         prob = F.log_softmax(self.fc(output), dim=1)
