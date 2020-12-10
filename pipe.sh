@@ -272,8 +272,12 @@ python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reje
 # toy_03: Use the new toy data. Each character of the SF is a random letter from the LF.
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_03/config.json
 
-# toy_03: Use the ToyEmbedRNNSequenceAvg architecture. Average over the entire sequence.
+# toy_04: Use the ToyEmbedRNNSequenceAvg architecture. Average over the entire sequence.
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_04/config.json
+
+# toy_05: Use the ToyEmbedRNNSequenceAvg architecture. Also use toy_data3: LF length in (2, 10), word length in (2, 10), LF has 0.9 probability to inherit a letter from each word of LF.
+python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_05/config.json
+
 
 ########################
 # Ab3P on SQuAD output #

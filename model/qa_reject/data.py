@@ -146,7 +146,10 @@ class ToyData(Dataset):
             for line in f:
                 if line.startswith("sf\tlf"):
                     continue
-                sf, lf, label = line.strip().split("\t")
+                try:
+                    sf, lf, label = line.strip().split("\t")
+                except:
+                    import ipdb; ipdb.set_trace()
                 label = int(label)
                 sfs.append(sf)
                 lfs.append(lf)
