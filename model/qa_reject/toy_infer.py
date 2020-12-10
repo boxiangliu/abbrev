@@ -6,8 +6,9 @@ from model import ToyEmbedRNN, ToyEmbedRNNSequence
 from torch.utils.data import DataLoader
 import torch
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 
-model_fn = "../processed_data/model/qa_reject/lstm/toy_03/model.pt"
+model_fn = "../processed_data/model/qa_reject/lstm/toy_04/model.pt"
 eval_fn = Path("../processed_data/model/qa_reject/toy_data2/")
 model = torch.load(model_fn).to(torch.device("cpu"))
 model.device = torch.device("cpu")
@@ -23,18 +24,22 @@ torch.argmax(prob, dim=1)
 labels
 len((labels != torch.argmax(prob, dim=1)).nonzero())
 
-sfs[47]
-lfs[47]
-
-i=2
+i=3
 sfs[i]
 lfs[i]
 plt.close()
 fig = plt.figure()
 ax = fig.add_subplot(111)
 cax = ax.matshow(attn[:,i,:].detach().numpy(), cmap='bone')
+ax.set_xticklabels(" " + lfs[i])
+ax.set_yticklabels(" " + sfs[i])
+
+# Show label at every tick
+ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+
 fig.colorbar(cax)
-plt.savefig("test.png")
+plt.savefig(f"test{i}.png")
 
 with torch.no_grad():
     container = defaultdict(list)
