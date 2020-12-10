@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 import sys
 sys.path.insert(0, "./model/qa_reject/")
 from data import ToyData, WrappedDataLoader
-from model import ToyEmbedRNN, ToyEmbedRNNSequence
+from model import ToyEmbedRNN, ToyEmbedRNNSequence, ToyEmbedRNNSequenceAvg
 import time
 import math
 import pickle
