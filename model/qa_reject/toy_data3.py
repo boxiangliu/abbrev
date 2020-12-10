@@ -16,11 +16,11 @@ def main(n_examples):
     random.seed(42)
     sys.stdout.write("sf\tlf\tlabel\n")
     for n in range(n_examples):
-        SF, LF = gen_valid_pair(n_words_per_lf, min_chars,
+        SF, LF = gen_valid_pair(min_words, max_words, min_chars,
                                 max_chars, chars, n_chars)
         sys.stdout.write(f"{SF}\t{LF}\t1\n")
         rand_SF, rand_LF = gen_random_pair(
-            n_words_per_lf, min_chars, max_chars, n_chars_per_sf, chars, n_chars)
+            min_words, max_words, min_chars, max_chars, n_chars_per_sf, chars, n_chars)
         sys.stdout.write(f"{rand_SF}\t{rand_LF}\t0\n")
 
 
@@ -43,14 +43,14 @@ def gen_sf(n_chars_per_sf, chars, n_chars, prob):
     return "".join([chars[random.randint(0, n_chars - 1)].upper() for _ in range(n_chars_per_sf) if random.random() < prob])
 
 
-def gen_valid_pair(n_words_per_lf, min_chars, max_chars, chars, n_chars):
+def gen_valid_pair(min_words, max_words, min_chars, max_chars, chars, n_chars):
     LF = gen_lf(min_words, max_words, min_chars, max_chars, chars, n_chars)
     SF = lf_to_sf(LF, prob)
     return SF, LF
 
 
-def gen_random_pair(n_words_per_lf, min_chars, max_chars, n_chars_per_sf, chars, n_chars):
-    LF = gen_lf(n_words_per_lf, min_chars, max_chars, chars, n_chars)
+def gen_random_pair(min_words, max_words, min_chars, max_chars, n_chars_per_sf, chars, n_chars):
+    LF = gen_lf(min_words, max_words, min_chars, max_chars, chars, n_chars)
     n_words = len(LF.split(" "))
     random_SF = gen_sf(n_words, chars, n_chars, prob)
     return random_SF, LF
