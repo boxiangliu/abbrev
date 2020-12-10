@@ -5,7 +5,7 @@ import sys
 
 # N = 10000
 min_words, max_words = 2, 10
-min_chars, max_chars = 4, 5
+min_chars, max_chars = 2, 10
 chars = string.ascii_letters
 n_chars = len(chars)
 prob = 0.8

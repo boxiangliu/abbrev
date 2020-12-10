@@ -253,6 +253,15 @@ python3 model/qa_reject/toy_data2.py --n_examples 10000 > ../processed_data/mode
 python3 model/qa_reject/toy_data2.py --n_examples 1000 > ../processed_data/model/qa_reject/toy_data2/test
 
 
+# Generate toy SF-LF data:
+# SF will be a random letter from each word in the long form.
+# The length of LF varies from 2 to 10 words.
+# The length of each word varies from 2 to 10 characters.
+# The SF has a 0.9 probability of getting a letter from each word of the LF. 
+python3 model/qa_reject/toy_data3.py --n_examples 10000 > ../processed_data/model/qa_reject/toy_data3/train
+python3 model/qa_reject/toy_data3.py --n_examples 1000 > ../processed_data/model/qa_reject/toy_data3/test
+
+
 # Train on toy data:
 # toy_01: Use the ToyEmbedRNN architecture. NO attention.
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_01/config.json
