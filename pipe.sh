@@ -243,8 +243,14 @@ python3 model/qa_reject/infer.py --model_fn ../processed_data/model/qa_reject/ls
 
 
 # Generate toy SF-LF data:
+# SF will be the first letter from each word in the long form.
 python3 model/qa_reject/toy_data.py --n_examples 10000 > ../processed_data/model/qa_reject/toy_data/train
 python3 model/qa_reject/toy_data.py --n_examples 1000 > ../processed_data/model/qa_reject/toy_data/test
+
+# Generate toy SF-LF data:
+# SF will be a random letter from each word in the long form.
+python3 model/qa_reject/toy_data2.py --n_examples 10000 > ../processed_data/model/qa_reject/toy_data2/train
+python3 model/qa_reject/toy_data2.py --n_examples 1000 > ../processed_data/model/qa_reject/toy_data2/test
 
 
 # Train on toy data:

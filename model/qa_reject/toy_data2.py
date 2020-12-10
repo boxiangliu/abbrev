@@ -5,7 +5,7 @@ import sys
 
 # N = 10000
 n_words_per_lf, n_chars_per_sf = 4, 4
-min_chars, max_chars = 2, 5
+min_chars, max_chars = 4, 5
 chars = string.ascii_letters
 n_chars = len(chars)
 
