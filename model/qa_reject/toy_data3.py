@@ -20,7 +20,7 @@ def main(n_examples):
                                 max_chars, chars, n_chars)
         sys.stdout.write(f"{SF}\t{LF}\t1\n")
         rand_SF, rand_LF = gen_random_pair(
-            min_words, max_words, min_chars, max_chars, n_chars_per_sf, chars, n_chars)
+            min_words, max_words, min_chars, max_chars, chars, n_chars)
         sys.stdout.write(f"{rand_SF}\t{rand_LF}\t0\n")
 
 
@@ -49,7 +49,7 @@ def gen_valid_pair(min_words, max_words, min_chars, max_chars, chars, n_chars):
     return SF, LF
 
 
-def gen_random_pair(min_words, max_words, min_chars, max_chars, n_chars_per_sf, chars, n_chars):
+def gen_random_pair(min_words, max_words, min_chars, max_chars, chars, n_chars):
     LF = gen_lf(min_words, max_words, min_chars, max_chars, chars, n_chars)
     n_words = len(LF.split(" "))
     random_SF = gen_sf(n_words, chars, n_chars, prob)
