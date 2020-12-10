@@ -149,7 +149,7 @@ class ToyData(Dataset):
                 try:
                     sf, lf, label = line.strip().split("\t")
                 except:
-                    import ipdb; ipdb.set_trace()
+                    pass
                 label = int(label)
                 sfs.append(sf)
                 lfs.append(lf)
