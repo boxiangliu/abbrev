@@ -254,9 +254,17 @@ python3 model/qa_reject/toy_data2.py --n_examples 1000 > ../processed_data/model
 
 
 # Train on toy data:
+# toy_01: Use the ToyEmbedRNN architecture. NO attention.
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_01/config.json
+
+# toy_02: Use the ToyEmbedRNNSequence architecture. With attention.
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_02/config.json
 
+# toy_03: Use the new toy data. Each character of the SF is a random letter from the LF.
+python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_03/config.json
+
+# toy_03: Use the ToyEmbedRNNSequenceAvg architecture. Average over the entire sequence.
+python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_04/config.json
 
 ########################
 # Ab3P on SQuAD output #

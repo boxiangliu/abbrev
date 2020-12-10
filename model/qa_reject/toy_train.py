@@ -106,6 +106,9 @@ def get_model(input_size, hidden_size, output_size, embed_size, learning_rate, a
     elif arch == "ToyEmbedRNNSequence":
         model = ToyEmbedRNNSequence(input_size, hidden_size,
                     output_size, max_length, DEVICE).to(DEVICE)
+    elif arch == "ToyEmbedRNNSequenceAvg":
+        model = ToyEmbedRNNSequenceAvg(input_size, hidden_size,
+                    output_size, max_length, DEVICE).to(DEVICE)
     else:
         raise ValueError("architecture not implemented.")
 
