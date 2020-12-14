@@ -100,7 +100,7 @@ def to_device(*args):
 
 def get_model(input_size, hidden_size, output_size, embed_size, learning_rate, arch, max_length):
     model = EmbedRNNSequenceAvg(input_size, hidden_size,
-                     output_size, embed_size).to(DEVICE)
+                     output_size, max_length, device=DEVICE).to(DEVICE)
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
     return model, optimizer
@@ -112,9 +112,10 @@ def get_data(batch_size, train_sets, eval_sets, arch):
     sf_eval = SFLFData([data_dir / x for x in eval_sets], one_hot=False)
     sf_train = SFLFData([data_dir / x for x in train_sets], \
         exclude=set(sf_eval.sf_lf_pairs), one_hot=False)
+    sampler = sf_train.get_weighted_sampler()
 
-    return sf_train, DataLoader(sf_train, batch_size=batch_size, shuffle=True,
-                                collate_fn=sf_train._pad_seq), \
+    return sf_train, DataLoader(sf_train, batch_size=batch_size, \
+        sampler=sampler, shuffle=True, collate_fn=sf_train._pad_seq), \
         sf_eval, DataLoader(sf_eval, batch_size=batch_size * 4,
                             collate_fn=sf_eval._pad_seq)
 
@@ -213,7 +214,7 @@ def plot_metrics(train_losses, eval_losses, train_accuracies, eval_accuracies):
     train_metrics = [train_losses, train_accuracies]
     eval_metrics = [eval_losses, eval_accuracies]
     criterions = ["loss", "accuracy"] 
-    types = ["total", "pair"]
+    types = ["loss", "accuracy"]
     for train_metric, eval_metric, criterion, _type in zip(train_metrics, eval_metrics, criterions, types):
         legend_position = "upper right" if _type == "loss" else "lower right"
         title, ylabel, out_fn = f"{criterion} {_type}", _type, OUT_DIR / f"{criterion}_{_type}.png"
