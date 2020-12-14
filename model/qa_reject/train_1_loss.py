@@ -115,7 +115,7 @@ def get_data(batch_size, train_sets, eval_sets, arch):
     sampler = sf_train.get_weighted_sampler()
 
     return sf_train, DataLoader(sf_train, batch_size=batch_size, \
-        sampler=sampler, shuffle=True, collate_fn=sf_train._pad_seq), \
+        sampler=sampler, collate_fn=sf_train._pad_seq), \
         sf_eval, DataLoader(sf_eval, batch_size=batch_size * 4,
                             collate_fn=sf_eval._pad_seq)
 
