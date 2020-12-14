@@ -6,7 +6,7 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 import numpy as np
 
 
