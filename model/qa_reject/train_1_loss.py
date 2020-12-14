@@ -21,7 +21,7 @@ import click
 @click.option("--config_fn", type=str, help="Path to configuration file.")
 def main(config_fn):
     config = read_config(config_fn)
-    hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, \
+    hidden_size, n_epochs, save_every, plot_every, learning_rate, batch_size, output_size, \
         embed_size, train_sets, eval_sets, arch, max_length = set_config(config)
 
     train_data, train_loader, eval_data, eval_loader = get_data(
@@ -32,12 +32,11 @@ def main(config_fn):
     model, opt = get_model(input_size, hidden_size,
                            output_size, embed_size, learning_rate, arch, max_length)
     loss_func = nn.NLLLoss()
-    train_losses, eval_losses, train_accuracies, eval_accuracies = fit(
-            n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every)
+    train_losses, eval_losses, train_accuracies, eval_accuracies, n_steps = fit(
+            n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every, plot_every)
 
-    torch.save(model, OUT_DIR / 'model.pt')
-    save_metrics([train_losses, eval_losses, train_accuracies, eval_accuracies])
-    plot_metrics(train_losses, eval_losses, train_accuracies, eval_accuracies)
+    save_metrics([n_steps, train_losses, eval_losses, train_accuracies, eval_accuracies])
+    plot_metrics(n_steps, train_losses, eval_losses, train_accuracies, eval_accuracies)
 
 
 def read_config(config_fn):
@@ -68,6 +67,7 @@ def set_config(config):
     hidden_size = config["hidden_size"]
     n_epochs = config["n_epochs"]
     save_every = config["save_every"]
+    plot_every = config["plot_every"] if ("plot_every" in config) else save_every
     learning_rate = config["learning_rate"]
     batch_size = config["batch_size"]
     output_size = config["output_size"]
@@ -80,7 +80,7 @@ def set_config(config):
     for k, v in config.items():
         sys.stderr.write(f"{k}={v}\n")
 
-    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, embed_size, train_sets, eval_sets, arch, max_length
+    return hidden_size, n_epochs, save_every, plot_every, learning_rate, batch_size, output_size, embed_size, train_sets, eval_sets, arch, max_length
 
 
 def timeSince(since):
@@ -156,9 +156,9 @@ def eval(model, loss_func, eval_loader, eval_losses, eval_accuracies):
     return avg_eval_loss, eval_accuracy, eval_losses, eval_accuracies
 
 
-def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1000):
-    n_steps, train_loss, train_corrects, n_train_examples = [0 for _ in range(4)]
-    train_losses, train_accuracies, eval_losses, eval_accuracies = [[] for _ in range(4)]
+def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every, plot_every):
+    n_step, train_loss, train_corrects, n_train_examples = [0 for _ in range(4)]
+    n_steps, train_losses, train_accuracies, eval_losses, eval_accuracies = [[] for _ in range(5)]
     start = time.time()
 
     for epoch in range(n_epochs):
@@ -166,7 +166,7 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
                 is_golds, sf_lens, lf_lens, sfs, lfs in train_loader:
 
             model.train()
-            n_steps += 1
+            n_step += 1
             loss, pred = loss_batch(model, loss_func, sf_tensors, lf_tensors,
                            sf_lens, lf_lens, pair_labels, opt)
 
@@ -174,7 +174,8 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
             train_corrects += sum(pred == pair_labels)
             n_train_examples += len(pair_labels)
 
-            if n_steps % save_every == 0:
+            if n_step % plot_every == 0:
+                n_steps.append(n_step)
 
                 avg_train_loss = train_loss / save_every
                 train_losses.append(avg_train_loss)
@@ -187,21 +188,24 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
                 avg_eval_loss, eval_accuracy, eval_losses, eval_accuracies = \
                     eval(model, loss_func, eval_loader, eval_losses, eval_accuracies)
 
-                print('STEP %d (%s) TRAIN: L=%.4f ACC=%.4f; EVAL: L=%.4f ACC=%.4f' %
-                      (n_steps, timeSince(start), avg_train_loss, train_accuracy, avg_eval_loss, eval_accuracy))
+                sys.stderr.write('STEP %d (%s) TRAIN: L=%.4f ACC=%.4f; EVAL: L=%.4f ACC=%.4f\n' %
+                      (n_step, timeSince(start), avg_train_loss, train_accuracy, avg_eval_loss, eval_accuracy))
 
-    return train_losses, eval_losses, train_accuracies, eval_accuracies
+            if n_step % save_every == 0:
+                torch.save(model, OUT_DIR / f'checkpoint-{n_step:06d}.pt')
+
+    return train_losses, eval_losses, train_accuracies, eval_accuracies, n_steps
 
 
-def plot_single_metric(train_metric, eval_metric, legend_position, title, ylabel, out_fn):
+def plot_single_metric(n_steps, train_metric, eval_metric, legend_position, title, ylabel, out_fn):
     train_metric_smooth = savgol_filter(train_metric, 15, 4)
     eval_metric_smooth = savgol_filter(eval_metric, 15, 4)
 
     plt.close()
-    plt.plot(train_metric, label="train")
-    plt.plot(train_metric_smooth, label="smooth train")
-    plt.plot(eval_metric, label="eval")
-    plt.plot(eval_metric_smooth, label="smooth eval")
+    plt.plot(n_steps, train_metric, label="train")
+    plt.plot(n_steps, train_metric_smooth, label="smooth train")
+    plt.plot(n_steps, eval_metric, label="eval")
+    plt.plot(n_steps, eval_metric_smooth, label="smooth eval")
     plt.title(title)
     plt.xlabel("Steps")
     plt.ylabel(ylabel)
@@ -209,16 +213,15 @@ def plot_single_metric(train_metric, eval_metric, legend_position, title, ylabel
     plt.savefig(out_fn)
 
 
-def plot_metrics(train_losses, eval_losses, train_accuracies, eval_accuracies):
+def plot_metrics(n_steps, train_losses, eval_losses, train_accuracies, eval_accuracies):
     # start from here. turn the following code into a for loop.
     train_metrics = [train_losses, train_accuracies]
     eval_metrics = [eval_losses, eval_accuracies]
     criterions = ["loss", "accuracy"] 
-    types = ["loss", "accuracy"]
-    for train_metric, eval_metric, criterion, _type in zip(train_metrics, eval_metrics, criterions, types):
-        legend_position = "upper right" if _type == "loss" else "lower right"
-        title, ylabel, out_fn = f"{criterion} {_type}", _type, OUT_DIR / f"{criterion}_{_type}.png"
-        plot_single_metric(train_metric, eval_metric,
+    for train_metric, eval_metric, criterion in zip(train_metrics, eval_metrics, criterions):
+        legend_position = "upper right" if criterion == "loss" else "lower right"
+        title, ylabel, out_fn = criterion, criterion, OUT_DIR / f"{criterion}.png"
+        plot_single_metric(n_steps, train_metric, eval_metric,
                            legend_position, title, ylabel, out_fn)
 
 

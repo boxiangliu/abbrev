@@ -224,7 +224,7 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
                     eval(model, loss_func, eval_loader, eval_losses, eval_sf_losses,
                          eval_pair_losses, eval_sf_accuracies, eval_pair_accuracies)
 
-                print('STEP %d (%s) TRAIN: L=%.4f SF_L=%.4f PAIR_L=%.4f SF_ACC=%.4f PAIR_ACC=%.4f; EVAL: L=%.4f SF_L=%.4f PAIR_L=%.4f SF_ACC=%.4f PAIR_ACC=%.4f' %
+                sys.stdout.write('STEP %d (%s) TRAIN: L=%.4f SF_L=%.4f PAIR_L=%.4f SF_ACC=%.4f PAIR_ACC=%.4f; EVAL: L=%.4f SF_L=%.4f PAIR_L=%.4f SF_ACC=%.4f PAIR_ACC=%.4f\n' %
                       (n_steps, timeSince(start), avg_train_loss, avg_train_sf_loss, avg_train_pair_loss, train_sf_accuracy, train_pair_accuracy,
                        avg_eval_loss, avg_eval_sf_loss, avg_eval_pair_loss, eval_sf_accuracy, eval_pair_accuracy))
 
