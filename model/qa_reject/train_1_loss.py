@@ -76,7 +76,7 @@ def set_config(config):
     train_sets = config["train_sets"]
     eval_sets = config["eval_sets"]
     max_length = config["max_length"]
-    
+
     for k, v in config.items():
         sys.stderr.write(f"{k}={v}\n")
 
@@ -144,7 +144,7 @@ def eval(model, loss_func, eval_loader, eval_losses, eval_accuracies):
 
             eval_loss += loss
             eval_corrects += sum(pred == pair_labels)
-            n_eval_examples += len(sf_labels)
+            n_eval_examples += len(pair_labels)
 
     avg_eval_loss = eval_loss / len(eval_loader)
     eval_accuracy = eval_corrects / n_eval_examples
@@ -167,11 +167,10 @@ def fit(n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every=1
             model.train()
             n_steps += 1
             loss, pred = loss_batch(model, loss_func, sf_tensors, lf_tensors,
-                           sf_lens, lf_lens, labels, opt)
+                           sf_lens, lf_lens, pair_labels, opt)
 
             train_loss += loss
             train_corrects += sum(pred == pair_labels)
-
             n_train_examples += len(pair_labels)
 
             if n_steps % save_every == 0:
