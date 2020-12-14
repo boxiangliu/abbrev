@@ -278,6 +278,9 @@ python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reje
 # toy_05: Use the ToyEmbedRNNSequenceAvg architecture. Also use toy_data3: LF length in (2, 10), word length in (2, 10), LF has 0.9 probability to inherit a letter from each word of LF.
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_05/config.json
 
+# toy_06: larger learning rate. large batch size, 5x more epochs:
+python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_06/config.json
+
 
 ########################
 # Ab3P on SQuAD output #

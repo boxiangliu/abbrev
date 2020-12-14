@@ -25,7 +25,7 @@ def main(config_fn):
         embed_size, train_sets, eval_sets, arch = set_config(config)
 
     train_data, train_loader, eval_data, eval_loader = get_data(
-        batch_size, , train_sets, eval_sets, arch)
+        batch_size, train_sets, eval_sets, arch)
     train_loader = WrappedDataLoader(train_loader, to_device)
     eval_loader = WrappedDataLoader(eval_loader, to_device)
     input_size = train_data.n_characters

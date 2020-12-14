@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
 from torch.utils.data import Dataset, DataLoader
+import numpy as np
 
 
 class SFLFData(Dataset):
@@ -33,6 +34,7 @@ class SFLFData(Dataset):
         self.characters = [""] + list(string.printable)
         self.n_characters = len(self.characters)
         self.one_hot = one_hot
+        self.class_weights = self.get_class_weights()
 
     def __len__(self):
         return len(self.data["sf"])
@@ -113,6 +115,34 @@ class SFLFData(Dataset):
 
     def one_hot2seq(self, tensor):
         return "".join([self.characters[j] for i, j in tensor.nonzero()])
+
+    def get_class_weights(self):
+        labels_unique, counts = np.unique(
+            self.data["pair_label"], return_counts=True)
+        total = sum(counts)
+        class_weights = {labels_unique[
+            i]: total / c for i, c in enumerate(counts)}
+        return class_weights
+
+    def get_weighted_sampler(self):
+        example_weights = [self.class_weights[l]
+                           for l in self.data["pair_label"]]
+        sampler = WeightedRandomSampler(example_weights, len(self))
+        return sampler
+
+
+def test_SFLFData():
+    from pathlib import Path
+    data_dir = Path(
+        "../processed_data/model/qa_reject/QA_output_to_LSTM_input/")
+    eval_sets = ["medstract"]
+    sf_eval = SFLFData([data_dir / x for x in eval_sets], one_hot=False)
+    weighted_sampler = sf_eval.get_weighted_sampler()
+    idx = list(weighted_sampler)
+    len(idx) == len(sf_eval)
+    pair_labels = []
+    for i in idx:
+        pair_labels.append(sf_eval[i][3])
 
 
 class ToyData(Dataset):

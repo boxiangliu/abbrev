@@ -8,8 +8,8 @@ import torch
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 
-model_fn = "../processed_data/model/qa_reject/lstm/toy_04/model.pt"
-eval_fn = Path("../processed_data/model/qa_reject/toy_data2/")
+model_fn = "../processed_data/model/qa_reject/lstm/toy_06/model.pt"
+eval_fn = Path("../processed_data/model/qa_reject/toy_data3/")
 model = torch.load(model_fn).to(torch.device("cpu"))
 model.device = torch.device("cpu")
 model.eval()
@@ -24,22 +24,23 @@ torch.argmax(prob, dim=1)
 labels
 len((labels != torch.argmax(prob, dim=1)).nonzero())
 
-i=3
-sfs[i]
-lfs[i]
-plt.close()
-fig = plt.figure()
-ax = fig.add_subplot(111)
-cax = ax.matshow(attn[:,i,:].detach().numpy(), cmap='bone')
-ax.set_xticklabels(" " + lfs[i])
-ax.set_yticklabels(" " + sfs[i])
+for i in range(20):
+    sfs[i]
+    lfs[i]
 
-# Show label at every tick
-ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+    plt.close()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    cax = ax.matshow(attn[:sf_lens[i].item(),i,:lf_lens[i].item()].detach().numpy(), cmap='bone')
+    ax.set_xticklabels(" " + lfs[i], Fontsize=6)
+    ax.set_yticklabels(" " + sfs[i], Fontsize=6)
 
-fig.colorbar(cax)
-plt.savefig(f"test{i}.png")
+    # Show label at every tick
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+
+    fig.colorbar(cax)
+    plt.savefig(f"test{i}.pdf")
 
 with torch.no_grad():
     container = defaultdict(list)
