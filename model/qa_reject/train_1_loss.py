@@ -22,7 +22,7 @@ import click
 def main(config_fn):
     config = read_config(config_fn)
     hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, \
-        embed_size, train_sets, eval_sets, arch = set_config(config)
+        embed_size, train_sets, eval_sets, arch, max_length = set_config(config)
 
     train_data, train_loader, eval_data, eval_loader = get_data(
         batch_size, train_sets, eval_sets, arch)
@@ -75,11 +75,12 @@ def set_config(config):
     embed_size = config["embed_size"] if ("embed_size" in config) else 16
     train_sets = config["train_sets"]
     eval_sets = config["eval_sets"]
-
+    max_length = config["max_length"]
+    
     for k, v in config.items():
         sys.stderr.write(f"{k}={v}\n")
 
-    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, embed_size, train_sets, eval_sets, arch
+    return hidden_size, n_epochs, save_every, learning_rate, batch_size, output_size, embed_size, train_sets, eval_sets, arch, max_length
 
 
 def timeSince(since):

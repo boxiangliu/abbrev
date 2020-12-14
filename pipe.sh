@@ -235,8 +235,11 @@ for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,
 done
 
 
-# Train SF-LF model
-python3 model/qa_reject/train.py --config_fn ../processed_data/model/qa_reject/lstm/run_01/config.json
+# Train SF-LF model with cross validation, using one of four datasets as the testset.
+python3 model/qa_reject/train_2_losses.py --config_fn ../processed_data/model/qa_reject/lstm/run_01/config.json
+python3 model/qa_reject/train_2_losses.py --config_fn ../processed_data/model/qa_reject/lstm/run_02/config.json
+python3 model/qa_reject/train_2_losses.py --config_fn ../processed_data/model/qa_reject/lstm/run_03/config.json
+python3 model/qa_reject/train_2_losses.py --config_fn ../processed_data/model/qa_reject/lstm/run_04/config.json
 
 # Infer: 
 python3 model/qa_reject/infer.py --model_fn ../processed_data/model/qa_reject/lstm/run_01/model.pt --eval_fn ../processed_data/model/qa_reject/QA_output_to_LSTM_input/medstract --arch lstm_embed > ../processed_data/model/qa_reject/lstm/run_01/preds.tsv
@@ -281,6 +284,9 @@ python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reje
 # toy_06: larger learning rate. large batch size, 5x more epochs:
 python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reject/lstm/toy_06/config.json
 
+
+# Train a new SF-LF model:
+python3 model/qa_reject/train_1_loss.py --config_fn ../processed_data/model/qa_reject/lstm/run_05/config.json
 
 ########################
 # Ab3P on SQuAD output #
