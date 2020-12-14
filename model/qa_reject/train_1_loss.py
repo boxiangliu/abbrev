@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 import sys
 sys.path.insert(0, "./model/qa_reject/")
 from data import SFLFData, WrappedDataLoader
-from model import EmbedRNN
+from model import EmbedRNNSequenceAvg
 import time
 import math
 import pickle
@@ -99,7 +99,7 @@ def to_device(*args):
 
 
 def get_model(input_size, hidden_size, output_size, embed_size, learning_rate, arch, max_length):
-    model = EmbedRNN(input_size, hidden_size,
+    model = EmbedRNNSequenceAvg(input_size, hidden_size,
                      output_size, embed_size).to(DEVICE)
     optimizer = torch.optim.SGD(
         model.parameters(), lr=learning_rate, momentum=0.9)
@@ -120,7 +120,7 @@ def get_data(batch_size, train_sets, eval_sets, arch):
 
 
 def loss_batch(model, loss_func, sf_tensors, lf_tensors, sf_lens, lf_lens, pair_labels, opt=None):
-    output = model(sf_tensors, lf_tensors, sf_lens, lf_lens)
+    output, attn_weights = model(sf_tensors, lf_tensors, sf_lens, lf_lens)
     pred = torch.argmax(output, dim=1)
 
     loss = loss_func(output, pair_labels)
