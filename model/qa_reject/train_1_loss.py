@@ -35,6 +35,7 @@ def main(config_fn):
     train_losses, eval_losses, train_accuracies, eval_accuracies, n_steps = fit(
             n_epochs, model, loss_func, opt, train_loader, eval_loader, save_every, plot_every)
 
+    torch.save(model, OUT_DIR / f'checkpoint-final.pt')
     save_metrics([n_steps, train_losses, eval_losses, train_accuracies, eval_accuracies])
     plot_metrics(n_steps, train_losses, eval_losses, train_accuracies, eval_accuracies)
 

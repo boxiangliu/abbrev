@@ -287,6 +287,7 @@ python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reje
 
 # Train a new SF-LF model:
 python3 model/qa_reject/train_1_loss.py --config_fn ../processed_data/model/qa_reject/lstm/run_05/config.json
+python3 model/qa_reject/infer_1_loss.py --model_fn ../processed_data/model/qa_reject/lstm/run_05/checkpoint-050000.pt --eval_fn ../processed_data/model/qa_reject/QA_output_to_LSTM_input/Ab3P --arch EmbedRNNSequenceAvg
 
 ########################
 # Ab3P on SQuAD output #
