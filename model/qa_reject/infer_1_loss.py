@@ -1,7 +1,6 @@
 import click
 import sys
 sys.path.insert(0, "./model/qa_reject/")
-from train import get_data
 from data import SFLFData
 import torch
 from torch.utils.data import DataLoader
