@@ -15,9 +15,10 @@ def main():
             line = line.strip().split("\t")[1]
             sentences = nlp(line).sentences
             for sentence in sentences:
+                PSFs, PLFs = [], []
                 sentence = cast_Sentence_to_Span(sentence)
-                PSFs, PLFs = extract_PSFs_and_PLFs(sentence)
-                write_PSFs_and_PLFs(PSFs, PLFs)
+                PSFs, PLFs = extract_PSFs_and_PLFs(sentence, PSFs, PLFs)
+            write_PSFs_and_PLFs(PSFs, PLFs)
 
 
 def cast_Sentence_to_Span(sentence):
@@ -32,9 +33,8 @@ def write_PSFs_and_PLFs(PSFs, PLFs):
         sys.stdout.write(f"annotation:\tPLF{i}\t{PLF}\n")
 
 
-def extract_PSFs_and_PLFs(sentence):
+def extract_PSFs_and_PLFs(sentence, PSFs, PLFs):
     spans = extract_parenthesized_spans(sentence, [])
-    PSFs, PLFs = [], []
     for span in spans:
 
         if span.n_segments == 2:
