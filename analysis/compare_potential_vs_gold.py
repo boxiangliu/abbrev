@@ -16,7 +16,12 @@ def main():
 
 
 def add_annotation_to_containers(line, containers):
-    type_, text = line.strip().split("\t")[1:3]
+    try:
+        type_, text = line.strip().split("\t")[1:3]
+    except ValueError:
+        type_ = line.strip().split("\t")[1]
+        text = ""
+
     if type_.startswith("PSF"):
         containers["PSF"].append(text)
     elif type_.startswith("PLF"):
