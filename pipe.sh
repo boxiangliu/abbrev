@@ -202,6 +202,12 @@ python3 model/character_rnn/infer.py --model_fn ../processed_data/model/characte
 python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_05/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_sf_on_bioc/Ab3P --arch lstm_embed > ../processed_data/model/character_rnn/lstm/run_05/preds.tsv
 
 
+# 2nd iteration of proposal program:
+for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
+    base=`basename $fn _bioc_gold.txt`
+    cat $fn | python3 preprocess/bioc/propose_sf_on_bioc_2.py > ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/$base
+done
+
 ####################
 # QA and rejection #
 ####################

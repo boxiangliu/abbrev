@@ -73,7 +73,7 @@ def extract_parenthesized_spans(span, container):
         match = Span(text=match.group().strip("()[]"),
                      start_char=bounds[0] + 1, 
                      end_char=bounds[1] - 1, 
-                     parent=span.text)
+                     parent=span)
         container.append(match)
         # recurse to find abbreviation within a match:
         container = extract_parenthesized_spans(match, container)
@@ -84,7 +84,7 @@ class Span:
     '''A Span instance contains 
     1) the text of the span
     2) the start, end, and length of the span
-    3) the enclosing (parent) text
+    3) the enclosing (parent) span
     '''
 
     def __init__(self, text, start_char, end_char, parent=None):
@@ -103,12 +103,14 @@ class Span:
         return re.split("[;,] ", self.text)
 
     def extract_PLF_before_span(self):
-        prefix = self.parent.split(self.text)[0]
+        prefix_length = self.start_char - self.parent.start_char
+        prefix = self.parent.text[:prefix_length]
         PLF = prefix.rstrip(" ([")
         return PLF
 
     def extract_PSF_before_span(self):
-        prefix = self.parent.split(self.text)[0]
+        prefix_length = self.start_char - self.parent.start_char
+        prefix = self.parent.text[:prefix_length]
         prefix = prefix.rstrip(" ([")
         PSF = prefix.split(" ")[-1]
         return PSF
