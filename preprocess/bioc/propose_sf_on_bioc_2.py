@@ -43,18 +43,17 @@ def extract_PSFs_and_PLFs(sentence, PSFs, PLFs):
             PSFs.append(PSF)
             PLFs.append(PLF)
 
-        else:
-            segment = span.segments[0]
+        segment = span.segments[0]
 
-            if n_words(segment) <= 2:
-                PLF = span.extract_PLF_before_span()
-                PSFs.append(segment)
-                PLFs.append(PLF)
+        if n_words(segment) <= 2:
+            PLF = span.extract_PLF_before_span()
+            PSFs.append(segment)
+            PLFs.append(PLF)
 
-            if n_words(segment) >= 2:
-                PSF = span.extract_PSF_before_span()
-                PSFs.append(PSF)
-                PLFs.append(segment)
+        if n_words(segment) >= 2:
+            PSF = span.extract_PSF_before_span()
+            PSFs.append(PSF)
+            PLFs.append(segment)
 
     return PSFs, PLFs
 
@@ -71,7 +70,7 @@ def extract_parenthesized_spans(span, container):
         "([\(\[](?>[^\(\)\[\]]+|(?1))*[\)\]])", span.text)
     for match in matches:
         bounds = [span.start_char + i for i in match.span()]
-        match = Span(text=match.group().strip("()[]"),
+        match = Span(text=match.group()[1:-1],
                      start_char=bounds[0] + 1, 
                      end_char=bounds[1] - 1, 
                      parent=span)
