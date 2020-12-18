@@ -33,13 +33,13 @@ def add_annotation_to_containers(line, containers):
         raise ValueError
 
     if type_.startswith("PSF"):
-        containers["PSF"].append(("text": text, "position": position))
+        containers["PSF"].append({"text": text, "position": position})
     elif type_.startswith("PLF"):
-        containers["PLF"].append(("text": text, "position": position))
+        containers["PLF"].append({"text": text, "position": position})
     elif type_.startswith("SF"):
-        containers["SF"].append(("text": text, "position": position))
+        containers["SF"].append({"text": text, "position": position})
     elif type_.startswith("LF"):
-        containers["LF"].append(("text": text, "position": position))
+        containers["LF"].append({"text": text, "position": position})
 
 
 def get_potential_and_gold_pairs(container):
