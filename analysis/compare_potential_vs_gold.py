@@ -78,6 +78,7 @@ def classify_missing_pairs(missing_pairs, potential_pairs):
         else:
             m["reason"] = "other"
 
+    return missing_pairs
 
 def write_SF_and_LF_pairs(pairs):
     for pair in pairs:
