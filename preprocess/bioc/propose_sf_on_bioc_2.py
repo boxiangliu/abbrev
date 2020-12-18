@@ -14,8 +14,9 @@ def main():
         if line.startswith("text:"):
             line = line.strip().split("\t")[1]
             sentences = nlp(line).sentences
+            PSFs, PLFs = [], []
+
             for sentence in sentences:
-                PSFs, PLFs = [], []
                 sentence = cast_Sentence_to_Span(sentence)
                 PSFs, PLFs = extract_PSFs_and_PLFs(sentence, PSFs, PLFs)
             write_PSFs_and_PLFs(PSFs, PLFs)
