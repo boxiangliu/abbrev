@@ -19,6 +19,7 @@ def main():
             for sentence in sentences:
                 sentence = cast_Sentence_to_Span(sentence)
                 PSFs, PLFs = extract_PSFs_and_PLFs(sentence, PSFs, PLFs)
+                PSFs = strip_fluff(PSFs)
             write_PSFs_and_PLFs(PSFs, PLFs)
 
 
@@ -71,8 +72,8 @@ def extract_parenthesized_spans(span, container):
     for match in matches:
         bounds = [span.start_char + i for i in match.span()]
         match = Span(text=match.group()[1:-1],
-                     start_char=bounds[0] + 1, 
-                     end_char=bounds[1] - 1, 
+                     start_char=bounds[0] + 1,
+                     end_char=bounds[1] - 1,
                      parent=span)
         container.append(match)
         # recurse to find abbreviation within a match:
@@ -118,6 +119,15 @@ class Span:
 
 def n_words(text):
     return len(text.split(" "))
+
+
+def strip_fluff(PSFs):
+    new_PSFs = []
+    for PSF in PSFs:
+        PSF = strip_whitespaces_and_quotes(PSF)
+        PSF = strip_boilerplate_text(PSF)
+        new_PSFs.append(PSF)
+    return new_PSFs
 
 
 def strip_whitespaces_and_quotes(text):

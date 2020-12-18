@@ -209,7 +209,11 @@ for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
 done
 
 # Compare the potential LFs and SFs with the gold LFs and SFs:
-cat ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/Ab3P | python analysis/compare_potential_vs_gold.py > ../processed_data/analysis/compare_potential_vs_gold/Ab3P
+for fn in `ls ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/*`; do
+    base=`basename $fn`
+    cat $fn | python analysis/compare_potential_vs_gold.py > ../processed_data/analysis/compare_potential_vs_gold/$base
+done
+
 
 ####################
 # QA and rejection #
@@ -357,7 +361,7 @@ done
 
 
 # Examine cases missed by the short form proposal program: 
- awk -F $'\t' '$3 == 1 && $4 == "omit"' ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,SH,medstract} | less 
+awk -F $'\t' '$3 == 1 && $4 == "omit"' ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,SH,medstract} | less 
 
 
 # How many words are within short forms?
