@@ -220,8 +220,6 @@ done
 # Predict on proposed short forms:
 # Note that Ab3P will throw an "Insufficient memory" error. Use CPU instead of GPU for Ab3P.
 for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,medstract,SH}`; do
-
-for fn in `ls ../processed_data/preprocess/bioc/propose_qa_on_bioc/SH`; do
     base=`basename $fn`; echo $base
     sbatch -p  1080Ti,1080Ti_mlong,1080Ti_slong,2080Ti,2080Ti_mlong,M40x8,M40x8_mlong,M40x8_slong,P100,TitanXx8,TitanXx8_mlong,TitanXx8_slong,V100_DGX,V100x8 \
         --gres=gpu:1 --job-name=$base --output=../processed_data/preprocess/bioc/propose_qa_on_bioc/${base}.log \
@@ -242,7 +240,7 @@ python3 model/qa_reject/train_2_losses.py --config_fn ../processed_data/model/qa
 python3 model/qa_reject/train_2_losses.py --config_fn ../processed_data/model/qa_reject/lstm/run_04/config.json
 
 # Infer: 
-python3 model/qa_reject/infer.py --model_fn ../processed_data/model/qa_reject/lstm/run_01/model.pt --eval_fn ../processed_data/model/qa_reject/QA_output_to_LSTM_input/medstract --arch lstm_embed > ../processed_data/model/qa_reject/lstm/run_01/preds.tsv
+python3 model/qa_reject/infer_2_losses.py --model_fn ../processed_data/model/qa_reject/lstm/run_01/model.pt --eval_fn ../processed_data/model/qa_reject/QA_output_to_LSTM_input/medstract --arch lstm_embed > ../processed_data/model/qa_reject/lstm/run_01/preds.tsv
 
 
 # Generate toy SF-LF data:
@@ -287,7 +285,7 @@ python3 model/qa_reject/toy_train.py --config_fn ../processed_data/model/qa_reje
 
 # Train a new SF-LF model:
 python3 model/qa_reject/train_1_loss.py --config_fn ../processed_data/model/qa_reject/lstm/run_05/config.json
-python3 model/qa_reject/infer_1_loss.py --model_fn ../processed_data/model/qa_reject/lstm/run_05/checkpoint-050000.pt --eval_fn ../processed_data/model/qa_reject/QA_output_to_LSTM_input/Ab3P --arch EmbedRNNSequenceAvg
+python3 model/qa_reject/infer_1_loss.py --model_fn ../processed_data/model/qa_reject/lstm/run_05/checkpoint-050000.pt --eval_fn ../processed_data/model/qa_reject/QA_output_to_LSTM_input/Ab3P --arch EmbedRNNSequenceAvg > ../processed_data/model/qa_reject/lstm/run_05/preds.tsv
 
 ########################
 # Ab3P on SQuAD output #
@@ -349,11 +347,19 @@ for fn in `ls ../processed_data/model/qa_reject/QA_output_to_LSTM_input/{Ab3P,bi
 done
 
 
+# Examine cases missed by the short form proposal program: 
+ awk -F $'\t' '$3 == 1 && $4 == "omit"' ../processed_data/preprocess/bioc/propose_qa_on_bioc/{Ab3P,bioadi,SH,medstract} | less 
 
 
+# How many words are within short forms?
+grep -P "\tSF" ../data/BioC/*/*_bioc_gold.txt | cut -f3,3 | awk '{print length, NF, $0}' | sort -k2,2n 
+# Answer: 
+# Total number of short forms: 4081
+# 1 word: 3972 (0.9732)
+# 2 words: 96 (0.0235)
+# 3 words: 11 (0.0026)
+# 4 words: 1 (0.0002)
+# >5 words: 0
 
 
-
-
-
-
+grep -P "\tLF" ../data/BioC/*/*_bioc_gold.txt | cut -f3,3 | awk '{print length, NF, $0}' | sort -k2,2n 
