@@ -208,6 +208,9 @@ for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
     cat $fn | python3 preprocess/bioc/propose_sf_on_bioc_2.py > ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/$base
 done
 
+# Compare the potential LFs and SFs with the gold LFs and SFs:
+cat ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/Ab3P | python analysis/compare_potential_vs_gold.py
+
 ####################
 # QA and rejection #
 ####################
