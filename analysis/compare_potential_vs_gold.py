@@ -84,9 +84,11 @@ def write_SF_and_LF_pairs(pairs):
     for pair in pairs:
         SF = pair["SF"]["text"]
         LF = pair["LF"]["text"]
+        SF_position = pair["SF"]["position"]
+        LF_position = pair["LF"]["position"]
         reason = pair["reason"]
-        sys.stdout.write(f"annotation:\tSF\t{reason}\t{SF}\n")
-        sys.stdout.write(f"annotation:\tLF\t{reason}\t{LF}\n")
+        sys.stdout.write(f"annotation:\tSF\t{reason}\t{SF}\t{SF_position}\n")
+        sys.stdout.write(f"annotation:\tLF\t{reason}\t{LF}\t{LF_position}\n")
 
 
 if __name__ == '__main__':
