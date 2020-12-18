@@ -10,7 +10,7 @@ def main():
             sys.stdout.write(line)
             potential, gold = get_potential_and_gold_pairs(containers)
             missing = subtract_potential_from_gold(potential, gold)
-            write_SF_and_LF(missing)
+            write_SF_and_LF_pairs(missing)
             containers = {"PSF": [], "PLF": [], "SF": [], "LF": []}
 
 
@@ -48,8 +48,8 @@ def subtract_potential_from_gold(potential, gold):
     return missing
 
 
-def write_SFs_and_LFs(SFs, LFs):
-    for i, (SF, LF) in enumerate(zip(SFs, LFs)):
+def write_SF_and_LF_pairs(pairs):
+    for i, (SF, LF) in enumerate(pairs):
         sys.stdout.write(f"annotation:\tSF{i}\t{SF}\n")
         sys.stdout.write(f"annotation:\tLF{i}\t{LF}\n")
 
