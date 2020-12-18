@@ -46,7 +46,7 @@ def extract_PSFs_and_PLFs(sentence, PSFs, PLFs):
 
         segment = span.segments[0]
 
-        if n_words(segment) <= 2:
+        if n_words(segment) <= 3:
             PLF = span.extract_PLF_before_span()
             PSFs.append(segment)
             PLFs.append(PLF)
