@@ -25,9 +25,9 @@ def init_containers():
 def add_annotation_to_containers(line, containers):
     line_type = line.strip().split("\t")[0]
     if line_type == "ab3p:":
-        entry_type, SF, LF = parse_Ab3P(split_line)
+        entry_type, SF, LF = parse_Ab3P(line)
     elif line_type == "annotation:":
-        entry_type, text, position = parse_annotation(split_line)
+        entry_type, text, position = parse_annotation(line)
 
     if entry_type == "Ab3P":
         containers["Ab3P_SF"].append({"text": SF, "position": ""})
