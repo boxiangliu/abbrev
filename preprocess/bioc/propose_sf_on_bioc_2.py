@@ -38,25 +38,34 @@ def write_PSFs_and_PLFs(PSFs, PLFs):
 def extract_PSFs_and_PLFs(sentence, PSFs, PLFs):
     spans = extract_parenthesized_spans(sentence, [])
     for span in spans:
-
-        if span.n_segments == 2:
-            PSF, PLF = assign_segments_as_PSF_and_PLF(span.segments)
-            PSFs.append(PSF)
-            PLFs.append(PLF)
-
-        segment = span.segments[0]
-
-        if n_words(segment) <= 3:
-            PLF = span.extract_PLF_before_span()
-            PSFs.append(segment)
-            PLFs.append(PLF)
-
-        if n_words(segment) >= 2:
-            PSF = span.extract_PSF_before_span()
-            PSFs.append(PSF)
-            PLFs.append(segment)
-
+        extract_SF_LF_conjunction(span, PSFs, PLFs)
+        extract_LF_parenthesis_SF(span, PSFs, PLFs)
+        extract_SF_parenthesis_LF(span, PSFs, PLFs)
     return PSFs, PLFs
+
+
+def extract_SF_LF_conjunction(span, PSFs, PLFs):
+    if span.n_segments == 2:
+        PSF, PLF = assign_segments_as_PSF_and_PLF(span.segments)
+        PSFs.append(PSF)
+        PLFs.append(PLF)
+
+
+def extract_LF_parenthesis_SF(span, PSFs, PLFs):
+    segment = span.segments[0]
+
+    # TODO: update this rule-based cutoff
+    # to a ML-based cutoff.
+    if n_words(segment) <= 3:
+        PLF = span.extract_PLF_before_span()
+        PSFs.append(segment)
+        PLFs.append(PLF)
+
+
+def extract_SF_parenthesis_LF(span, PSFs, PLFs):
+    PSF = span.extract_PSF_before_span()
+    PSFs.append(PSF)
+    PLFs.append(span.text)
 
 
 def assign_segments_as_PSF_and_PLF(segments):
@@ -118,6 +127,7 @@ class Span:
 
 
 def n_words(text):
+
     return len(text.split(" "))
 
 
@@ -135,7 +145,14 @@ def strip_whitespaces_and_quotes(text):
 
 
 def strip_boilerplate_text(text):
-    return text.replace("for ", "").replace("termed ", "").replace("designated ", "")
+    if text.startswith("for "):
+        return text.replace("for ", "", 1)
+    elif text.startswith("termed "):
+        return replace("termed ", "", 1)
+    elif text.startswith("designated "):
+        return.replace("designated ", "", 1)
+    elif text.startswith("or "):
+        return replace("or ", "", 1)
 
 
 if __name__ == "__main__":
