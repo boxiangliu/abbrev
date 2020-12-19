@@ -212,6 +212,9 @@ for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
     cat $fn | python3 preprocess/bioc/propose_sf_on_bioc_2.py > ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/$base
 done
 
+cat ../data/BioC/SH-BioC/SH_bioc_gold.txt | python3 preprocess/bioc/propose_sf_on_bioc_2.py > /dev/null
+
+
 
 # Compare the potential LFs and SFs with the gold LFs and SFs:
 for fn in `ls ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/*`; do
