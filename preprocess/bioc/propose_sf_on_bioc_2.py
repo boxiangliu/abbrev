@@ -148,11 +148,11 @@ def strip_boilerplate_text(text):
     if text.startswith("for "):
         return text.replace("for ", "", 1)
     elif text.startswith("termed "):
-        return replace("termed ", "", 1)
+        return text.replace("termed ", "", 1)
     elif text.startswith("designated "):
-        return.replace("designated ", "", 1)
+        return text.replace("designated ", "", 1)
     elif text.startswith("or "):
-        return replace("or ", "", 1)
+        return text.replace("or ", "", 1)
 
 
 if __name__ == "__main__":
