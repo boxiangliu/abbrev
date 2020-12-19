@@ -134,7 +134,10 @@ def n_words(text):
 def strip_fluff(PSFs):
     new_PSFs = []
     for PSF in PSFs:
-        PSF = strip_whitespaces_and_quotes(PSF)
+        try:
+            PSF = strip_whitespaces_and_quotes(PSF)
+        except:
+            import ipdb; ipdb.set_trace()
         PSF = strip_boilerplate_text(PSF)
         new_PSFs.append(PSF)
     return new_PSFs
@@ -153,6 +156,8 @@ def strip_boilerplate_text(text):
         return text.replace("designated ", "", 1)
     elif text.startswith("or "):
         return text.replace("or ", "", 1)
+    else:
+        return text
 
 
 if __name__ == "__main__":
