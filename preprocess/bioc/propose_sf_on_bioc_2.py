@@ -60,8 +60,9 @@ def extract_LF_parenthesis_SF(span, PSFs, PLFs):
         PLF = span.extract_PLF_before_span()
         if segment == "EPEC":
             sys.stderr.write(span.text + "\n")
+            sys.stderr.write(span.parent + "\n")
             sys.stderr.write(PLF+ "\n")
-            sys.stderr.write(PSF+ "\n")
+            sys.stderr.write(segment+ "\n")
         PSFs.append(segment)
         PLFs.append(PLF)
 
