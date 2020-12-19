@@ -202,11 +202,16 @@ python3 model/character_rnn/infer.py --model_fn ../processed_data/model/characte
 python3 model/character_rnn/infer.py --model_fn ../processed_data/model/character_rnn/lstm/run_05/model.pt --eval_fn ../processed_data/preprocess/bioc/propose_sf_on_bioc/Ab3P --arch lstm_embed > ../processed_data/model/character_rnn/lstm/run_05/preds.tsv
 
 
-# 2nd iteration of proposal program:
+# Run proposal program version 2:
+# This version extracts the following PSF-PLF pairs
+# (PLF, PSF)
+# PLF (PSF)
+# PSF (PLF)
 for fn in `ls ../data/BioC/*/*bioc_gold.txt`; do
     base=`basename $fn _bioc_gold.txt`
     cat $fn | python3 preprocess/bioc/propose_sf_on_bioc_2.py > ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/$base
 done
+
 
 # Compare the potential LFs and SFs with the gold LFs and SFs:
 for fn in `ls ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/*`; do
@@ -226,6 +231,21 @@ grep -P "\tSF\tother\t" ../processed_data/analysis/compare_potential_vs_gold/* |
 # gap: 24
 # multi-span LF: 38
 # other: 5
+
+
+# run proposal program version 2 on ab3p results:
+for fn in `ls ../processed_data/preprocess/ab3p/BioC/*_bioc_gold.txt`; do
+    base=`basename $fn _bioc_gold.txt`
+    cat $fn | python3 preprocess/bioc/propose_sf_on_bioc_2.py > ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/Ab3P_processed/$base
+done
+
+
+# Compare the potential LFs and SFs with the gold LFs and SFs:
+for fn in `ls ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/Ab3P_processed/*`; do
+    base=`basename $fn`
+    cat $fn | python analysis/compare_potential_vs_Ab3P.py > ../processed_data/analysis/compare_potential_vs_Ab3P/$base
+done
+
 
 ####################
 # QA and rejection #
