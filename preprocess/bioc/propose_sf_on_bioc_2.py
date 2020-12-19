@@ -134,10 +134,7 @@ def n_words(text):
 def strip_fluff(PSFs):
     new_PSFs = []
     for PSF in PSFs:
-        try:
-            PSF = strip_whitespaces_and_quotes(PSF)
-        except:
-            import ipdb; ipdb.set_trace()
+        PSF = strip_whitespaces_and_quotes(PSF)
         PSF = strip_boilerplate_text(PSF)
         new_PSFs.append(PSF)
     return new_PSFs

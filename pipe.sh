@@ -221,11 +221,11 @@ grep -P "\tSF\tmissing SF\t" ../processed_data/analysis/compare_potential_vs_gol
 grep -P "\tSF\tgap\t" ../processed_data/analysis/compare_potential_vs_gold/* | wc
 grep -P "\tSF\tmulti-span LF\t" ../processed_data/analysis/compare_potential_vs_gold/* | wc
 grep -P "\tSF\tother\t" ../processed_data/analysis/compare_potential_vs_gold/* | wc
-# total: 129
+# total: 123
 # missing SF: 56
-# gap: 30
+# gap: 24
 # multi-span LF: 38
-# other: 11
+# other: 5
 
 ####################
 # QA and rejection #
