@@ -57,7 +57,7 @@ def subtract_potential_from_gold(potential, gold):
     for g in gold:
         found = 0
         for p in potential:
-            if g["SF"]["text"] == p["SF"]["text"] and p["LF"]["text"].endswith(g["LF"]["text"]):
+            if g["SF"]["text"] == p["SF"]["text"] and (p["LF"]["text"].endswith(g["LF"]["text"]) or p["LF"]["text"].startswith(g["LF"]["text"])):
                 found = 1
         if not found:
             missing.append(g)
