@@ -56,11 +56,12 @@ def extract_LF_parenthesis_SF(span, PSFs, PLFs):
 
     # TODO: update this rule-based cutoff
     # to a ML-based cutoff.
-    if segment == "EPEC":
-        import ipdb; ipdb.set_trace()
-
     if n_words(segment) <= 3:
         PLF = span.extract_PLF_before_span()
+        if segment == "EPEC":
+            sys.stderr.write(span.text + "\n")
+            sys.stderr.write(PLF+ "\n")
+            sys.stderr.write(PSF+ "\n")
         PSFs.append(segment)
         PLFs.append(PLF)
 
