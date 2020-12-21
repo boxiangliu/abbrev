@@ -1,4 +1,5 @@
 import sys
+import re
 
 
 def main():
@@ -77,10 +78,9 @@ def write_BIO_data(container):
             write_negative_BIO_instance(
                 PSF, PLF, 0, container["pmid"], container["type"])
 
-import re
 
 def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
-    start_chars = [m.start() for m in re.finditer(" " + LF + " ", PLF)]
+    start_chars = [m.start() for m in re.finditer(f"[^ ]{LF}[$ ]", PLF)]
     length = len(LF)
     PLF_char_labels = make_PLF_char_labels(PLF, start_chars, length)
     PLF_word_labels = char_to_word_labels(PLF, PLF_char_labels)
