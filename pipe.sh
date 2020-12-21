@@ -269,6 +269,11 @@ grep -P "\tSF\tother\t" ../processed_data/analysis/compare_Ab3P_vs_gold/* | wc
 # multi-span LF: 1
 # other: 47
 
+############
+# NER data #
+############
+# generate BIO data:
+cat ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/Ab3P | python3 preprocess/NER/BIO_data.py > foo
 
 ####################
 # QA and rejection #

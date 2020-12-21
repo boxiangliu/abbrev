@@ -98,3 +98,7 @@ def write_negative_BIO_instance(PSF, PLF, pmid, text_type):
     PLF_word_labels = ["O" for word in PLF.split(" ")]
     PSF_label = 0
     sys.stdout.write(f"{PSF}\t{PLF}\t{PSF_label}\t{PLF_char_labels}\t{PLF_word_labels}\t{pmid}\t{text_type}\n")
+
+
+if __name__ == "__main__":
+    main()
