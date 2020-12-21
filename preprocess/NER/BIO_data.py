@@ -83,6 +83,7 @@ def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
     try:
         start_chars = [m.start() for m in re.finditer(f"[^ ]{LF}[$ ]", PLF)]
     except:
+        print("error")
         set_trace()
     length = len(LF)
     PLF_char_labels = make_PLF_char_labels(PLF, start_chars, length)
