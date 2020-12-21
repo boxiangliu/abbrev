@@ -1,6 +1,6 @@
 import sys
 import re
-
+from ipdb import set_trace
 
 def main():
     container = init_container()
@@ -80,7 +80,10 @@ def write_BIO_data(container):
 
 
 def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
-    start_chars = [m.start() for m in re.finditer(f"[^ ]{LF}[$ ]", PLF)]
+    try:
+        start_chars = [m.start() for m in re.finditer(f"[^ ]{LF}[$ ]", PLF)]
+    except:
+        set_trace()
     length = len(LF)
     PLF_char_labels = make_PLF_char_labels(PLF, start_chars, length)
     PLF_word_labels = char_to_word_labels(PLF, PLF_char_labels)
