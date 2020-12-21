@@ -76,9 +76,9 @@ def write_positive_BIO_instance(PSF, PLF, SF, LF, pmid, text_type):
 def make_PLF_char_labels(PLF, start_char, length):
     PLF_char_labels = []
     for i, char in enumerate(PLF):
-        if i == star_char:
+        if i == start_char:
             PLF_char_labels.append("B")
-        elif i > star_char and i <= start_char + length:
+        elif i > start_char and i <= start_char + length:
             PLF_char_labels.append("I")
         else:
             PLF_char_labels.append("O")
