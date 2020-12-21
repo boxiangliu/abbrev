@@ -16,7 +16,7 @@ def init_container():
     return {"PSF": [], "PLF": [], "SF": [], "LF": [], "pmid": "", "type": ""}
 
 
-def reset_container():
+def reset_container(container):
     for key in ["PSF", "PLF", "SF", "LF"]:
         container[key] = []
 
