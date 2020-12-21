@@ -85,6 +85,8 @@ def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
     except:
         print("error")
         set_trace()
+    else:
+        set_trace()
     length = len(LF)
     PLF_char_labels = make_PLF_char_labels(PLF, start_chars, length)
     PLF_word_labels = char_to_word_labels(PLF, PLF_char_labels)
