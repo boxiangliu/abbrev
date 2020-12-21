@@ -59,11 +59,6 @@ def check_container(container):
     assert len(container["SF"]) == len(container["LF"])
 
 
-def pseudo_match(PSF, PLF, SF, LF):
-    # TODO: add condition for multi-span LFs
-    return PSF == SF and LF in PLF
-
-
 def write_BIO_data(container):
     check_container(container)
 
@@ -82,11 +77,12 @@ def write_BIO_data(container):
             write_negative_BIO_instance(
                 PSF, PLF, 0, container["pmid"], container["type"])
 
+import re
 
 def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
-    start_char = PLF.index(LF)
+    start_chars = [m.start() for m in re.finditer(" " + LF + " ", PLF)]
     length = len(LF)
-    PLF_char_labels = make_PLF_char_labels(PLF, start_char, length)
+    PLF_char_labels = make_PLF_char_labels(PLF, start_chars, length)
     PLF_word_labels = char_to_word_labels(PLF, PLF_char_labels)
     PLF_char_labels = ",".join(PLF_char_labels)
     PLF_word_labels = ",".join(PLF_word_labels)
@@ -94,15 +90,10 @@ def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
     sys.stdout.write(f"{PSF}\t{PLF}\t{PSF_label}\t{PLF_char_labels}\t{PLF_word_labels}\t{pmid}\t{text_type}\n")
 
 
-def make_PLF_char_labels(PLF, start_char, length):
-    PLF_char_labels = []
-    for i, char in enumerate(PLF):
-        if i == start_char:
-            PLF_char_labels.append("B")
-        elif i > start_char and i <= start_char + length:
-            PLF_char_labels.append("I")
-        else:
-            PLF_char_labels.append("O")
+def make_PLF_char_labels(PLF, start_chars, length):
+    PLF_char_labels = ["O" for _ in PLF]
+    for start_char in start_chars:
+        PLF_char_labels[start_char:start_char+length] = ["B"] + ["I"] * (length - 1)
     return PLF_char_labels
 
 
