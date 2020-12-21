@@ -68,18 +68,22 @@ def write_BIO_data(container):
     check_container(container)
 
     for PSF, PLF in zip(container["PSF"], container["PLF"]):
-        has_pseudo_match = 0
+        SF_match = 0
         for SF, LF in zip(container["SF"], container["LF"]):
-            if pseudo_match(PSF, PLF, SF, LF):
-                has_pseudo_match = 1
-                write_positive_BIO_instance(PSF, PLF, SF, LF, container[
-                                            "pmid"], container["type"])
-        if not has_pseudo_match:
+            if SF == PSF:
+                SF_match = 1
+                if LF in PLF:
+                    write_positive_BIO_instance(
+                        PSF, PLF, LF, container["pmid"], container["type"])
+                else:
+                    write_negative_BIO_instance(
+                        PSF, PLF, 1, container["pmid"], container["type"])
+        if not SF_match:
             write_negative_BIO_instance(
-                PSF, PLF, container["pmid"], container["type"])
+                PSF, PLF, 0, container["pmid"], container["type"])
 
 
-def write_positive_BIO_instance(PSF, PLF, SF, LF, pmid, text_type):
+def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
     start_char = PLF.index(LF)
     length = len(LF)
     PLF_char_labels = make_PLF_char_labels(PLF, start_char, length)
@@ -105,16 +109,15 @@ def make_PLF_char_labels(PLF, start_char, length):
 def char_to_word_labels(text, char_labels):
     word_labels = [char_labels[0]]
     for i, char in enumerate(text):
-        if char == "":
+        if char == " ":
             word_labels.append(char_labels[i + 1])
     return word_labels
 
 
-def write_negative_BIO_instance(PSF, PLF, pmid, text_type):
+def write_negative_BIO_instance(PSF, PLF, PSF_label, pmid, text_type):
     if PSF != "" and PLF != "":
         PLF_char_labels = ",".join(["O" for char in PLF])
         PLF_word_labels = ",".join(["O" for word in PLF.split(" ")])
-        PSF_label = 0
         sys.stdout.write(f"{PSF}\t{PLF}\t{PSF_label}\t{PLF_char_labels}\t{PLF_word_labels}\t{pmid}\t{text_type}\n")
 
 
