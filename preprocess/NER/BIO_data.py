@@ -86,7 +86,7 @@ def make_PLF_char_labels(PLF, start_char, length):
 
 
 def char_to_word_labels(text, char_labels):
-    word_labels = [char_label[0]]
+    word_labels = [char_labels[0]]
     for i, char in enumerate(text):
         if char == "":
             word_labels.append(char_labels[i + 1])
