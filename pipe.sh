@@ -250,6 +250,26 @@ for fn in `ls ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/Ab3P_proces
 done
 
 
+# Compare the Ab3P SFs and LFs with the gold LFs and SFs:
+for fn in `ls ../processed_data/preprocess/bioc/propose_sf_on_bioc_2/Ab3P_processed/*`; do
+    base=`basename $fn`
+    cat $fn | python analysis/compare_Ab3P_vs_gold.py > ../processed_data/analysis/compare_Ab3P_vs_gold/$base
+done
+
+
+# Count the number of each type of missing pair:
+grep -P "\tSF\t" ../processed_data/analysis/compare_Ab3P_vs_gold/* | wc
+grep -P "\tSF\tmissing SF\t" ../processed_data/analysis/compare_Ab3P_vs_gold/* | wc
+grep -P "\tSF\tgap\t" ../processed_data/analysis/compare_Ab3P_vs_gold/* | wc
+grep -P "\tSF\tmulti-span LF\t" ../processed_data/analysis/compare_Ab3P_vs_gold/* | wc
+grep -P "\tSF\tother\t" ../processed_data/analysis/compare_Ab3P_vs_gold/* | wc
+# total: 751
+# missing SF: 701
+# gap: 2
+# multi-span LF: 1
+# other: 47
+
+
 ####################
 # QA and rejection #
 ####################
