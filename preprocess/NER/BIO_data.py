@@ -1,6 +1,6 @@
 import sys
 import re
-from ipdb import set_trace
+from ripdb import set_trace
 
 def main():
     container = init_container()
@@ -86,7 +86,7 @@ def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
         print("error")
         set_trace()
     else:
-        set_trace()
+        set_trace(port=12345)
     length = len(LF)
     PLF_char_labels = make_PLF_char_labels(PLF, start_chars, length)
     PLF_word_labels = char_to_word_labels(PLF, PLF_char_labels)
