@@ -1,11 +1,11 @@
 import sys
 import re
-from ripdb import set_trace
 
 def main():
     container = init_container()
     write_output_header()
-    for line in sys.stdin:
+    lines = sys.stdin.readlines()
+    for line in lines:
         parse_line(line, container)
 
 
@@ -83,10 +83,9 @@ def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
     try:
         start_chars = [m.start() for m in re.finditer(f"[^ ]{LF}[$ ]", PLF)]
     except:
-        print("error")
-        set_trace()
+        breakpoint()
     else:
-        set_trace(port=12345)
+        breakpoint()
     length = len(LF)
     PLF_char_labels = make_PLF_char_labels(PLF, start_chars, length)
     PLF_word_labels = char_to_word_labels(PLF, PLF_char_labels)
