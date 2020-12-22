@@ -82,7 +82,7 @@ def write_BIO_data(container):
 
 def write_positive_BIO_instance(PSF, PLF, LF, pmid, text_type):
     try:
-        start_chars = [m.start() for m in re.finditer(f"[^ ]{LF}[$ ]", PLF)]
+        start_chars = [m.start() for m in re.finditer(f"[^ ]{re.escape(LF)}[$ ]", PLF)]
     except:
         set_trace()
     length = len(LF)
