@@ -5,8 +5,7 @@ from ipdb import set_trace
 def main():
     container = init_container()
     write_output_header()
-    lines = open("../processed_data/preprocess/bioc/propose_sf_on_bioc_2/Ab3P").readlines()
-    for line in lines:
+    for line in sys.stdin:
         parse_line(line, container)
 
 
