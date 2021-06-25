@@ -12,14 +12,14 @@ from torch.utils.data import Dataset, DataLoader
 class SFData(Dataset):
     """Classify short form into valid and invalid"""
 
-    def __init__(self, flist, exclude=set(), one_hot=True):
+    def __init__(self, files_list, exclude=set(), one_hot=True):
         """Args:
-            flist (list): a list of files.
+            files_list (list): a list of files.
             exclude (set): a set of short forms to exclude.
                 This can be used to remove short forms in eval set.
         """
-        self.flist = flist
-        self.data = self.read_files(flist, exclude)
+        self.files_list = files_list
+        self.data = self.read_files(files_list, exclude)
         # empty string means unknown
         self.characters = [""] + list(string.printable)
         self.n_characters = len(self.characters)
@@ -38,10 +38,10 @@ class SFData(Dataset):
         label = int(self.data["label"][idx])
         return tensor, label, seq
 
-    def read_files(self, flist, exclude):
+    def read_files(self, files_list, exclude):
         seqs = []
         labels = []
-        for fn in flist:
+        for fn in files_list:
             with open(fn) as f:
                 for line in f:
                     split_line = line.strip().split("\t")

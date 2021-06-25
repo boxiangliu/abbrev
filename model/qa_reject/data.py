@@ -20,14 +20,14 @@ class SFLFData(Dataset):
         5. whether the example is from the gold standard
     """
 
-    def __init__(self, flist, exclude=set(), one_hot=True):
+    def __init__(self, files_list, exclude=set(), one_hot=True):
         """Args:
-            flist (list): a list of files.
+            files_list (list): a list of files.
             exclude (set): a set of short forms to exclude.
                 This can be used to remove short forms in eval set.
         """
-        self.flist = flist
-        self.data = self.read_files(flist, exclude)
+        self.files_list = files_list
+        self.data = self.read_files(files_list, exclude)
         self.sf_lf_pairs = set([(sf, lf)
                                 for sf, lf in zip(self.data["sf"], self.data["lf"])])
         # empty string means unknown
@@ -54,9 +54,9 @@ class SFLFData(Dataset):
         return sf_tensor, lf_tensor, sf_label, \
             pair_label, is_gold, sf, lf
 
-    def read_files(self, flist, exclude):
+    def read_files(self, files_list, exclude):
         sfs, lfs, sf_labels, pair_labels, is_golds = [], [], [], [], []
-        for fn in flist:
+        for fn in files_list:
             with open(fn) as f:
                 for line in f:
                     if line.startswith("sf\tlf\tgood_sf"):
@@ -155,14 +155,14 @@ class SFLFSeqData(Dataset):
         5. whether the example is from the gold standard
     """
 
-    def __init__(self, flist, exclude=set(), one_hot=True):
+    def __init__(self, files_list, exclude=set(), one_hot=True):
         """Args:
-            flist (list): a list of files.
+            files_list (list): a list of files.
             exclude (set): a set of short forms to exclude.
                 This can be used to remove short forms in eval set.
         """
-        self.flist = flist
-        self.data = self.read_files(flist, exclude)
+        self.files_list = files_list
+        self.data = self.read_files(files_list, exclude)
         self.sf_lf_pairs = set([(sf, lf)
                                 for sf, lf in zip(self.data["sf"], self.data["lf"])])
         # empty string means unknown
@@ -189,9 +189,9 @@ class SFLFSeqData(Dataset):
         return sf_tensor, lf_tensor, sf_label, \
             pair_label, is_gold, sf, lf
 
-    def read_files(self, flist, exclude):
+    def read_files(self, files_list, exclude):
         sfs, lfs, sf_labels, pair_labels, is_golds = [], [], [], [], []
-        for fn in flist:
+        for fn in files_list:
             with open(fn) as f:
                 for line in f:
                     if line.startswith("sf\tlf\tgood_sf"):
