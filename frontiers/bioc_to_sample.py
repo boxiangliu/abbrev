@@ -1,5 +1,6 @@
 import sys
 for line in sys.stdin:
+    breakpoint()
     if line.startswith("text"):
         text = line.strip().split("\t")[1]
     elif line.startswith("annotation\tSF"):
